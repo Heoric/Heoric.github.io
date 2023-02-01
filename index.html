@@ -84,7 +84,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -214,7 +214,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：10:51:59" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:06:16" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
     </span>
 
   
@@ -238,6 +238,10 @@
 <h2 id="Planner"><a href="#Planner" class="headerlink" title="Planner"></a>Planner</h2><p>System R优化器第一次提出了自底向上的动态规划搜索策略，影响了后续的很多系统。另一个创新点在于提出来基于cost-based的优化方法，如何根据sargable条件计算selective，增加了interesting order属性来对访问方法（Access Path）进行影响。</p>
 <p>Volcano&#x2F;Cascades</p>
 <p>Cascades 的实现，orca，cockroachdb。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *scope)</span></span> endAggFunc(cols opt.ColSet) (g *groupby) &#123;</span><br><span class="line">	<span class="keyword">if</span> !s.inAgg &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;mismatched calls to start/end aggFunc&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	s.inAgg = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> curr := s; curr != <span class="literal">nil</span>; curr = curr.parent &#123;</span><br><span class="line">		<span class="keyword">if</span> cols.Len() == <span class="number">0</span> || cols.Intersects(curr.colSet()) &#123;</span><br><span class="line">			curr.verifyAggregateContext()</span><br><span class="line">			<span class="keyword">if</span> curr.groupby == <span class="literal">nil</span> &#123;</span><br><span class="line">				curr.initGrouping()</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> curr.groupby</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;aggregate function is not allowed in this context&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 
       
     </div>
@@ -822,9 +826,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2023-01-31 10:44:57 / 修改时间：10:47:11" itemprop="dateCreated datePublished" datetime="2023-01-31T10:44:57+08:00">2023-01-31</time>
+      <time title="创建时间：2023-01-31 10:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T10:44:57+08:00">2023-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-01 15:04:02" itemprop="dateModified" datetime="2023-02-01T15:04:02+08:00">2023-02-01</time>
     </span>
 
   
