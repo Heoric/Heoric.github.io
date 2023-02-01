@@ -153,9 +153,10 @@
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">标签</span>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
 </div>
@@ -214,7 +215,16 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:06:16" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:55:00" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
     </span>
 
   
@@ -232,17 +242,14 @@
 <p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
 <p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
 <p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
-<p>有了这些历史背景，现在可以谈谈SQL的执行流程了。</p>
-<h2 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h2><p>词法(lexing)，语法(syntax)。</p>
-<h2 id="Analyzer"><a href="#Analyzer" class="headerlink" title="Analyzer"></a>Analyzer</h2><p>语意(Semantic)。绑定，类型检查。</p>
-<h2 id="Planner"><a href="#Planner" class="headerlink" title="Planner"></a>Planner</h2><p>System R优化器第一次提出了自底向上的动态规划搜索策略，影响了后续的很多系统。另一个创新点在于提出来基于cost-based的优化方法，如何根据sargable条件计算selective，增加了interesting order属性来对访问方法（Access Path）进行影响。</p>
-<p>Volcano&#x2F;Cascades</p>
-<p>Cascades 的实现，orca，cockroachdb。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *scope)</span></span> endAggFunc(cols opt.ColSet) (g *groupby) &#123;</span><br><span class="line">	<span class="keyword">if</span> !s.inAgg &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;mismatched calls to start/end aggFunc&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	s.inAgg = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> curr := s; curr != <span class="literal">nil</span>; curr = curr.parent &#123;</span><br><span class="line">		<span class="keyword">if</span> cols.Len() == <span class="number">0</span> || cols.Intersects(curr.colSet()) &#123;</span><br><span class="line">			curr.verifyAggregateContext()</span><br><span class="line">			<span class="keyword">if</span> curr.groupby == <span class="literal">nil</span> &#123;</span><br><span class="line">				curr.initGrouping()</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> curr.groupby</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;aggregate function is not allowed in this context&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/01/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97-0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -296,9 +303,24 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2023-01-31 14:44:57 / 修改时间：14:28:02" itemprop="dateCreated datePublished" datetime="2023-01-31T14:44:57+08:00">2023-01-31</time>
+      <time title="创建时间：2023-01-31 14:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T14:44:57+08:00">2023-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-01 15:54:43" itemprop="dateModified" datetime="2023-02-01T15:54:43+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
     </span>
 
   
@@ -322,457 +344,14 @@
 </ul>
 <p>通过这些特性的融合，我们希望 CockroachDB 帮助您构建全球性、可扩展、弹性的部署和应用程序。</p>
 <p>在阅读我们的架构文档之前了解一些术语会很有帮助。</p>
-<h2 id="数据库术语"><a href="#数据库术语" class="headerlink" title="数据库术语"></a>数据库术语</h2><table>
-<thead>
-<tr>
-<th>Term</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Consistency</td>
-<td>事务必须仅以允许的方式更改受影响数据的要求。 CockroachDB 在 ACID 语义和 CAP 定理的意义上都使用了“一致性”，尽管没有任何一个定义那么正式。</td>
-</tr>
-<tr>
-<td>isolation</td>
-<td>一个事务可能受同时运行的其他事务影响的程度。 CockroachDB 提供了 SERIALIZABLE 隔离级别，这是可能的最高级别，并保证每个提交的事务具有相同的结果，就好像每个事务一次运行一个一样。</td>
-</tr>
-<tr>
-<td>Consensus</td>
-<td>就事务是提交还是中止达成一致的过程。 CockroachDB 使用 Raft 共识协议。 在 CockroachDB 中，当一个范围接收到写入时，包含该范围副本的节点的法定人数会确认写入。 这意味着您的数据得到安全存储，并且大多数节点都同意数据库的当前状态，即使某些节点处于脱机状态。<br/><br/>当写入未达成共识时，前进进程停止以保持集群内的一致性。</td>
-</tr>
-<tr>
-<td>Replication</td>
-<td>创建和分发数据副本以及确保这些副本保持一致的过程。 CockroachDB 要求所有写入在被视为已提交之前传播到数据副本的法定人数。 这确保了数据的一致性。</td>
-</tr>
-<tr>
-<td>transation</td>
-<td>在数据库上执行的一组满足 ACID 语义要求的操作。 这是确保开发人员可以信任其数据库中的数据的一致系统的关键特性。 有关 CockroachDB 中事务如何工作的更多信息，请参阅事务层。</td>
-</tr>
-<tr>
-<td>Multi-active availability</td>
-<td>一种基于共识的高可用性概念，允许集群中的每个节点处理存储数据子集的读取和写入（基于每个范围）。 这与主动-被动复制（主动节点接收 100% 的请求流量）和主动-主动复制（所有节点都接受请求但通常不能保证读取是最新的和快速的）形成对比。</td>
-</tr>
-</tbody></table>
-<h2 id="CockroachDB-架构术语"><a href="#CockroachDB-架构术语" class="headerlink" title="CockroachDB 架构术语"></a>CockroachDB 架构术语</h2><table>
-<thead>
-<tr>
-<th>Term</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>cluster</td>
-<td>一组相互连接的存储节点，它们协作组织事务、容错和数据重新平衡。</td>
-</tr>
-<tr>
-<td>node</td>
-<td>CockroachDB 的单个实例。 一个或多个节点形成一个集群。</td>
-</tr>
-<tr>
-<td>range</td>
-<td>CockroachDB 将所有用户数据（表、索引等）和几乎所有系统数据存储在键值对的排序映射中。 这个键空间被分成称为范围的连续块，这样每个键都可以在一个范围内找到。<br/><br/>从 SQL 的角度来看，表及其二级索引最初映射到单个范围，其中范围中的每个键值对代表表中的单个行（也称为主索引，因为表是按主键排序的） 或二级索引中的单行。 一旦范围的大小达到 512 MiB（默认值），它就会被分成两个范围。 随着表及其索引的不断增长，这些新范围的过程将继续进行。</td>
-</tr>
-<tr>
-<td>Replica</td>
-<td>存储在节点上的范围的副本。 默认情况下，每个范围在不同节点上有三个副本。</td>
-</tr>
-<tr>
-<td>Leasholder</td>
-<td>持有“范围租约”的副本。 此副本接收并协调该范围的所有读取和写入请求。<br/><br/>对于大多数类型的表和查询，租用者是唯一可以提供一致读取（返回“最新”数据的读取）的副本。</td>
-</tr>
-<tr>
-<td>raft protocol</td>
-<td>CockreactDB中采用的共识协议可确保您的数据安全存储在多个节点上，并且这些节点即使其中一些暂时断开连接，也可以同意当前状态。</td>
-</tr>
-<tr>
-<td>Raft leader</td>
-<td>对于每个范围，是写作请求的“领导者”的副本。 领导者使用 raft 协议来确保大多数复本（领导者和足够的追随者）根据其 raft 日志达成一致，然后再进行写作。 raft 领导人几乎总是与 leaseholder 是相同的复本。</td>
-</tr>
-<tr>
-<td>Raft log</td>
-<td>按时间订购的日志写入其复制品已达成协议的范围。 该日志与每个副本一起存在，并且是一致复制的真实范围的来源。</td>
-</tr>
-</tbody></table>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>CockroachDB 在机器上启动使用下面两条命令。</p>
-<ul>
-<li>cockroach  start 启动集群中所有节点使用 –jion 标记 ，因此该过程知道它可以与之通信的所有其他机器。</li>
-<li>cockroach init执行初始化集群。</li>
-</ul>
-<p>一旦初始化了CockacredDB群集，开发人员就会通过兼容 postgresql 的SQL API与CockreactDB相互作用。 得益于群集中所有节点的对称行为，您可以将SQL请求发送到任何节点； 这使蟑螂易于与负载平衡器集成。</p>
-<p>接收SQL远程过程调用（RPC）后，节点将它们转换为 kv 操作 在分布式事务的存储中。</p>
-<p>当这些RPC开始用数据填充群集时，CockroachdB开始算法将您的数据分配在群集的节点之间，将数据分解为我们称为 ragne 的512个MIB块。 默认情况下，每个range 至少复制至至少3个节点，以确保生存能力。 这样可以确保如果有任何节点下降，您仍然拥有可用于以下数据的数据的副本：</p>
-<ul>
-<li>继续提供读写。</li>
-<li>持续负责数据到其他节点。</li>
-</ul>
-<p>如果一个节点接收到读或写请求无法直接处理，它会找到可以处理该请求的节点，并与该节点通信。这意味着您不需要知道在群集中存储了数据的特定部分；CockroachDB 为您跟踪它，并启用每个节点的对称读&#x2F;写行为。</p>
-<p>对数据范围内对数据进行的任何更改都取决于共识算法，以确保大多数范围的复制品同意进行更改。 这就是蟑螂实现行业领先的隔离的方式，可以使其能够为您的应用提供一致的读取和写入，而不管您与哪种节点进行了交流。</p>
-<p>最终，使用有效的存储引擎将数据写入并从磁盘上读取，该引擎能够跟踪数据的时间戳。 这是一个好处，可以让我们支持AS OF SYSTEM TIME 的SQL标准，从而让您在一段时间内找到历史数据。</p>
-<h2 id="五层"><a href="#五层" class="headerlink" title="五层"></a>五层</h2><table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Order</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SQL</td>
-<td>1</td>
-<td>转换 sql 到 kv 操作</td>
-</tr>
-<tr>
-<td>Transitional</td>
-<td>2</td>
-<td>允许原子修改 多个kv 操作</td>
-</tr>
-<tr>
-<td>Distribution</td>
-<td>3</td>
-<td>复制 kv range</td>
-</tr>
-<tr>
-<td>Replication</td>
-<td>4</td>
-<td>一致和同步复制KV范围在许多节点上范围。 该层还可以使用共识算法进行一致的读取</td>
-</tr>
-<tr>
-<td>Storage</td>
-<td>5</td>
-<td>读写 kv 在磁盘</td>
-</tr>
-</tbody></table>
-<h1 id="SQL-层"><a href="#SQL-层" class="headerlink" title="SQL 层"></a>SQL 层</h1><p>sql 层给 开发者提供 SQL API 并且将 sql 语句转换为 读写请求到 key-velue store。并且通过事务层。</p>
-<p>包含以下子层：</p>
-<ul>
-<li>sql api，用户的接口</li>
-<li>Parser， 将sql 语句转换为 AST树</li>
-<li>Cost-based optimizer，将 AST树转换为被优化的逻辑计划</li>
-<li>Physical planner 将逻辑计划转换为物理计划，给集群中一个或者多个节点执行</li>
-<li>SQL execution engine，执行物理计划通过创建 读写请求给底层的 key-value store</li>
-</ul>
-<h2 id="概览-1"><a href="#概览-1" class="headerlink" title="概览"></a>概览</h2><p>一旦CockroachDB被部署成功，开发者们需要一个连接串连接到集群，他们可以开始工作使用 SQL。</p>
-<p>因为CockroachDB集群中每个节点上对等的，开发者可以从任何一个节点发送请求。接受请求的节点称为”gateway node”，执行请求并且响应客户端。</p>
-<p>对集群的请求以 SQL 语句的形式到达，但数据最终以键值 (KV) 对的形式写入和读取存储层。 为了处理这个问题，SQL 层将 SQL 语句转换为 KV 操作计划，然后将其传递给事务层。</p>
-<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="关系结构"><a href="#关系结构" class="headerlink" title="关系结构"></a>关系结构</h3><p>开发人员将存储在 CockroachDB 中的数据视为由行和列组成的关系结构。 行和列的集合被进一步组织成表格。 然后将表的集合组织到数据库中。 CockroachDB 集群可以包含许多数据库。</p>
-<p>CockroachDB 提供了典型的关系特征，如约束（例如外键）。 这些特性意味着应用程序开发人员可以相信数据库将确保应用程序数据的结构一致； 数据验证不需要单独构建到应用程序逻辑中。</p>
-<h3 id="SQL-API"><a href="#SQL-API" class="headerlink" title="SQL API"></a>SQL API</h3><p>CockroachDB 实现了大部分 ANSI SQL 标准以显示其关系结构。</p>
-<p>重要的是，通过 SQL API，开发人员可以像通过任何 SQL 数据库（使用 BEGIN、COMMIT 等）一样访问 ACID 语义事务。</p>
-<h3 id="PostgreSQL-wire-protocol"><a href="#PostgreSQL-wire-protocol" class="headerlink" title="PostgreSQL wire protocol"></a>PostgreSQL wire protocol</h3><p>SQL 查询通过 PostgreSQL 协议访问集群。 </p>
-<h3 id="SQL-parser-planner-executor"><a href="#SQL-parser-planner-executor" class="headerlink" title="SQL parser, planner, executor"></a>SQL parser, planner, executor</h3><p>当 CockroachDB 集群中的节点接收到来自客户端的 SQL 请求时，它会解析语句并创建优化的逻辑查询计划，该计划会进一步转换为物理查询计划。 最后，执行物理计划。</p>
-<h4 id="Parsing"><a href="#Parsing" class="headerlink" title="Parsing"></a>Parsing</h4><p>SQL 查询根据我们的 yacc 文件（描述我们支持的语法）进行解析，每个查询的 SQL 版本都被转换为抽象语法树 (AST)。</p>
-<h4 id="Logical-planning"><a href="#Logical-planning" class="headerlink" title="Logical planning"></a>Logical planning</h4><p>在逻辑计划阶段，AST 树被转换为一个查询计划通过以下步骤。</p>
-<ol>
-<li>AST 被转换为高级逻辑查询计划。 在此转换过程中，CockroachDB 还执行语义分析，其中包括以下操作：</li>
-</ol>
-<ul>
-<li>检查查询是否是 SQL 语言中的有效语句。</li>
-<li>将名称（例如表或变量的名称）解析为其值。</li>
-<li>消除不需要的中间计算，例如，将 0.6 + 0.4 替换为 1.0。 这也称为常量折叠。</li>
-<li>最终确定用于中间结果的数据类型，例如，当查询包含一个或多个子查询时。</li>
-</ul>
-<ol start="2">
-<li>使用一系列始终有效的转换简化了逻辑计划。 例如，a BETWEEN b AND c 可以转换为 a &gt;&#x3D; b AND a &lt;&#x3D; c。</li>
-<li>使用搜索算法优化逻辑计划，该算法评估执行查询的许多可能方式并选择成本最低的执行计划。</li>
-</ol>
-<p>上述最后一步的结果是优化的逻辑计划。 要查看基于成本的优化器生成的逻辑计划，请使用 EXPLAIN (OPT) 语句。</p>
-<h4 id="Physical-planning"><a href="#Physical-planning" class="headerlink" title="Physical planning"></a>Physical planning</h4><p>物理计划阶段根据 range 的位置信息决定那个节点参与查询的执行。这就是CockroachDB 决定分布式执行在靠近存储位置的地方。</p>
-<p>更具体地说，物理计划阶段将 逻辑计划期间生成 的 逻辑计划 转换为物理 SQL 运算符的有向无环图 (DAG)。 可以通过运行 EXPLAIN(DISTSQL) 语句查看这些运算符。</p>
-<p>关于是否在多个节点上分发查询的决定是由一种启发式方法做出的，该方法估计需要通过网络发送的数据量。 只需要少量行的查询在网关节点上执行。 其他查询分布在多个节点上。</p>
-<p>例如，当一个查询被分发时，物理计划阶段将扫描操作从逻辑计划拆分为多个物理 TableReader 操作符，每个节点一个包含扫描读取的范围。 然后将剩余的逻辑操作（可能执行过滤器、连接和聚合）安排在与 TableReader 相同的节点上。 这导致执行的计算尽可能接近物理数据。</p>
-<h4 id="Query-execution"><a href="#Query-execution" class="headerlink" title="Query execution"></a>Query execution</h4><p>物理计划的组成部分被发送到一个或多个节点执行。 在每个节点上，CockroachDB 生成一个逻辑处理器来计算查询的一部分。 节点内部或跨节点的逻辑处理器通过逻辑数据流相互通信。 查询的组合结果被发送回接收查询的第一个节点，以进一步发送到 SQL 客户端。</p>
-<p>每个处理器对查询操作的标量值使用编码形式。 这是一种二进制形式，不同于 SQL 中使用的形式。 因此，SQL 查询中列出的值必须进行编码，并且在逻辑处理器之间通信以及从磁盘读取的数据必须在将其发送回 SQL 客户端之前进行解码。</p>
-<h4 id="Vectorized-query-execution"><a href="#Vectorized-query-execution" class="headerlink" title="Vectorized query execution"></a>Vectorized query execution</h4><p>如果启用了向量化执行，则将物理计划发送到节点以由向量化执行引擎处理。</p>
-<p>向量化引擎收到物理计划后，从磁盘中批量读取表数据，并将数据从行格式转换为列格式。 这些批次的列数据存储在内存中，因此引擎可以在执行过程中快速访问它们。</p>
-<p>矢量化引擎使用专门的预编译函数，可以快速迭代特定类型的列数据数组。 当引擎处理每列数据时，函数的列输出存储在内存中。</p>
-<p>在处理完输入缓冲区中的所有列数据后，引擎将列输出转换回行格式，然后将处理后的行返回给 SQL 接口。 当一批表数据处理完毕后，引擎会读取下一批表数据进行处理，直到查询执行完毕。</p>
-<h3 id="Encoding"><a href="#Encoding" class="headerlink" title="Encoding"></a>Encoding</h3><p>尽管 SQL 查询是用可解析的字符串编写的，但 CockroachDB 的较低层主要以字节为单位处理。 这意味着在 SQL 层，在查询执行中，CockroachDB 必须将行数据从它们的 SQL 表示形式转换为字节，并将从较低层返回的字节转换为可以传递回客户端的 SQL 数据。</p>
-<p>同样重要的是——对于索引列——这种字节编码保持与它所代表的数据类型相同的排序顺序。 这是因为 CockroachDB 最终将数据存储在排序的键值映射中的方式； 以与其所代表的数据相同的顺序存储字节使我们能够有效地扫描 KV 数据。</p>
-<p>然而，对于非索引列（例如，非 PRIMARY KEY 列），CockroachDB 改为使用占用较少空间但不保留排序的编码（称为“值编码”）。</p>
-<h3 id="DistSQL"><a href="#DistSQL" class="headerlink" title="DistSQL"></a>DistSQL</h3><p>因为 CockroachDB 是一个分布式数据库，所以我们为一些查询开发了一个分布式 SQL（DistSQL）优化工具，它可以显着加快涉及多个范围的查询。 尽管 DistSQL 的体系结构值得拥有它自己的文档，但这个粗略的解释可以提供一些关于它是如何工作的洞察力。</p>
-<p>在非分布式查询中，协调节点接收与其查询匹配的所有行，然后对整个数据集执行任何计算。</p>
-<p>但是，对于与 DistSQL 兼容的查询，每个节点都会对其包含的行进行计算，然后将结果（而不是整个行）发送到协调节点。 协调节点然后聚合来自每个节点的结果，最后向客户端返回单个响应。</p>
-<p>这大大减少了带到协调节点的数据量，并利用了经过充分验证的并行计算概念，最终减少了完成复杂查询所需的时间。 此外，这会在已经存储数据的节点上处理数据，这让 CockroachDB 可以处理大于单个节点存储的行集。</p>
-<p>为了以分布式方式运行 SQL 语句，我们引入了几个概念：</p>
-<ul>
-<li>逻辑计划：类似于上面描述的 AST&#x2F;planNode 树，它表示通过计算阶段的抽象（非分布式）数据流。</li>
-<li>物理计划：物理计划在概念上是逻辑计划节点到运行 cockroach 的物理机器的映射。 逻辑计划节点根据集群拓扑进行复制和专门化。 与上面的 planNodes 一样，物理计划的这些组件是在集群上调度和运行的。</li>
-</ul>
-<h2 id="Schema-changes"><a href="#Schema-changes" class="headerlink" title="Schema changes"></a>Schema changes</h2><p>CockroachDB 使用允许表在模式更改期间保持在线（即能够提供读取和写入服务）的协议来执行模式更改，例如添加列或二级索引。 该协议允许集群中的不同节点在不同时间异步转换到新的表模式。</p>
-<p>模式更改协议将每个模式更改分解为一系列增量更改，以达到预期的效果。</p>
-<p>例如，添加二级索引需要在开始版本和结束版本之间有两个中间架构版本，以确保索引在整个集群中的写入时更新，然后才可用于读取。 为了确保数据库在整个模式更改过程中保持一致状态，我们强制执行不变量，即在集群中始终使用最多两个连续版本的该模式。</p>
-<h1 id="事务层"><a href="#事务层" class="headerlink" title="事务层"></a>事务层</h1><p>事务层实现对事务 ACID 的支持通过协调当前的操作。</p>
-<h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>CockroachDB 认为一致性是数据库最重要的特征。没有他，开发者不能构建可靠的工具，企业将遭受潜在的微妙的难以发现的异常。</p>
-<p>为了提供一致性，CockroachDB实现了完整的 ACID事务语法在事务层。然而，最重要的是，所有的语句都是作为事务来处理的，包括单条语句，这有时被称为“autocommit mode”，因为它的行为就像每条语句后面都有一个 COMMIT。</p>
-<p>因为 CockroachDB 支持跨整个集群的事务（包括跨范围和跨表事务），所以它使用称为 Parallel Commits 的分布式原子提交协议来实现正确性。</p>
-<h3 id="Writes-and-reads-phase-1"><a href="#Writes-and-reads-phase-1" class="headerlink" title="Writes and reads (phase 1)"></a>Writes and reads (phase 1)</h3><h4 id="Writing"><a href="#Writing" class="headerlink" title="Writing"></a>Writing</h4><p>当事务层执行写操作的时候，他不直接将值写到磁盘中，他会创建以下几种事情帮助协调分布式事务：</p>
-<ul>
-<li><p><strong>Locks</strong> 所有事务的写，表示临时的、未提交的状态。 CockroachDB 有几种不同类型的锁：</p>
-<ul>
-<li><p><strong>Unreplicated Locks</strong> are stored in an in-memory, per-node lock table by the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer.html#concurrency-control">concurrency control</a> machinery. These locks are not replicated via <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/architecture/replication-layer#raft">Raft</a>.</p>
-</li>
-<li><p><strong>Replicated Locks</strong> (also known as <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer.html#write-intents">write intents</a>) are replicated via <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/architecture/replication-layer#raft">Raft</a>, and act as a combination of a provisional value and an exclusive lock. They are essentially the same as standard <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/architecture/storage-layer#mvcc">multi-version concurrency control (MVCC)</a> values but also contain a pointer to the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer.html#transaction-records">transaction record</a> stored on the cluster.</p>
-</li>
-</ul>
-</li>
-<li><p>A <strong>transaction record</strong> stored in the range where the first write occurs, which includes the transaction’s current state (which is either <code>PENDING</code>, <code>STAGING</code>, <code>COMMITTED</code>, or <code>ABORTED</code>).</p>
-</li>
-</ul>
-<h4 id="Reading"><a href="#Reading" class="headerlink" title="Reading"></a>Reading</h4><p>如果事务没有被终止，事务层执行读操作。如果一个读操作遇到了标准的 MVCC 值，一切都很好。但是如果遇到了 写意向，操作必须解决事务冲突。</p>
-<p>CockroachDB 提供两种类型的读：</p>
-<ul>
-<li>强一致性读：这是默认的也是最常用的读。这些读通过 leaseholder 并且可以看到读事务开始之前的所有写。他们总是返回正确最新的数据。</li>
-<li>stale reads：这是有用的在你想要获取更快的读，而不是更新的数据的时候。他们可以用只读事务使用 <code>AS OF SYSTEM TIME</code> 语句。他们不需要通过 leaseholder ，因为他们可以确保一致性读通过读取不高于 closed timestamp 时间戳的本地副本。详细看 foller Rdads。<font color='red'> 为什么在非 leaseholder 上读，说明 leaseholder 可以看到最新的写，非leaseholder看不到 ？</font></li>
-</ul>
-<h3 id="Commits-phase-2"><a href="#Commits-phase-2" class="headerlink" title="Commits (phase 2)"></a>Commits (phase 2)</h3><p>CockroachDB 检查运行时的事务的记录，如果是 ABORTED。将重试事务。<font color='red'> 为什么会是 aborted ？</font></p>
-<p>大多数情况下，他设置事务记录状态为 STAGING。检查 pending 状态事务的写意向事务已经成功（被集群复制）。</p>
-<p><font color='red'>  如何检查是否被复制 ？</font></p>
-<p>如果事务通过了检查，CockroacDB 返回客户端成功，进入 cleanup 阶段。到这时候，事务已经被提交。</p>
-<p>关于更多的提交协议，看 并行提交。</p>
-<h3 id="Cleanup-asynchronous-phase-3"><a href="#Cleanup-asynchronous-phase-3" class="headerlink" title="Cleanup (asynchronous phase 3)"></a>Cleanup (asynchronous phase 3)</h3><p>事务被提交后，他应当被标记，所有的写意向应该被解析。为了达到这个目的。 Coordinating 节点记录了所有写过的 keys。</p>
-<p><font color='red'> 记录所有写过的 keys 干嘛用 ？清理的时候用</font></p>
-<ul>
-<li>将事务状态从 STAGING 改为 COMMITED。</li>
-<li>解析事务的写意向到 MVCC。通过移除事务记录的指针。</li>
-<li>删除写意向。</li>
-</ul>
-<p>这是一个简单的优化，如果操作遇到了写意向，他们总是检查事务状态，任何操作可以解析和移除写意向通过检查事务记录的状态。</p>
-<h2 id="技术细节和组件"><a href="#技术细节和组件" class="headerlink" title="技术细节和组件"></a>技术细节和组件</h2><h3 id="时间和混合逻辑时钟"><a href="#时间和混合逻辑时钟" class="headerlink" title="时间和混合逻辑时钟"></a>时间和混合逻辑时钟</h3><p>在分布式系统中，排序和因果关系是一个复杂的问题。虽然可以完全依赖 Raft 共识来保持可序列化性，但读取数据效率低下。为了优化读性能，CockroachDB 实现了混合逻辑时钟，由一个物理组件（总是接近本地时间） 和一个逻辑组件（用于区分相同物理组件的事件）。这意味着 HTC 时间总是大于等于 wall time。</p>
-<p><font color='red'> HLC 如何提高读性能 ？</font></p>
-<p>在事务方面，网关节点总是给事务选择一个 HLC 时间戳。无论何时，当提及事务时间戳的时候，他一定是一个 HLC 时间，这个时间戳也会用来跟踪 MVCC 的值。提供事务一致性的保障。</p>
-<p>当节点向其他节点发送请求时，它们包括由其本地 HLC 生成的时间戳（包括物理和逻辑组件）。 当节点接收到请求时，它们会将发送者随事件提供的时间戳通知其本地 HLC。 这对于保证节点上读取&#x2F;写入的所有数据的时间戳小于下一个 HLC 时间很有用。</p>
-<p>然后，这让主要负责范围的节点（即，leaseholder）通过确保读取数据的事务处于大于它正在读取的 MVCC 值的 HLC 时间（即，读取总是发生在“之后 “写）。</p>
-<h4 id="Max-clock-offset-enforcement"><a href="#Max-clock-offset-enforcement" class="headerlink" title="Max clock offset enforcement"></a>Max clock offset enforcement</h4><p>CockroachDB 需要中等级别的时钟同步以保持数据一致性。 出于这个原因，当一个节点检测到它的时钟与集群中至少一半的其他节点不同步到允许的最大偏移量（默认 500ms）的 80% 时，它会立即崩溃。</p>
-<p>尽管无论时钟偏移如何都可以保持可串行化的一致性，但在配置的时钟偏移范围之外的偏移可能会导致因果相关事务之间的单键线性化违规。 因此，通过在每个节点上运行 NTP 或其他时钟同步软件来防止时钟漂移太远非常重要。</p>
-<p><font color='red'>物理时钟不一致会导致什么问题  ? </font></p>
-<h3 id="时间戳缓存-Timestamp-cache"><a href="#时间戳缓存-Timestamp-cache" class="headerlink" title="时间戳缓存 (Timestamp cache)"></a>时间戳缓存 (Timestamp cache)</h3><p>作为提供可串行化的一部分，每当一个操作读取一个值时，我们将操作的时间戳存储在时间戳缓存中，它显示正在读取的值的高水位标记。</p>
-<p>时间戳缓存是一种数据结构，用于存储有关 leaseholders 执行的读取的信息。 这用于确保一旦某个事务 t1 读取一行，另一个出现并尝试写入该行的事务 t2 将在 t1 之后排序，从而确保事务的串行顺序，即可串行化。</p>
-<p><font color='red'> 时间戳缓存在哪个节点存储 ？使用的时候怎么查找 ？</font></p>
-<p>每当发生写入时，都会根据时间戳缓存检查其时间戳。 如果时间戳小于时间戳缓存的最新值，我们会尝试将其事务的时间戳推到稍后的时间。 推送时间戳可能会导致事务在事务的第二阶段重新启动（请参阅读取刷新）。</p>
-<h3 id="Closed-timestamps"><a href="#Closed-timestamps" class="headerlink" title="Closed timestamps"></a>Closed timestamps</h3><p>每个 CockroachDB range 都跟踪一个称为其关闭时间戳的属性，这意味着永远不会在该时间戳或低于该时间戳时引入新的写入。 关闭的时间戳在 leaseholder 上连续提前，并且比当前时间滞后某个目标时间间隔。 随着关闭的时间戳提前，通知会发送给每个 follower。 如果某个 range 接受小于或等于其关闭时间戳的写，则写入将被迫更改其时间戳，这可能会导致事务重试错误（请参阅读取刷新）。</p>
-<p><font color='red'> 所以到底能不能接受 小于 closed timestamps 的写 ？如果可以，什么情况下可以？ </font></p>
-<p>换句话说，closed timestamp 是该 range 的 leaseholder 向其 follower 副本的承诺，即它不会接受低于该时间戳的写入。 一般来说，leaseholder 会在过去几秒钟内连续关闭时间戳。 ？？？</p>
-<p><font color='red'> colsed timestamp 是在什么情况下生成？什么时候更新？  什么时候会删除 ？</font></p>
-<p>Closed timestamps 子系统通过将 closed timestamps 捎带到 Raft 命令上来将信息从 leaseholders 有者传播到 followers，使复制流与timestamp closing 同步。 这意味着，一旦 followers 副本将所有 Raft 命令应用到由 leaseholder 指定的 Raft log 中的位置，它就可以开始提供时间戳等于或低于关闭时间戳的读取。</p>
-<p>一旦 followers 副本应用了上述 Raft 命令，它就拥有了为时间戳小于或等于关闭时间戳的读取提供服务所需的所有数据。</p>
-<p>请注意，即使承租人发生变化，关闭的时间戳也是有效的，因为它们会在租约转移中保留。 一旦发生租约转移，新的租约人将不会违反旧租约人作出的封闭时间戳承诺。</p>
-<p>封闭的时间戳提供了用于为低延迟历史（陈旧）读取（也称为跟随者读取）提供支持的保证。 跟随者读取在多区域部署中特别有用。</p>
-<p>有关关闭时间戳和 Follower Reads 实现的更多信息，请参阅我们的博客文章 An Epic Read on Follower Reads。</p>
-<h3 id="client-Txn-and-TxnCoordSender"><a href="#client-Txn-and-TxnCoordSender" class="headerlink" title="client.Txn and TxnCoordSender"></a>client.Txn and TxnCoordSender</h3><p>正如我们在 SQL 层的架构概述中提到的，CockroachDB 将所有 SQL 语句转换为键值（KV）操作，这就是数据最终存储和访问的方式。</p>
-<p>SQL 层生成的所有 KV 操作都使用 client.Txn，它是 CockroachDB KV 层的事务接口——但是，正如我们上面讨论的，所有语句都被视为事务，因此所有语句都使用该接口。</p>
-<p>然而，client.Txn 实际上只是 TxnCoordSender 的一个包装器，它在我们的代码库中起着至关重要的作用：</p>
-<ul>
-<li>处理事务的状态。 事务启动后，TxnCoordSender 开始向该事务的事务记录异步发送心跳消息，这表明它应该保持活动状态。 如果 TxnCoordSender 的心跳停止，则事务记录将移至 ABORTED 状态。</li>
-<li>在事务进行中跟踪每个 被写的 key 和 key range 。</li>
-<li>清理累计的写意向当事务终止或者提交的时候，所有的请求都作为事务的一部分通过相同的 TxnCoordSender 统计所有的 写意向，从而优化 cleanup 阶段。</li>
-</ul>
-<p>在设置了这个簿记之后，请求被传递到分布层中的 DistSender。</p>
-<h3 id="Transaction-records"><a href="#Transaction-records" class="headerlink" title="Transaction records"></a>Transaction records</h3><p>为了跟踪事务执行的状态，我们将一个称为事务记录的值写入我们的键值存储。 一个事务的所有写意图都指向这个记录，这让任何事务都可以检查它遇到的任何写意图的状态。 这种规范记录对于支持分布式环境中的并发性至关重要。</p>
-<p>事务记录总是写入与事务中的第一个 key 相同的 range ，这由 TxnCoordSender 知道。 但是，在出现以下任一情况之前，不会创建交易记录本身：</p>
-<ul>
-<li>写操作提交</li>
-<li>The <code>TxnCoordSender</code> heartbeats the transaction</li>
-<li>An operation forces the transaction to abort 强制终止事务</li>
-</ul>
-<p>鉴于这种机制，事务记录使用以下状态：</p>
-<ul>
-<li><code>PENDING</code>: Indicates that the write intent’s transaction is still in progress. 表示写入意图的事务仍在进行中。</li>
-<li><code>COMMITTED</code>: Once a transaction has completed, this status indicates that write intents can be treated as committed values.  一旦事务完成，此状态表明写入意图可以被视为已提交的值。</li>
-<li>STAGING：用于启用并行提交功能。 根据此记录引用的写入意图的状态，事务可能处于提交状态，也可能不处于提交状态。<font color='red'>  什么情况下提交 ？什么情况下未提交？ </font></li>
-<li><code>ABORTED</code>: Indicates that the transaction was aborted and its values should be discarded.</li>
-<li>记录不存在：如果一个事务遇到一个事务记录不存在的写意图，它使用写意图的时间戳来确定如何进行。 如果写入意图的时间戳在事务活跃度阈值内，则写入意图的事务被视为处于待处理状态，否则视为事务已中止。</li>
-</ul>
-<p>已提交事务的事务记录将一直保留，直到其所有写入意图都转换为 MVCC 值。</p>
-<h3 id="Write-intents"><a href="#Write-intents" class="headerlink" title="Write intents"></a>Write intents</h3><p>CockroachDB 中的值不会直接写入存储层； 相反，值以称为“写入意图”的临时状态写入。 这些本质上是 MVCC 记录，其中添加了一个附加值，用于标识该值所属的事务记录。 它们可以被认为是复制锁和复制临时值的组合。</p>
-<p>每当操作遇到写入意图（而不是 MVCC 值）时，它都会查找事务记录的状态以了解它应该如何处理写入意图值。 如果事务记录丢失，则操作检查写入意图的时间戳并评估它是否被视为过期。</p>
-<p>CockroachDB 使用每个节点的内存锁表来管理并发控制。 此表包含正在进行的事务获取的锁的集合，并在评估期间发现写入意图时包含有关写入意图的信息。 有关详细信息，请参阅下面有关并发控制的部分。</p>
-<h4 id="Resolving-write-intents"><a href="#Resolving-write-intents" class="headerlink" title="Resolving write intents"></a>Resolving write intents</h4><p>当一个操作遇到了写意向，他尝试解析，解析的结果依赖写意向上的事务记录：</p>
-<p>COMMITTED：该操作读取写意图并通过删除写意图指向事务记录的指针将其转换为 MVCC 值。</p>
-<p>ABORTED：写入意图被忽略并删除。</p>
-<p>PENDING：这表明存在必须解决的事务冲突。</p>
-<p>STAGING：这表明操作需要检查 是否 staging 状态的事务还在运行中，通过检查 事务 coordinator 是否仍然在心跳事务记录，如果 coordinator 仍然在心跳事务记录，操作需要等待。 关于更多，参考并行提交。</p>
-<h3 id="Concurrency-control"><a href="#Concurrency-control" class="headerlink" title="Concurrency control"></a>Concurrency control</h3><p>并发管理器对传入请求进行排序，并在发出那些打算执行冲突操作的请求的事务之间提供隔离。 此活动也称为并发控制。</p>
-<p>并发管理器结合了 lath manager  和 lock table 的操作来完成这项工作：</p>
-<ul>
-<li>latch manager 对传入请求进行排序并在这些请求之间提供隔离。</li>
-<li>锁表提供请求的锁定和排序（与锁管理器一致）。 它是一个每个节点的内存数据结构，其中包含由进行中事务获取的锁的集合。 为了确保与现有的写入意图系统（也称为复制的排他锁）的兼容性，它会在评估请求的过程中发现这些外部锁时根据需要提取有关这些外部锁的信息。</li>
-</ul>
-<p>并发管理器支持使用 SELECT FOR UPDATE 语句通过 SQL 进行悲观锁定。 此语句可用于增加吞吐量并减少竞争操作的尾部延迟。</p>
-<p>有关 concurrency manager 如何与 latch manager  和 lock table 一起工作的更多详细信息，请参阅以下部分：</p>
-<h4 id="Concurrency-manager"><a href="#Concurrency-manager" class="headerlink" title="Concurrency manager"></a>Concurrency manager</h4><p>并发管理器是一种结构，它对传入的请求进行排序，并在发出那些打算执行冲突操作的请求的事务之间提供隔离。 在排序过程中，发现冲突并通过被动排队和主动推送的组合来解决任何发现的问题。 一旦对请求进行排序，就可以自由评估，而不必担心由于管理器提供的隔离而与其他进行中的请求发生冲突。 这种隔离在请求的生命周期内得到保证，但在请求完成后终止。</p>
-<h1 id="分布层"><a href="#分布层" class="headerlink" title="分布层"></a>分布层</h1><p>分布层为集群中的数据提供一个统一的视图。</p>
-<h2 id="概览-2"><a href="#概览-2" class="headerlink" title="概览"></a>概览</h2><p>为了使用户可以从任何一个节点访问集群中的数据，CockroackDB 将数据以 kv 对的形式存储在一个整体有序的map中。这个 key 空间描述集群中的所有数据和数据的位置，数据被划分到了 ranges 中，所有的key 都可以被找到在 range中。</p>
-<p>CockroachDB 实现排序的map以便：</p>
-<ul>
-<li><strong>Simple lookups</strong>：因为我们确定了哪些节点负责数据的某些部分，所以查询能够快速定位到哪里可以找到他们想要的数据。</li>
-<li><strong>Efficient scans</strong>：通过定义数据的顺序，在扫描过程中很容易找到特定范围内的数据。</li>
-</ul>
-<h3 id="排序map-整体结构"><a href="#排序map-整体结构" class="headerlink" title="排序map 整体结构"></a>排序map 整体结构</h3><p>整体排序的 map 由两个基本元素组成：</p>
-<ul>
-<li>System data，包括集群中源数据的位置。（在学多其他集群范围和本地数据中）。</li>
-<li>User data，存储集群中表数据。</li>
-</ul>
-<h4 id="Meta-ranges"><a href="#Meta-ranges" class="headerlink" title="Meta ranges"></a>Meta ranges</h4><p>集群中所有 range 的位置存储在键空间开头的两级索引中，称为meta ragnes，其中第一级 (meta1) 寻址第二级，第二级 (meta2) 寻址数据 集群。</p>
-<p>这个两级索引加上用户数据可以可视化为一棵树，根在 meta1，第二级在 meta2，树的叶子由保存用户数据的范围组成。</p>
-<p>重要的是，每个节点都有关于在哪里定位 meta1 范围的信息（称为其范围描述符，详情如下），并且该范围永远不会被分割。</p>
-<p>默认情况下，这种元范围结构允许我们处理多达 4EiB 的用户数据：我们可以处理 2^(18 + 18) &#x3D; 2^36 个范围； 每个范围寻址 2^26 B，我们总共寻址 2^(36+26) B &#x3D; 2^62 B &#x3D; 4EiB。 但是，使用更大的范围大小，可以进一步扩展此容量。</p>
-<p>元范围主要被视为正常范围，并且像集群的 KV 数据的其他元素一样被访问和复制。</p>
-<p>每个节点缓存它之前访问过的 meta2 范围的值，从而优化将来对该数据的访问。 每当一个节点发现它的 meta2 缓存对于特定键无效时，缓存会通过对 meta2 范围执行定期读取来更新。</p>
-<h4 id="Table-data"><a href="#Table-data" class="headerlink" title="Table data"></a>Table data</h4><p>在节点的元范围之后是集群存储的 KV 数据。</p>
-<p>每个表及其二级索引最初都映射到一个范围，其中范围中的每个键值对代表表中的单个行（也称为主索引，因为该表是按主键排序的）或二级索引。一旦范围的大小达到 512 MiB，它就会分成两个范围。这个过程继续作为一个表，它的索引继续增长。一旦表被拆分为多个范围，表和二级索引很可能将存储在不同的范围中。但是，范围仍然可以包含表和二级索引的数据。</p>
-<p>默认的 512 MiB 范围大小对我们来说是一个最佳点，它既小到可以在节点之间快速移动，又大到可以存储一组有意义的连续数据，这些数据的键更有可能被一起访问。然后，这些范围会在您的集群周围重新排列，以确保可生存性。</p>
-<p>这些表范围被复制（在恰当命名的复制层中），并且每个副本的地址存储在 meta2 范围中。</p>
-<h3 id="Using-the-monolithic-sorted-map"><a href="#Using-the-monolithic-sorted-map" class="headerlink" title="Using the monolithic sorted map"></a>Using the monolithic sorted map</h3><p>如元范围部分所述，集群中所有范围的位置存储在两级索引中：</p>
-<ul>
-<li>第一级 (meta1) 处理第二级。</li>
-<li>第二级（meta2）处理用户数据。</li>
-</ul>
-<p>这也可以可视化为一棵树，根在 meta1，第二层在 meta2，树的叶子由保存用户数据的范围组成。</p>
-<p>当一个节点收到一个请求时，它会以自下而上的方式查找包含请求中键的范围的位置，从这棵树的叶子开始。 此过程的工作方式如下：</p>
-<ol>
-<li>对于每个键，节点会在第二级范围元数据 (meta2) 中查找包含指定键的范围的位置。 该信息被缓存以提高性能； 如果在缓存中找到范围的位置，则立即返回。</li>
-<li>如果在缓存中找不到范围的位置，则节点查找 meta2 的实际值所在的范围的位置。 此信息也被缓存； 如果在缓存中找到 meta2 范围的位置，则节点向 meta2 范围发送 RPC 以获取请求要操作的键的位置，并返回该信息。</li>
-<li>最后，如果在缓存中找不到 meta2 范围的位置，则节点查找第一级范围元数据（meta1）的实际值所在的范围的位置。 这种查找总是成功的，因为 meta1 的位置使用 gossip 协议分布在集群中的所有节点之间。 然后节点使用来自 meta1 的信息来查找 meta2 的位置，并从 meta2 中查找包含请求中键的范围的位置。</li>
-</ol>
-<p>请注意，上述过程是递归的； 每次执行查找时，它要么 (1) 从缓存中获取位置，要么 (2) 对树中下一级“向上”的值执行另一次查找。 由于缓存了范围元数据，因此通常可以执行查找，而无需将 RPC 发送到另一个节点。</p>
-<p>既然节点有了来自请求的键所在的范围的位置，它就会将请求中的 KV 操作发送到 BatchRequest 中的范围（使用 DistSender 机器）。</p>
-<h2 id="技术细节和组件-1"><a href="#技术细节和组件-1" class="headerlink" title="技术细节和组件"></a>技术细节和组件</h2><h3 id="gRPC"><a href="#gRPC" class="headerlink" title="gRPC"></a>gRPC</h3><p>gRPC 是用于相互通信的软件节点。 因为分发层是与其他节点通信的第一层，所以 CockroachDB 在这里实现了 gRPC。</p>
-<p>gRPC 要求将输入和输出格式化为协议缓冲区（protobufs）。 为了利用 gRPC，CockroachDB 实现了 api.proto 中定义的基于协议缓冲区的 API。</p>
-<h3 id="BatchRequest"><a href="#BatchRequest" class="headerlink" title="BatchRequest"></a>BatchRequest</h3><p>所有 KV 操作请求都捆绑到一个 protobuf 中，称为 BatchRequest。 此批次的目的地在 BatchRequest 标头中标识，以及指向请求的事务记录的指针。 （另一方面，当一个节点在回复一个 BatchRequest 时，它使用了一个 protobuf————BatchResponse。）</p>
-<p>这个 BatchRequest 也用于使用 gRPC 在节点之间发送请求，它接受和发送协议缓冲区。</p>
-<h3 id="DistSender"><a href="#DistSender" class="headerlink" title="DistSender"></a>DistSender</h3><h1 id="复制层"><a href="#复制层" class="headerlink" title="复制层"></a>复制层</h1><p>CockroachDB 的复制层拷贝数据在节点之间，并且通过一致性算法来确保拷贝数据的一致性。</p>
-<h2 id="概览-3"><a href="#概览-3" class="headerlink" title="概览"></a>概览</h2><p>高可用需要数据库可以容忍节点下线而不打断服务，保证应用可用。这意味着需要复制数据在节点之间来确保数据仍然可以访问。</p>
-<p>在节点离线的时候确保一致性是数据库的挑战。为了解决这个问题，CockroachDB 使用的一致性算法需要多数的副本同意修改才能提交修改。因为3 是一个最小的数字达到多数派，CockroachDB 最少需要 3 个节点。</p>
-<h1 id="存储层"><a href="#存储层" class="headerlink" title="存储层"></a>存储层</h1><p>CockroachDB的存储层读写数据从磁盘上。</p>
-<p><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/pebble-rocksdb-kv-store/">https://www.cockroachlabs.com/blog/pebble-rocksdb-kv-store/</a></p>
-<h2 id="概览-4"><a href="#概览-4" class="headerlink" title="概览"></a>概览</h2><p>每个CockroachDB节点至少包含一个 store，在节点启动的时候指定，这是cockroach进程读写磁盘数据的位置。</p>
-<p>数据以 key-value 的形式存储在存储引擎，被认为是 黑盒API。</p>
-<p>CockroachDB使用 pebble 存储引擎，pebble 是受 RocksDB 启发，但是有不同：</p>
-<ul>
-<li>使用go语言并且实现 RocksDB 的一个子集。</li>
-<li>包含有利于 CockroachDB 的优化。</li>
-</ul>
-<p>在内部，每个 store 包含两个存储引擎的实例：</p>
-<ul>
-<li>一个用来存储临时的分布式SQL数据。</li>
-<li>一个存储节点所有的其他数据。</li>
-</ul>
-<p>此外，还有一个块缓存在一个节点的所有 store之间共享，这些 stores 又有 range 副本的集合。一个 range 的多个副本永远不会被放在一个 stroe 甚至是一个 节点。</p>
-<h2 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h2><h3 id="pebble"><a href="#pebble" class="headerlink" title="pebble"></a>pebble</h3><p>pebble 和 CockroachDB很好的集成有许多原因：</p>
-<ul>
-<li>他是一个 kv 存储，使得很容易引射成key -value。</li>
-<li>提供原子写 batnches 和 snapshots，是事务的一个子集。</li>
-<li>自研。</li>
-<li>包含 rocksdb 中没有的优化，灵感来自 CockraochDb 如何使用 存储引擎。<a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/bulk-data-import/">https://www.cockroachlabs.com/blog/bulk-data-import/</a></li>
-</ul>
-<p>底层 Pebble 引擎通过前缀压缩来保证 key 的高效存储。</p>
-<h4 id="LSM-tree"><a href="#LSM-tree" class="headerlink" title="LSM tree"></a>LSM tree</h4><p>pebble 使用lsm tree 来管理数据存储。LSM tree 是一个层次树。在树的每一层，有对应的在磁盘上的文件来存储数据。这些文件叫做 SST 文件（sorted string table）。</p>
-<h5 id="SSTs"><a href="#SSTs" class="headerlink" title="SSTs"></a>SSTs</h5><p>SST 是 key- value对 排序列表的磁盘表示。 </p>
-<p>SST文件上不可变的，他们不会被修改，即使在 compaction 进程中。</p>
-<h5 id="LSM-levels"><a href="#LSM-levels" class="headerlink" title="LSM levels"></a>LSM levels</h5><p>LSM tree 被组织为 L0 到 L6 层。L0上最顶层，L6是最底层。新数据是被添加到 L0层，然后随时间被 merged 到底层。</p>
-<p>LSM tree 的每一层都有 SSTs 的集合，每个 SST 是不可变的并且是唯一的，序号是单调递增的。</p>
-<p>每个一层的 SST 的 key 不会重叠：例如 如果一个 SST 包含key [A-F] ，下一个文件包含 [F-R]。但是 L0是特殊的，L0是唯一一层可以包含重叠的 keys 。由于以下原因，这种例外是必要的：</p>
-<ul>
-<li>为了使 基于LSM tree 的存储引擎，比如 pebble 支持大量数据的摄取，比如当使用 IMPORT 语句的时候。</li>
-<li>为了使 memtales 更容易和高效的 flushes。</li>
-</ul>
-<h5 id="Compaction"><a href="#Compaction" class="headerlink" title="Compaction"></a>Compaction</h5><p>merging SSTs 文件并且从 L0移动到 L6到过程叫做 compaction，存储引擎compact 数据越快越好。这个过程的结果使得底层的包含更大的 SSTs文件，并且包含较少的最近更新的 keys。</p>
-<p>compaction 过程是必要的为了使 LSM 更加高效； 从 L0到 L6，每一层应该包含下一层大约十分之一的数据。比如，L1大约有L2十分之一的数据。理想情况下，尽可能多的数据将存储在 LSM 较低级别引用的较大 SST 中。如果 compaction 过程落后，可能导致 inverted LSM。</p>
-<p>SST 文件在压缩过程中永远不会被修改。 相反，新的 SST 被写入，旧的 SST 被删除。 这种设计利用了顺序磁盘访问比随机磁盘访问快得多的事实。</p>
-<p>压缩的过程是这样的：如果需要合并两个 SST 文件 A 和 B，则将它们的内容（键值对）读入内存。 内容在内存中进行排序和合并，然后打开一个新文件 C 并将其写入磁盘，其中包含新的、更大的键值对排序列表。 此步骤在概念上类似于归并排序。 最后，旧文件 A 和 B 被删除。</p>
-<h5 id="inverted-LSMs"><a href="#inverted-LSMs" class="headerlink" title="inverted LSMs"></a>inverted LSMs</h5><p>如果压缩过程落后于添加的数据量，并且树的更高层存储的数据多于下面的层级，则 LSM 形状可能会反转。</p>
-<p>反向 LSM 会降低读取性能。</p>
-<p>反向LSM 的读放大很高，在倒置 LSM 状态下，读取需要从更高级别开始，并通过大量 SST“向下看”以读取key的正确（最新）值。 当存储引擎需要从多个 SST 文件中读取以服务于单个逻辑读取时，这种状态称为读取放大。</p>
-<p>如果大量的 IMPORT 使集群过载（由于 CPU 和&#x2F;或 IOPS 不足）并且存储引擎必须咨询 L0 中的许多小型 SST 以确定正在使用的键的最新值，则读取放大可能会特别糟糕。（例如，使用 SELECT）。</p>
-<p>写放大比读放大更复杂，但可以广义地定义为：“我在压缩期间重写了多少物理文件？” 例如，如果存储引擎在 L5 中进行大量压缩，它将一遍又一遍地重写 L5 中的 SST 文件。 这是一个折衷，因为如果引擎没有足够频繁地执行压缩，L0 的大小会变得太大，并且会导致反向 LSM，这也会产生不良影响。</p>
-<p>读取放大和写入放大是 LSM 性能的关键指标。 两者都不是天生的“好”或“坏”，但它们不能过度出现，并且为了获得最佳性能，它们必须保持平衡。 这种平衡涉及权衡。</p>
-<p>倒置的 LSM 也有过多的压实债务。 在这种状态下，存储引擎有大量的压缩积压要做，以使反转的 LSM 恢复到正常的非反转状态。</p>
-<p>有关如何监控集群的 LSM 运行状况的说明，请参阅 LSM 运行状况。 要监控集群的 LSM L0 运行状况，请参阅 LSM L0 运行状况。</p>
-<h5 id="Memtable和wal"><a href="#Memtable和wal" class="headerlink" title="Memtable和wal"></a>Memtable和wal</h5><p>为了便于管理 LSM 树结构，存储引擎维护 LSM 的内存表示，称为 memtable； 内存表中的数据会定期刷新到磁盘上的 SST 文件中。</p>
-<p>磁盘上另一个名为 write-ahead log（以下称为 WAL）的文件与每个 memtable 相关联，以确保在断电或其他故障的情况下的持久性。 WAL 是复制层向存储引擎发布的最新更新存储在磁盘上的位置。 每个 WAL 与一个 memtable 是一一对应的； 它们保持同步，并且作为存储引擎正常操作的一部分，来自 WAL 和 memtable 的更新会定期写入 SST。</p>
-<p> 新值在写入memtable的同时写入 WAL。 它们最终会从 memtable 写入磁盘上的 SST 文件以进行长期存储。</p>
-<h5 id="LSM-设计的权衡"><a href="#LSM-设计的权衡" class="headerlink" title="LSM 设计的权衡"></a>LSM 设计的权衡</h5><p>LSM 树设计优化了写入性能而不是读取性能。 通过将排序的键值数据保存在 SST 中，可以避免写入时的随机磁盘寻道。 它试图通过从 LSM 树中尽可能低的位置、从更少、更大的文件中进行读取来降低读取（随机搜索）的成本。 这就是存储引擎执行压缩的原因。 存储引擎还尽可能使用块缓存来进一步加快读取速度。</p>
-<p>LSM 设计中的权衡是为了利用现代磁盘的工作方式，因为即使它们由于缓存提供了对磁盘上随机位置的更快读取，但它们在写入随机位置时的性能仍然相对较差。</p>
-<h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><p>CockroachDB 严重依赖多版本并发控制（MVCC）来处理并发请求并保证一致性。 大部分工作是通过使用混合逻辑时钟 (HLC) 时间戳来区分数据版本、跟踪提交时间戳和识别值的垃圾收集到期来完成的。 然后，所有这些 MVCC 数据都存储在 Pebble 中。</p>
-<p>尽管在存储层中实现，但 MVCC 值被广泛用于在事务层中强制执行一致性。 例如，CockroachDB 维护一个时间戳缓存，它存储最后一次读取密钥的时间戳。 如果写入操作发生的时间戳低于读取时间戳缓存中的最大值，则表示存在潜在异常，事务必须在稍后的时间戳重新启动。</p>
-<h4 id="Time-travel"><a href="#Time-travel" class="headerlink" title="Time-travel"></a>Time-travel</h4><p>如 SQL:2011 标准中所述，CockroachDB 支持时间旅行查询（由 MVCC 启用）。</p>
-<p>为此，所有模式信息背后也有一个类似 MVCC 的模型。 这使您可以执行 SELECT…AS OF SYSTEM TIME，CockroachDB 使用当时的模式信息来制定查询。</p>
-<p>使用这些工具，您可以从数据库中获得一致的数据在垃圾回收之前。</p>
-<h3 id="Garbage-collection"><a href="#Garbage-collection" class="headerlink" title="Garbage collection"></a>Garbage collection</h3><p>CockroachDB 定期垃圾收集 MVCC 值以减少存储在磁盘上的数据大小。 为此，当有一个较新的 MVCC 值具有比垃圾回收期更早的时间戳时，我们会压缩旧的 MVCC 值。 通过配置 gc.ttlseconds 复制区域变量，可以在集群、数据库或表级别设置垃圾收集周期。 </p>
-<h4 id="Protected-timestamps"><a href="#Protected-timestamps" class="headerlink" title="Protected timestamps"></a>Protected timestamps</h4><p>垃圾收集只能在不受保护的时间戳覆盖的 MVCC 值上运行。 受保护的时间戳子系统的存在是为了确保依赖历史数据的操作的安全性，例如：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/import">Imports</a>, including <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/import-into"><code>IMPORT INTO</code></a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/backup">Backups</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/change-data-capture-overview">Changefeeds</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v21.2/online-schema-changes">Online schema changes</a></li>
-</ul>
-<p>受保护的时间戳可确保历史数据的安全性，同时还可以实现更短的 GC TTL。 较短的 GC TTL 意味着保留较少的先前 MVCC 值。 这有助于降低全天频繁更新行的工作负载的查询执行成本，因为 SQL 层必须扫描以前的 MVCC 值才能找到行的当前值。</p>
-<h5 id="How-protected-timestamps-work"><a href="#How-protected-timestamps-work" class="headerlink" title="How protected timestamps work"></a>How protected timestamps work</h5><p>保护时间戳通过在内部系统表中创建记录来工作。当一个长时间运行的 job ，比如备份想要保护某个时间戳的数据不被 GC 时，他会创建改数据和时间戳关联的 记录。</p>
-<p>成功创建保护记录后，时间戳小于或等于受保护时间戳的指定数据的 MVCC 值将不会被垃圾收集。 当创建保护记录的作业完成其工作时，它会删除该记录，从而允许垃圾收集器在以前受保护的值上运行。</p>
-<h2 id="Transaction-contention-争用"><a href="#Transaction-contention-争用" class="headerlink" title="Transaction contention(争用)"></a>Transaction contention(争用)</h2><p>对相同索引键值进行操作的事务（特别是对给定索引键在相同列族上进行操作的事务）被严格序列化以遵守事务隔离语义。 为了保持这种隔离，编写事务“锁定”行以防止与并发事务的危险交互。 但是，如果多个事务试图同时访问相同的“锁定”数据，锁定可能会导致处理延迟。 这称为事务（或锁）争用。</p>
-<p>当满足以下三个条件时，就会发生事务争用：</p>
-<ul>
-<li>有多个并发事务或语句（由同时连接到单个 CockroachDB 集群的多个客户端发送）。</li>
-<li>它们对具有相同索引键值（主键或二级索引）的表行进行操作。</li>
-<li>至少一个事务修改数据。</li>
-</ul>
-<p>经历争用的事务通常会延迟完成或重新启动。 事务重启的可能性需要客户端实现事务重试。</p>
-<h3 id="Find-transaction-contention"><a href="#Find-transaction-contention" class="headerlink" title="Find transaction contention"></a>Find transaction contention</h3><p>查找事务中发生争用的事务和语句。 CockroachDB 有几个工具可以帮助您追踪此类事务和语句：</p>
-<ul>
-<li>在 DB Console 中，访问事务和语句页面并按争用对事务和语句进行排序。</li>
-<li>查询数据库的 crdb_internal.cluster_contended_indexes 和 crdb_internal.cluster_contended_tables 表，以查找发生争用的索引和表。</li>
-</ul>
-<h3 id="Reduce-transaction-contention"><a href="#Reduce-transaction-contention" class="headerlink" title="Reduce transaction contention"></a>Reduce transaction contention</h3><p>为了减少事务争用：</p>
-<ul>
-<li>让事务更小，让每个事务做的工作更少。 特别是，避免每个事务进行多次客户端-服务器交换。 例如，使用公用表表达式将多个 SELECT 和 INSERT、UPDATE、DELETE 和 UPSERT 子句组合到一个 SQL 语句中。</li>
-<li>一次性发送事务中的所有语句，以便 CockroachDB 自动为您重试事务。</li>
-<li>在事务执行读取然后更新它刚刚读取的行的情况下使用 SELECT FOR UPDATE 语句。 该语句通过控制对表的一行或多行的并发访问来对事务进行排序。 它通过锁定选择查询返回的行来工作，这样试图访问这些行的其他事务被迫等待锁定这些行的事务完成。 这些其他事务被有效地放入队列中，该队列根据它们何时尝试读取锁定行的值进行排序。</li>
-<li>替换行中的值时，使用 UPSERT 并为插入行中的所有列指定值。 与 SELECT、INSERT 和 UPDATE 的组合相比，这通常在争用情况下具有最佳性能。</li>
-</ul>
-<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="Transactions"><a href="#Transactions" class="headerlink" title="Transactions"></a>Transactions</h2><p>CockroachDB 支持将多个 SQL 语句捆绑到单个全有或全无事务中。 每个事务保证 ACID 语义跨越任意表和行，即使数据是分布式的。 如果事务成功，则所有突变都将与虚拟同时一起应用。 如果事务的任何部分失败，则整个事务将中止，并且数据库保持不变。 CockroachDB 保证当一个事务处于挂起状态时，它与其他具有可序列化隔离的并发事务隔离。</p>
-<p>有关 CockroachDB 事务语义的详细讨论，请参阅 <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/">https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/</a> 和  <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/">https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/</a> 这篇博文中描述的事务模型的解释有些过时了。 有关更多详细信息，请参阅事务重试部分。</p>
-<h3 id="SQL-statements"><a href="#SQL-statements" class="headerlink" title="SQL statements"></a>SQL statements</h3><table>
-<thead>
-<tr>
-<th>Statement</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/begin-transaction"><code>BEGIN</code></a></td>
-<td>Initiate a transaction, as well as control its <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/transactions#transaction-priorities">priority</a>.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/set-transaction"><code>SET TRANSACTION</code></a></td>
-<td>Control a transaction’s <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/transactions#transaction-priorities">priority</a>.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/commit-transaction"><code>COMMIT</code></a></td>
-<td>Commit a regular transaction, or clear the connection after committing a transaction using the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/advanced-client-side-transaction-retries">advanced retry protocol</a>.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/rollback-transaction"><code>ROLLBACK</code></a></td>
-<td>Abort a transaction and roll the database back to its state before the transaction began.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/show-vars"><code>SHOW</code></a></td>
-<td>Display the current transaction settings.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/savepoint"><code>SAVEPOINT</code></a></td>
-<td>Used for <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/transactions#nested-transactions">nested transactions</a>; also used to implement <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/advanced-client-side-transaction-retries">advanced client-side transaction retries</a>.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/release-savepoint"><code>RELEASE SAVEPOINT</code></a></td>
-<td>Commit a <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/transactions#nested-transactions">nested transaction</a>; also used for <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/advanced-client-side-transaction-retries">retryable transactions</a>.</td>
-</tr>
-<tr>
-<td><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/rollback-transaction"><code>ROLLBACK TO SAVEPOINT</code></a></td>
-<td>Roll back a <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/transactions#nested-transactions">nested transaction</a>; also used to handle <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/v22.1/advanced-client-side-transaction-retries">retryable transaction errors</a>.</td>
-</tr>
-</tbody></table>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/01/31/00-cockroach-Architecture/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -834,7 +413,16 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-01 15:04:02" itemprop="dateModified" datetime="2023-02-01T15:04:02+08:00">2023-02-01</time>
+      <time title="修改时间：2023-02-01 15:50:02" itemprop="dateModified" datetime="2023-02-01T15:50:02+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+        </span>
     </span>
 
   
@@ -873,7 +461,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -891,7 +479,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/01/31/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+          <a href="/2023/01/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-0/" class="post-title-link" itemprop="url">Hello World</a>
         </h2>
 
         <div class="post-meta-container">

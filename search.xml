@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2023/01/31/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>go 闭包现象和原理</title>
     <url>/2023/01/31/hello/</url>
     <content><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
   </entry>
   <entry>
     <title>CockRoackDB 概述</title>
@@ -37,6 +22,8 @@
 </ul>
 <p>通过这些特性的融合，我们希望 CockroachDB 帮助您构建全球性、可扩展、弹性的部署和应用程序。</p>
 <p>在阅读我们的架构文档之前了解一些术语会很有帮助。</p>
+<span id="more"></span>
+
 <h2 id="数据库术语"><a href="#数据库术语" class="headerlink" title="数据库术语"></a>数据库术语</h2><table>
 <thead>
 <tr>
@@ -488,6 +475,9 @@
 </tr>
 </tbody></table>
 ]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
   </entry>
   <entry>
     <title>0-从零写数据库系列-背景知识</title>
@@ -497,6 +487,8 @@
 <p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
 <p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
 <p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+<span id="more"></span>
+
 <p>有了这些历史背景，现在可以谈谈SQL的执行流程了。</p>
 <h2 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h2><p>词法(lexing)，语法(syntax)。</p>
 <h2 id="Analyzer"><a href="#Analyzer" class="headerlink" title="Analyzer"></a>Analyzer</h2><p>语意(Semantic)。绑定，类型检查。</p>
@@ -508,8 +500,26 @@
 
 
 ]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2023/01/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-0/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
 </search>
