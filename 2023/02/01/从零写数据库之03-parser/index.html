@@ -20,28 +20,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="闭包概念：例子：原理">
+    <meta name="description" content="背景1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。 1972年，TED 又提出了关系大事和关系演算的概念。 1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query">
 <meta property="og:type" content="article">
-<meta property="og:title" content="go 闭包现象和原理">
-<meta property="og:url" content="http://example.com/2023/01/31/hello/index.html">
+<meta property="og:title" content="0-从零写数据库系列-背景知识">
+<meta property="og:url" content="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
-<meta property="og:description" content="闭包概念：例子：原理">
+<meta property="og:description" content="背景1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。 1972年，TED 又提出了关系大事和关系演算的概念。 1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-01-31T02:44:57.000Z">
-<meta property="article:modified_time" content="2023-02-01T07:50:02.993Z">
+<meta property="article:published_time" content="2023-02-01T02:44:57.000Z">
+<meta property="article:modified_time" content="2023-02-01T07:55:00.642Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="数据库 C++ go">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2023/01/31/hello/">
+<link rel="canonical" href="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/01/31/hello/","path":"2023/01/31/hello/","title":"go 闭包现象和原理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/","path":"2023/02/01/从零写数据库之03-parser/","title":"0-从零写数据库系列-背景知识"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>go 闭包现象和原理 | Leoirc's Blogs</title>
+<title>0-从零写数据库系列-背景知识 | Leoirc's Blogs</title>
   
 
 
@@ -113,7 +113,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AD%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">闭包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">例子：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">原理</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parser"><span class="nav-number">2.</span> <span class="nav-text">Parser</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Analyzer"><span class="nav-number">3.</span> <span class="nav-text">Analyzer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Planner"><span class="nav-number">4.</span> <span class="nav-text">Planner</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -170,7 +170,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/hello/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -183,12 +183,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="go 闭包现象和原理 | Leoirc's Blogs">
+      <meta itemprop="name" content="0-从零写数据库系列-背景知识 | Leoirc's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          go 闭包现象和原理
+          0-从零写数据库系列-背景知识
         </h1>
 
         <div class="post-meta-container">
@@ -198,15 +198,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-01-31 10:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T10:44:57+08:00">2023-01-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-01 15:50:02" itemprop="dateModified" datetime="2023-02-01T15:50:02+08:00">2023-02-01</time>
+      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:55:00" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -214,7 +208,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
         </span>
     </span>
 
@@ -228,7 +222,24 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
+<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
+<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
+<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
+<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+<span id="more"></span>
+
+<p>有了这些历史背景，现在可以谈谈SQL的执行流程了。</p>
+<h2 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h2><p>词法(lexing)，语法(syntax)。</p>
+<h2 id="Analyzer"><a href="#Analyzer" class="headerlink" title="Analyzer"></a>Analyzer</h2><p>语意(Semantic)。绑定，类型检查。</p>
+<h2 id="Planner"><a href="#Planner" class="headerlink" title="Planner"></a>Planner</h2><p>System R优化器第一次提出了自底向上的动态规划搜索策略，影响了后续的很多系统。另一个创新点在于提出来基于cost-based的优化方法，如何根据sargable条件计算selective，增加了interesting order属性来对访问方法（Access Path）进行影响。</p>
+<p>Volcano&#x2F;Cascades</p>
+<p>Cascades 的实现，orca，cockroachdb。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *scope)</span></span> endAggFunc(cols opt.ColSet) (g *groupby) &#123;</span><br><span class="line">	<span class="keyword">if</span> !s.inAgg &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;mismatched calls to start/end aggFunc&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	s.inAgg = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> curr := s; curr != <span class="literal">nil</span>; curr = curr.parent &#123;</span><br><span class="line">		<span class="keyword">if</span> cols.Len() == <span class="number">0</span> || cols.Intersects(curr.colSet()) &#123;</span><br><span class="line">			curr.verifyAggregateContext()</span><br><span class="line">			<span class="keyword">if</span> curr.groupby == <span class="literal">nil</span> &#123;</span><br><span class="line">				curr.initGrouping()</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> curr.groupby</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;aggregate function is not allowed in this context&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
     </div>
 
     
@@ -241,13 +252,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/01/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-0/" rel="prev" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/" rel="prev" title="0-从零写数据库系列-背景知识">
+                  <i class="fa fa-chevron-left"></i> 0-从零写数据库系列-背景知识
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/01/31/00-cockroach-Architecture/" rel="next" title="CockRoackDB 概述">
-                  CockRoackDB 概述 <i class="fa fa-chevron-right"></i>
+                <a href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/" rel="next" title="0-从零写数据库系列-背景知识">
+                  0-从零写数据库系列-背景知识 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -312,7 +323,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6b2c97221fbdfa133b87b853acbdcee1"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d2335acc9cb531688fff1f078a9ffbe6"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
