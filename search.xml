@@ -3,10 +3,15 @@
   <entry>
     <title>go 闭包现象和原理</title>
     <url>/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/</url>
-    <content><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3>]]></content>
+    <content><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><span id="more"></span>
+
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3>]]></content>
       <categories>
         <category>语言</category>
       </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
   </entry>
   <entry>
     <title>从零写数据库系列-背景知识</title>
@@ -59,7 +64,7 @@
       </categories>
   </entry>
   <entry>
-    <title>我的第一篇博客</title>
+    <title>我的博客</title>
     <url>/2023/01/31/template/</url>
     <content><![CDATA[<p>我的第一篇博客</p>
 <span id="more"></span>
@@ -69,10 +74,10 @@
 
 ]]></content>
       <categories>
-        <category>数据库</category>
+        <category>template</category>
       </categories>
       <tags>
-        <tag>事物</tag>
+        <tag>模版</tag>
       </tags>
   </entry>
   <entry>
@@ -906,5 +911,140 @@
 <p>We could implement this on top of non-voting replicas (which we don’t yet support). That would give us eventual consistency without having to go outside of raft, but enforcement of schema freshness remains an open question.</p>
 <h1 id="Unresolved-questions"><a href="#Unresolved-questions" class="headerlink" title="Unresolved questions"></a>Unresolved questions</h1><p>How do we measure the performance gain? What should we set the TTL to?</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>操作系统之进程</title>
+    <url>/2023/01/31/0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>进程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇博客</title>
+    <url>/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TCP协议深入理解</title>
+    <url>/2023/01/31/1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入C++虚函数</title>
+    <url>/2023/01/31/3-c++/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇博客</title>
+    <url>/2023/01/31/6-%E9%97%B2%E8%B0%88/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之抽象工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>linux 基本分析工具</title>
+    <url>/2023/01/31/8-linux/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入理解raft</title>
+    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/template/</url>
+    <content><![CDATA[<p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>分布式</category>
+      </categories>
+      <tags>
+        <tag>raft</tag>
+      </tags>
   </entry>
 </search>
