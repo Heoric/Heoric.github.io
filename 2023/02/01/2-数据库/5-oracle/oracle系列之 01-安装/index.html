@@ -23,7 +23,7 @@
     <meta name="description" content="Hierarchical Queries语法 12connect by [nocycle] condition [start with condition]start with condition connect by [nocycle] condition">
 <meta property="og:type" content="article">
 <meta property="og:title" content="oracle 层级查询">
-<meta property="og:url" content="http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:url" content="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="Hierarchical Queries语法 12connect by [nocycle] condition [start with condition]start with condition connect by [nocycle] condition">
 <meta property="og:locale" content="zh_CN">
@@ -37,11 +37,11 @@
 <meta name="twitter:image" content="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/img/sqlrf002.gif">
 
 
-<link rel="canonical" href="http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/">
+<link rel="canonical" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/","path":"2023/02/01/oracle系列之 02-层级查询/","title":"oracle 层级查询"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/","path":"2023/02/01/2-数据库/5-oracle/oracle系列之 01-安装/","title":"oracle 层级查询"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>oracle 层级查询 | Leoirc's Blogs</title>
@@ -125,13 +125,13 @@
     <img class="site-author-image" itemprop="image" alt="Leoric"
       src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">Leoric</p>
-  <div class="site-description" itemprop="description">我想要知道上帝是如何创造这个世界的。</div>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
 </div>
 <div class="site-state-wrap animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -173,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -182,7 +182,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -378,12 +378,12 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/01/31/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" rel="prev" title="CockRoackDB 概述">
-                  <i class="fa fa-chevron-left"></i> CockRoackDB 概述
+                <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/" rel="prev" title="从零写数据库系列-背景知识">
+                  <i class="fa fa-chevron-left"></i> 从零写数据库系列-背景知识
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/" rel="next" title="oracle 层级查询">
+                <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/" rel="next" title="oracle 层级查询">
                   oracle 层级查询 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -449,7 +449,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"fe569573f9eea7191e54a37ce517eec3"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"af76c7a6e6b61078ab90281e17ec438e"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

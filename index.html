@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="我想要知道上帝是如何创造这个世界的。">
+    <meta name="description" content="十年生死两茫茫，写代码，到天亮。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Leoirc&#39;s Blogs">
 <meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
-<meta property="og:description" content="我想要知道上帝是如何创造这个世界的。">
+<meta property="og:description" content="十年生死两茫茫，写代码，到天亮。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="数据库 C++ go">
@@ -119,13 +119,13 @@
     <img class="site-author-image" itemprop="image" alt="Leoric"
       src="/images/avatar.jpeg">
   <p class="site-author-name" itemprop="name">Leoric</p>
-  <div class="site-description" itemprop="description">我想要知道上帝是如何创造这个世界的。</div>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
 </div>
 <div class="site-state-wrap animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -175,7 +175,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -184,277 +184,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/" class="post-title-link" itemprop="url">0-从零写数据库系列-背景知识</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:55:00" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
-<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
-<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
-<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
-<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/" class="post-title-link" itemprop="url">0-从零写数据库系列-背景知识</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:55:00" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
-<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
-<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
-<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
-<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/" class="post-title-link" itemprop="url">0-从零写数据库系列-背景知识</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-02-01 10:44:57 / 修改时间：15:55:00" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
-<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
-<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
-<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
-<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/02/01/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">oracle 层级查询</a>
+          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/" class="post-title-link" itemprop="url">oracle 层级查询</a>
         </h2>
 
         <div class="post-meta-container">
@@ -498,7 +228,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">connect</span> <span class="keyword">by</span> [nocycle] <span class="keyword">condition</span> [<span class="keyword">start</span> <span class="keyword">with</span> <span class="keyword">condition</span>]</span><br><span class="line"><span class="keyword">start</span> <span class="keyword">with</span> <span class="keyword">condition</span> <span class="keyword">connect</span> <span class="keyword">by</span> [nocycle] <span class="keyword">condition</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/#more" rel="contents">
+              <a class="btn" href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -529,7 +259,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -538,7 +268,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -547,7 +277,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/" class="post-title-link" itemprop="url">oracle 层级查询</a>
+          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">oracle 层级查询</a>
         </h2>
 
         <div class="post-meta-container">
@@ -591,7 +321,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">connect</span> <span class="keyword">by</span> [nocycle] <span class="keyword">condition</span> [<span class="keyword">start</span> <span class="keyword">with</span> <span class="keyword">condition</span>]</span><br><span class="line"><span class="keyword">start</span> <span class="keyword">with</span> <span class="keyword">condition</span> <span class="keyword">connect</span> <span class="keyword">by</span> [nocycle] <span class="keyword">condition</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/02/01/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/#more" rel="contents">
+              <a class="btn" href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2001-%E5%AE%89%E8%A3%85/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -622,7 +352,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -631,7 +361,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -640,7 +370,295 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/01/31/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">CockRoackDB 概述</a>
+          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/" class="post-title-link" itemprop="url">从零写数据库系列-背景知识</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-02 10:17:19" itemprop="dateModified" datetime="2023-02-02T10:17:19+08:00">2023-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
+<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
+<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
+<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
+<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/" class="post-title-link" itemprop="url">从零写数据库系列-scanner</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-02 10:17:32" itemprop="dateModified" datetime="2023-02-02T10:17:32+08:00">2023-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
+<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
+<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
+<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
+<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/" class="post-title-link" itemprop="url">从零写数据库系列-parser</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-02 10:17:44" itemprop="dateModified" datetime="2023-02-02T10:17:44+08:00">2023-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
+<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
+<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
+<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
+<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/6-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">CockRoackDB 概述</a>
         </h2>
 
         <div class="post-meta-container">
@@ -693,7 +711,7 @@
 <p>在阅读我们的架构文档之前了解一些术语会很有帮助。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/01/31/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/#more" rel="contents">
+              <a class="btn" href="/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -724,7 +742,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -733,7 +751,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="我想要知道上帝是如何创造这个世界的。">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -742,7 +760,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/01/31/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/" class="post-title-link" itemprop="url">go 闭包现象和原理</a>
+          <a href="/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/" class="post-title-link" itemprop="url">go 闭包现象和原理</a>
         </h2>
 
         <div class="post-meta-container">
@@ -783,6 +801,256 @@
     
     <div class="post-body" itemprop="articleBody">
           <h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%91%E5%B1%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%91%E5%B1%95/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-01-05 09:36:18 / 修改时间：09:55:44" itemprop="dateCreated datePublished" datetime="2023-01-05T09:36:18+08:00">2023-01-05</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>数据库发展</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-22 21:09:46" itemprop="dateCreated datePublished" datetime="2021-10-22T21:09:46+08:00">2021-10-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <ul>
+<li>Feature Name: schema_gossip</li>
+<li>Status: completed</li>
+<li>Start Date: 2015-07-20</li>
+<li>RFC PR: <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/1743">#1743</a></li>
+<li>Cockroach Issue:</li>
+</ul>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>This RFC suggests implementing eventually-consistent replication of the SQL schema to all Cockroach nodes in a cluster using gossip.</p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In order to support performant SQL queries, each gateway node must be able to address the data requested by the query. Today this requires the node to read <code>TableDescriptor</code>s from the KV map, which we believe (though we haven’t measured) will cause a substantial performance hit which we can mitigate by actively gossiping the necessary metadata.</p>
+<h1 id="Detailed-design"><a href="#Detailed-design" class="headerlink" title="Detailed design"></a>Detailed design</h1><p>The entire <code>keys.SystemConfigSpan</code> span will have its writes bifurcated into gossip (with a TTL TBD) in the same way that <code>storage.(*Replica).maybeGossipConfigs()</code> works today. The gossip system will provide atomicity in propagating these modifications through the usual sequence number mechanism.</p>
+<p>Complete propagation of new metadata will take at most <code>numHops * gossipInterval</code> where <code>numHops</code> is the maximum number of hops between any node and the publishing node, and <code>gossipInterval</code> is the maximum interval between sequential writes to the gossip network on a given node.</p>
+<p>On the read side, metadata reads’ behaviour will change such that they will read from gossip rather than the KV store. This will require plumbing a closure or a reference to the <code>Gossip</code> instance down to the <code>sql.Planner</code> instance.</p>
+<h1 id="Drawbacks"><a href="#Drawbacks" class="headerlink" title="Drawbacks"></a>Drawbacks</h1><p>This is slightly more complicated than the current implementation. Because the schema is eventually-consistent, how do we know when migrations are done? We’ll have to count on the TTL, which feels a little dirty.</p>
+<h1 id="Alternatives"><a href="#Alternatives" class="headerlink" title="Alternatives"></a>Alternatives</h1><p>We could augment the current implementation with some of:</p>
+<ul>
+<li>inconsistent reads</li>
+<li>time-bounded local caching<br>This will be strictly less performant than the gossip approach but will be more optimal in memory as nodes will only cache schema information that they themselves need. Note that at the time of this writing every node will likely need all schema information due to the current uniform distribution of ranges to nodes.</li>
+</ul>
+<p>We could have a special metadata range which all nodes have a replica of. This would probably result in unacceptable read and write times and induce lots of network traffic.</p>
+<p>We could implement this on top of non-voting replicas (which we don’t yet support). That would give us eventual consistency without having to go outside of raft, but enforcement of schema freshness remains an open question.</p>
+<h1 id="Unresolved-questions"><a href="#Unresolved-questions" class="headerlink" title="Unresolved questions"></a>Unresolved questions</h1><p>How do we measure the performance gain? What should we set the TTL to?</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-rfc/20150720_schema_gossip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-rfc/20150720_schema_gossip/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-10-22 21:09:46" itemprop="dateCreated datePublished" datetime="2021-10-22T21:09:46+08:00">2021-10-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <ul>
+<li>Feature Name: schema_gossip</li>
+<li>Status: completed</li>
+<li>Start Date: 2015-07-20</li>
+<li>RFC PR: <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/1743">#1743</a></li>
+<li>Cockroach Issue:</li>
+</ul>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>This RFC suggests implementing eventually-consistent replication of the SQL schema to all Cockroach nodes in a cluster using gossip.</p>
+<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In order to support performant SQL queries, each gateway node must be able to address the data requested by the query. Today this requires the node to read <code>TableDescriptor</code>s from the KV map, which we believe (though we haven’t measured) will cause a substantial performance hit which we can mitigate by actively gossiping the necessary metadata.</p>
+<h1 id="Detailed-design"><a href="#Detailed-design" class="headerlink" title="Detailed design"></a>Detailed design</h1><p>The entire <code>keys.SystemConfigSpan</code> span will have its writes bifurcated into gossip (with a TTL TBD) in the same way that <code>storage.(*Replica).maybeGossipConfigs()</code> works today. The gossip system will provide atomicity in propagating these modifications through the usual sequence number mechanism.</p>
+<p>Complete propagation of new metadata will take at most <code>numHops * gossipInterval</code> where <code>numHops</code> is the maximum number of hops between any node and the publishing node, and <code>gossipInterval</code> is the maximum interval between sequential writes to the gossip network on a given node.</p>
+<p>On the read side, metadata reads’ behaviour will change such that they will read from gossip rather than the KV store. This will require plumbing a closure or a reference to the <code>Gossip</code> instance down to the <code>sql.Planner</code> instance.</p>
+<h1 id="Drawbacks"><a href="#Drawbacks" class="headerlink" title="Drawbacks"></a>Drawbacks</h1><p>This is slightly more complicated than the current implementation. Because the schema is eventually-consistent, how do we know when migrations are done? We’ll have to count on the TTL, which feels a little dirty.</p>
+<h1 id="Alternatives"><a href="#Alternatives" class="headerlink" title="Alternatives"></a>Alternatives</h1><p>We could augment the current implementation with some of:</p>
+<ul>
+<li>inconsistent reads</li>
+<li>time-bounded local caching<br>This will be strictly less performant than the gossip approach but will be more optimal in memory as nodes will only cache schema information that they themselves need. Note that at the time of this writing every node will likely need all schema information due to the current uniform distribution of ranges to nodes.</li>
+</ul>
+<p>We could have a special metadata range which all nodes have a replica of. This would probably result in unacceptable read and write times and induce lots of network traffic.</p>
+<p>We could implement this on top of non-voting replicas (which we don’t yet support). That would give us eventual consistency without having to go outside of raft, but enforcement of schema freshness remains an open question.</p>
+<h1 id="Unresolved-questions"><a href="#Unresolved-questions" class="headerlink" title="Unresolved questions"></a>Unresolved questions</h1><p>How do we measure the performance gain? What should we set the TTL to?</p>
+
       
     </div>
 
