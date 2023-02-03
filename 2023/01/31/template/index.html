@@ -20,28 +20,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Feature Name: schema_gossip Status: completed Start Date: 2015-07-20 RFC PR: #1743 Cockroach Issue:  SummaryThis RFC suggests implementing eventually-consistent replication of the SQL schema to all C">
+    <meta name="description" content="我的第一篇博客">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Leoirc&#39;s Blogs">
-<meta property="og:url" content="http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/index.html">
+<meta property="og:title" content="我的第一篇博客">
+<meta property="og:url" content="http://example.com/2023/01/31/template/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
-<meta property="og:description" content="Feature Name: schema_gossip Status: completed Start Date: 2015-07-20 RFC PR: #1743 Cockroach Issue:  SummaryThis RFC suggests implementing eventually-consistent replication of the SQL schema to all C">
+<meta property="og:description" content="我的第一篇博客">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-22T13:09:46.547Z">
-<meta property="article:modified_time" content="2021-10-22T13:09:46.547Z">
+<meta property="article:published_time" content="2023-01-31T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-02-03T05:11:30.817Z">
 <meta property="article:author" content="Leoric">
-<meta property="article:tag" content="数据库 C++ go">
+<meta property="article:tag" content="事物">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/">
+<link rel="canonical" href="http://example.com/2023/01/31/template/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/","path":"2021/10/22/2-数据库/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/01/31/template/","path":"2023/01/31/template/","title":"我的第一篇博客"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title> | Leoirc's Blogs</title>
+<title>我的第一篇博客 | Leoirc's Blogs</title>
   
 
 
@@ -88,7 +88,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
@@ -100,7 +100,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -113,7 +113,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">1.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Motivation"><span class="nav-number">2.</span> <span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Detailed-design"><span class="nav-number">3.</span> <span class="nav-text">Detailed design</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Drawbacks"><span class="nav-number">4.</span> <span class="nav-text">Drawbacks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Alternatives"><span class="nav-number">5.</span> <span class="nav-text">Alternatives</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unresolved-questions"><span class="nav-number">6.</span> <span class="nav-text">Unresolved questions</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -136,6 +135,11 @@
           <a href="/categories/">
         <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -170,7 +174,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-blogs/20150720_schema_gossip/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/template/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -183,12 +187,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Leoirc's Blogs">
+      <meta itemprop="name" content="我的第一篇博客 | Leoirc's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          我的第一篇博客
         </h1>
 
         <div class="post-meta-container">
@@ -199,7 +203,23 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-10-22 21:09:46" itemprop="dateCreated datePublished" datetime="2021-10-22T21:09:46+08:00">2021-10-22</time>
+      <time title="创建时间：2023-01-31 14:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T14:44:57+08:00">2023-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-03 13:11:30" itemprop="dateModified" datetime="2023-02-03T13:11:30+08:00">2023-02-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
     </span>
 
   
@@ -212,27 +232,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <ul>
-<li>Feature Name: schema_gossip</li>
-<li>Status: completed</li>
-<li>Start Date: 2015-07-20</li>
-<li>RFC PR: <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/1743">#1743</a></li>
-<li>Cockroach Issue:</li>
-</ul>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>This RFC suggests implementing eventually-consistent replication of the SQL schema to all Cockroach nodes in a cluster using gossip.</p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>In order to support performant SQL queries, each gateway node must be able to address the data requested by the query. Today this requires the node to read <code>TableDescriptor</code>s from the KV map, which we believe (though we haven’t measured) will cause a substantial performance hit which we can mitigate by actively gossiping the necessary metadata.</p>
-<h1 id="Detailed-design"><a href="#Detailed-design" class="headerlink" title="Detailed design"></a>Detailed design</h1><p>The entire <code>keys.SystemConfigSpan</code> span will have its writes bifurcated into gossip (with a TTL TBD) in the same way that <code>storage.(*Replica).maybeGossipConfigs()</code> works today. The gossip system will provide atomicity in propagating these modifications through the usual sequence number mechanism.</p>
-<p>Complete propagation of new metadata will take at most <code>numHops * gossipInterval</code> where <code>numHops</code> is the maximum number of hops between any node and the publishing node, and <code>gossipInterval</code> is the maximum interval between sequential writes to the gossip network on a given node.</p>
-<p>On the read side, metadata reads’ behaviour will change such that they will read from gossip rather than the KV store. This will require plumbing a closure or a reference to the <code>Gossip</code> instance down to the <code>sql.Planner</code> instance.</p>
-<h1 id="Drawbacks"><a href="#Drawbacks" class="headerlink" title="Drawbacks"></a>Drawbacks</h1><p>This is slightly more complicated than the current implementation. Because the schema is eventually-consistent, how do we know when migrations are done? We’ll have to count on the TTL, which feels a little dirty.</p>
-<h1 id="Alternatives"><a href="#Alternatives" class="headerlink" title="Alternatives"></a>Alternatives</h1><p>We could augment the current implementation with some of:</p>
-<ul>
-<li>inconsistent reads</li>
-<li>time-bounded local caching<br>This will be strictly less performant than the gossip approach but will be more optimal in memory as nodes will only cache schema information that they themselves need. Note that at the time of this writing every node will likely need all schema information due to the current uniform distribution of ranges to nodes.</li>
-</ul>
-<p>We could have a special metadata range which all nodes have a replica of. This would probably result in unacceptable read and write times and induce lots of network traffic.</p>
-<p>We could implement this on top of non-voting replicas (which we don’t yet support). That would give us eventual consistency without having to go outside of raft, but enforcement of schema freshness remains an open question.</p>
-<h1 id="Unresolved-questions"><a href="#Unresolved-questions" class="headerlink" title="Unresolved questions"></a>Unresolved questions</h1><p>How do we measure the performance gain? What should we set the TTL to?</p>
+        <p>我的第一篇博客</p>
+<span id="more"></span>
+
+<p>正片开始</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">关系模型</span><br><span class="line">关系代数</span><br><span class="line"></span><br><span class="line">parser</span><br><span class="line">	词法</span><br><span class="line">	语法</span><br><span class="line">	</span><br><span class="line">AST</span><br><span class="line"></span><br><span class="line">planner</span><br><span class="line">	启发式（Heuristics）</span><br><span class="line">	启发式+基于代价的JOIN（Heuristics + Cost-based Join Order Search）</span><br><span class="line">	分层优化器框架（Stratified Search）</span><br><span class="line">	统一优化器框架（Unified Search）</span><br><span class="line">	</span><br><span class="line">	system-r</span><br><span class="line">	v</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -241,18 +246,39 @@
     
 
     <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="Leoric 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Leoric 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8B%E7%89%A9/" rel="tag"># 事物</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/10/22/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-cockroachdb/cockroach-rfc/20150720_schema_gossip/" rel="prev" title="">
-                  <i class="fa fa-chevron-left"></i> 
+                <a href="/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" rel="prev" title="CockRoackDB 概述">
+                  <i class="fa fa-chevron-left"></i> CockRoackDB 概述
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%91%E5%B1%95/" rel="next" title="">
-                   <i class="fa fa-chevron-right"></i>
+                <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/" rel="next" title="oracle 层级查询">
+                  oracle 层级查询 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -317,7 +343,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e736a34bbd410855353a0207ce9b8e1b"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"4ab64da11bed5231fac65bf83e936ac1"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
