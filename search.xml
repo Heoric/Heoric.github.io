@@ -1009,4 +1009,37 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>深入C++虚函数</title>
+    <url>/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p>我一直认为 c++ 的精髓是 虚函数。</p>
+<p>虚函数是运行时多状的基础。</p>
+<p>今天就来扒一扒虚函数的内部机制。</p>
+<span id="more"></span>
+
+<h3 id="没有虚函数"><a href="#没有虚函数" class="headerlink" title="没有虚函数"></a>没有虚函数</h3><p>我们从 内存 来看 虚函数的 底层机制。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果很明显， 不需要多说什么。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="只有一个虚函数"><a href="#只有一个虚函数" class="headerlink" title="只有一个虚函数"></a>只有一个虚函数</h3><p>接下来，我们看一下，带虚函数的对象的内存。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，对象前面多了八个字节。让我们来看看多了的是什么。</p>
+<p>其实我们都知道，虚函数是在一个虚函数表里面。那么我们看看对象 b 的布局。</p>
+<p>可以看到里面有个 指针，我们把里面的值打出来，看到是 一个函数指针，指向了 func()。</p>
+<p>新定义一个变量 b1，查看 b1 的虚函数表，和内容，可以看到跟 b 是一摸一样的。说明一个类，只有一个虚函数表。</p>
+<p>![image-20230605165441623](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605165441623.png)</p>
+<h3 id="多个虚函数"><a href="#多个虚函数" class="headerlink" title="多个虚函数"></a>多个虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，对象对大小不变， 虚函数表里多了 func1。</p>
+<p>![image-20230605170310030](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605170310030.png)</p>
+<h3 id="单继承且本身不存在虚函数"><a href="#单继承且本身不存在虚函数" class="headerlink" title="单继承且本身不存在虚函数"></a>单继承且本身不存在虚函数</h3><h3 id="本身不存在虚函数但存在基类虚函数覆盖"><a href="#本身不存在虚函数但存在基类虚函数覆盖" class="headerlink" title="本身不存在虚函数但存在基类虚函数覆盖"></a>本身不存在虚函数但存在基类虚函数覆盖</h3>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
