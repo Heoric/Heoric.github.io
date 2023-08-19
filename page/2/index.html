@@ -123,18 +123,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -156,6 +156,108 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">CockRoackDB 概述</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-31 14:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T14:44:57+08:00">2023-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-01 15:54:43" itemprop="dateModified" datetime="2023-02-01T15:54:43+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>CockroachDB 设计的两个目标：可拓展和一致性。开发者经常会有疑问我们是如何做到的。这篇文章详细解释CockroachDB的内部工作原理。对于使用者来说，不需要了解底层架构，所以此文是为了那些想要了解底层的用户。</p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>CockroachDB 设计目标：</p>
+<ul>
+<li>使人们的生活更轻松，这意味着对于用户来说高度自动化，对于开发者来说更简单。</li>
+<li>提供行业领先的一致性，即使在大规模部署当中也是，这意味着使用分布式事务，以及消除最终一致性问题和 过期读的问题。</li>
+<li>创建一个始终在线的数据库，该数据库所有节点接受读和写，而不产生冲突。</li>
+<li>允许在任何平台中部署，不需要绑定平台和供应商。</li>
+<li>支持处理关系数据的工具，比如SQL。</li>
+</ul>
+<p>通过这些特性的融合，我们希望 CockroachDB 帮助您构建全球性、可扩展、弹性的部署和应用程序。</p>
+<p>在阅读我们的架构文档之前了解一些术语会很有帮助。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -642,7 +744,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-08-19 15:04:40" itemprop="dateModified" datetime="2023-08-19T15:04:40+08:00">2023-08-19</time>
+      <time title="修改时间：2023-08-19 15:33:18" itemprop="dateModified" datetime="2023-08-19T15:33:18+08:00">2023-08-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -664,15 +766,45 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <span id="more"></span>
-
-
-
-
-
-
-
-
+          <h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
+<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
+</li>
+<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
+</li>
+</ul>
+<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
+<li><p>对拓展开放，对更改封闭。</p>
+</li>
+<li><p>类模块应该是可拓展的，但是不可修改。</p>
+</li>
+</ul>
+<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
+<li>一个类应该仅有一个引起它变化的原因。</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
+<li>子类必须能够体会他们的基类（IS-A）。</li>
+<li>继承表达类型抽象。</li>
+</ul>
+<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
+<li><p>不应该强迫客户程序依赖他们不用的方法</p>
+</li>
+<li><p>接口应该小而完备</p>
+</li>
+</ul>
+<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
+<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
+<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
+</ul>
+<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/00-%E6%A6%82%E8%BF%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -949,103 +1081,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/01/31/4-go/go%20channel/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/4-go/go%20context/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/01/31/4-go/go%20context/" class="post-title-link" itemprop="url">go context 原理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-01-31 10:44:57" itemprop="dateCreated datePublished" datetime="2023-01-31T10:44:57+08:00">2023-01-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-08-19 15:01:04" itemprop="dateModified" datetime="2023-08-19T15:01:04+08:00">2023-08-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>原文 <a target="_blank" rel="noopener" href="https://go.dev/blog/context">https://go.dev/blog/context</a></p>
-<p><a target="_blank" rel="noopener" href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></p>
-<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>在 Go 服务器中，每个传入的请求都在其自己的 goroutine 中处理。 </p>
-<p>请求处理程序通常会启动额外的 goroutine 来访问后台，比如数据库和 RPC 服务等。</p>
-<p> 处理请求的 goroutines 集通常需要访问特定于请求的值，例如最终用户的身份、授权令牌和请求的截止日期。</p>
-<p> 当请求被取消或超时时，所有处理该请求的 goroutines 都应该快速退出，以便系统可以回收它们正在使用的任何资源。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/01/31/4-go/go%20context/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

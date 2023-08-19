@@ -1061,15 +1061,49 @@
   <entry>
     <title>设计模式之设计原则</title>
     <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/00-%E6%A6%82%E8%BF%B0/</url>
-    <content><![CDATA[<span id="more"></span>
+    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
+<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
+</li>
+<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
+</li>
+</ul>
+<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
+<li><p>对拓展开放，对更改封闭。</p>
+</li>
+<li><p>类模块应该是可拓展的，但是不可修改。</p>
+</li>
+</ul>
+<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
+<li>一个类应该仅有一个引起它变化的原因。</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
+<li>子类必须能够体会他们的基类（IS-A）。</li>
+<li>继承表达类型抽象。</li>
+</ul>
+<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
+<li><p>不应该强迫客户程序依赖他们不用的方法</p>
+</li>
+<li><p>接口应该小而完备</p>
+</li>
+</ul>
+<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
+<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
+<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
+</ul>
+<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><span id="more"></span>
 
 
 
-
-
-
-
-]]></content>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
+<p>结构型</p>
+<p>行为型</p>
+<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
+<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
+<p>枚举，if-else。 设计抽象类，和子类。</p>
+<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
+<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
       <categories>
         <category>设计模式</category>
       </categories>
@@ -1107,6 +1141,119 @@
       </categories>
       <tags>
         <tag>分布式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2021/02/13/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
+<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
+</li>
+<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
+</li>
+</ul>
+<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
+<li><p>对拓展开放，对更改封闭。</p>
+</li>
+<li><p>类模块应该是可拓展的，但是不可修改。</p>
+</li>
+</ul>
+<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
+<li>一个类应该仅有一个引起它变化的原因。</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
+<li>子类必须能够体会他们的基类（IS-A）。</li>
+<li>继承表达类型抽象。</li>
+</ul>
+<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
+<li><p>不应该强迫客户程序依赖他们不用的方法</p>
+</li>
+<li><p>接口应该小而完备</p>
+</li>
+</ul>
+<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
+<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
+<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
+</ul>
+<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
+<p>结构型</p>
+<p>行为型</p>
+<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
+<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
+<p>枚举，if-else。 设计抽象类，和子类。</p>
+<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
+<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
+  </entry>
+  <entry>
+    <title>乐理初级</title>
+    <url>/2023/08/19/9-%E9%9F%B3%E4%B9%90/%E4%B9%90%E7%90%86%E5%88%9D%E7%BA%A7/</url>
+    <content><![CDATA[<h1 id="初级"><a href="#初级" class="headerlink" title="初级"></a>初级</h1><p>初级乐理知识。</p>
+<span id="more"></span>
+
+<h2 id="音阶"><a href="#音阶" class="headerlink" title="音阶"></a>音阶</h2><h3 id="相邻两个音之间的关系"><a href="#相邻两个音之间的关系" class="headerlink" title="相邻两个音之间的关系"></a>相邻两个音之间的关系</h3><p>全音关系</p>
+<p>半音关系</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1 2 3	(半音关系) 4 5 6 7 (半音关系) 1 </span><br><span class="line"><span class="comment"># 其余都是全音关系</span></span><br></pre></td></tr></table></figure>
+
+<p>吉他上相邻两个品格之间是半音关系，间隔一个品位的为全音关系。</p>
+<h3 id="不相邻两个音之间的关系"><a href="#不相邻两个音之间的关系" class="headerlink" title="不相邻两个音之间的关系"></a>不相邻两个音之间的关系</h3><p>音程（度）</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1 2 3 4 5 6 7</span><br><span class="line"><span class="comment"># 1 - 5 , 5 度音程关系</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="三度音程关系"><a href="#三度音程关系" class="headerlink" title="三度音程关系"></a>三度音程关系</h4><p>大三度（不包含半音关系）</p>
+<p>小三度（含有半音关系）</p>
+<h2 id="和弦"><a href="#和弦" class="headerlink" title="和弦"></a>和弦</h2><h3 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h3><p>有三个或三个以上有一定音程关系的音的组合</p>
+<p>三度音叠加构成和谐</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 三度音叠加构成和谐  1 3 5 构成一个和弦</span></span><br><span class="line">1 2 3 4 5 6 7 </span><br></pre></td></tr></table></figure>
+
+<h3 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h3><p>大三和弦构成： 一个大三度加一个小三度  </p>
+<p><strong>色彩特点</strong> 明亮坚定</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1 3 5</span><br></pre></td></tr></table></figure>
+
+<p>小三和弦构成： 一个小三度加一个大三度</p>
+<p><strong>色彩特点</strong> 忧伤紧张</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">2 4 6</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="节奏"><a href="#节奏" class="headerlink" title="节奏"></a>节奏</h2><h3 id="拍-（音符的单位）"><a href="#拍-（音符的单位）" class="headerlink" title="拍 （音符的单位）"></a>拍 （音符的单位）</h3><p>记录音的长短 (注意不同歌曲都有自己的拍速，每首歌的拍速是固定的)</p>
+<p>一下一上为一拍</p>
+<h3 id="音符-（单位-拍）"><a href="#音符-（单位-拍）" class="headerlink" title="音符 （单位 拍）"></a>音符 （单位 拍）</h3><p>全音符        4 拍 x</p>
+<p>二分音符    2 拍 </p>
+<p>四分音符   1 拍</p>
+<p>八分音符  半拍</p>
+<h2 id="动手"><a href="#动手" class="headerlink" title="动手"></a>动手</h2><p>四拍em和弦</p>
+<p>两拍</p>
+<p>一拍</p>
+<p>半拍 (下上)</p>
+<h1 id="初级进阶"><a href="#初级进阶" class="headerlink" title="初级进阶"></a>初级进阶</h1><h2 id="音名和唱名"><a href="#音名和唱名" class="headerlink" title="音名和唱名"></a>音名和唱名</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">简谱  1   2   3   4   5   6   7</span><br><span class="line">唱名  Do  Re  Mi  Fa  Sol La  Si   名字  为了全世界统一</span><br><span class="line">音名  C   D   E   F   G   A   B    位置  多种乐器统一</span><br><span class="line"></span><br><span class="line">音名的位置不变</span><br><span class="line">唱名的位置会变化</span><br></pre></td></tr></table></figure>
+
+<h2 id="调"><a href="#调" class="headerlink" title="调"></a>调</h2><p>一串音阶在乐器上不同的位置</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1 2 3 4 5 6 7</span><br><span class="line">1 主音决定调 </span><br><span class="line">1 在 C 这个位置，表名是 C 调</span><br></pre></td></tr></table></figure>
+
+<h3 id="大调和小调"><a href="#大调和小调" class="headerlink" title="大调和小调"></a>大调和小调</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1  2  3  4  5  6  7  1   大调音阶              以 1 为主音度音阶</span><br><span class="line"> 全  全 半 全 全  全  半</span><br><span class="line">6  7  1  2  3  4  5  6   小调音阶(自然小调音阶)  以 6 为主音的音阶</span><br><span class="line"> 全  半 全 全 半  全 全</span><br></pre></td></tr></table></figure>
+
+<p>大调音阶 ：明亮 坚定  欢快</p>
+<p>小调音阶 ：忧郁 悲伤 不安</p>
+<h3 id="关系大小调"><a href="#关系大小调" class="headerlink" title="关系大小调"></a>关系大小调</h3><p>自然调式当中 音的排列相同 音的位置也相同 使用的调号也相同</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">1 = C</span><br><span class="line">C D E F G A B  <span class="comment"># C 大调音阶</span></span><br><span class="line"></span><br><span class="line">A B C D E F G  <span class="comment"># A 小调音阶</span></span><br><span class="line"></span><br><span class="line">1 = G</span><br><span class="line">G A B C D E F  <span class="comment"># G 大调音阶</span></span><br><span class="line">1 2 3 4 5 6 7</span><br><span class="line">E F G A B C D  <span class="comment"># E 小调音阶</span></span><br><span class="line">6 7 1 2 3 4 5</span><br></pre></td></tr></table></figure>
+
+<h2 id="和弦进阶"><a href="#和弦进阶" class="headerlink" title="和弦进阶"></a>和弦进阶</h2><h3 id="调内原位三和弦"><a href="#调内原位三和弦" class="headerlink" title="调内原位三和弦"></a>调内原位三和弦</h3><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">C调</span><br><span class="line">音阶 1 2 3 4 5 6 7</span><br><span class="line">音名 C D E F G A B</span><br><span class="line">1 3 5 一级和弦 C</span><br><span class="line">2 4 6 二级和弦 Dm</span><br><span class="line">3 5 7 三级和弦 Em</span><br><span class="line">4 5 1 四级和弦 F</span><br><span class="line">5 7 2 五级和弦 G</span><br><span class="line">6 1 3 六级和弦 Am</span><br><span class="line">7 2 4 七级和弦 Bdim 减和弦，很少用</span><br><span class="line"><span class="comment"># 一个调内，七级和弦构成方式 ，所有调中和弦的大三度和小三度是固定的</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="转调"><a href="#转调" class="headerlink" title="转调"></a>转调</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># C 调</span></span><br><span class="line">级数：  1   2   3   4  5  6   7</span><br><span class="line">和弦：	 C   Dm  Em  F  G  Am  Bdim </span><br><span class="line"></span><br><span class="line"><span class="comment"># G 调</span></span><br><span class="line">级数：  1   2   3   4  5  6   7</span><br><span class="line">和弦：	 G   Am  Bm  C  D  Em  <span class="comment">#Fmdim </span></span><br><span class="line"><span class="comment"># C调转G调，转到对应的级数就可以， </span></span><br><span class="line"><span class="comment"># 可以快速记忆曲谱。只需要记住 调号和级数就可以</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="关系大小调和和弦的关系"><a href="#关系大小调和和弦的关系" class="headerlink" title="关系大小调和和弦的关系"></a>关系大小调和和弦的关系</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="节奏-1"><a href="#节奏-1" class="headerlink" title="节奏"></a>节奏</h2><p>拍号</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">6/8  一小节有六拍，以八分音符为一拍</span><br><span class="line"><span class="comment"># 强 弱 弱 次强 弱 弱</span></span><br><span class="line">4/4  一小节有四拍，以四分音符为一拍</span><br><span class="line"><span class="comment"># 强 弱 次强 弱</span></span><br><span class="line"><span class="comment"># 速度不同，轻重关系不同</span></span><br></pre></td></tr></table></figure>
+
+<p>4&#x2F;4 拍的常用节奏型</p>
+]]></content>
+      <categories>
+        <category>音乐</category>
+      </categories>
+      <tags>
+        <tag>乐理</tag>
       </tags>
   </entry>
 </search>
