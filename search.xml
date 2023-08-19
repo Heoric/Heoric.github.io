@@ -122,38 +122,9 @@
       </tags>
   </entry>
   <entry>
-    <title>深入C++虚函数</title>
-    <url>/2023/01/31/3-c++/template/</url>
-    <content><![CDATA[<span id="more"></span>
-
-]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式之抽象工厂模式</title>
-    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/template/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/go%20channel/</url>
-    <content><![CDATA[<h2 id="无缓冲"><a href="#无缓冲" class="headerlink" title="无缓冲"></a>无缓冲</h2><p>创建一个channel</p>
+    <title>go channel 用法及原理</title>
+    <url>/2023/01/31/4-go/go%20channel/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="无缓冲"><a href="#无缓冲" class="headerlink" title="无缓冲"></a>无缓冲</h2><p>创建一个channel</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">chan1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)</span><br></pre></td></tr></table></figure>
 
 
@@ -162,7 +133,7 @@
 
 
 
-
+<span id="more"></span>
 
 <h2 id="通道方向"><a href="#通道方向" class="headerlink" title="通道方向"></a>通道方向</h2><p>指定channel的方向</p>
 <h2 id="通道选择器"><a href="#通道选择器" class="headerlink" title="通道选择器"></a>通道选择器</h2><p>select </p>
@@ -174,16 +145,24 @@
 <h2 id="Timer-和-ticker"><a href="#Timer-和-ticker" class="headerlink" title="Timer 和 ticker"></a>Timer 和 ticker</h2><p>timer 可以再到期之前结束</p>
 <p>ticker 时隔一定时间执行一次。</p>
 <h2 id="通道的实现"><a href="#通道的实现" class="headerlink" title="通道的实现"></a>通道的实现</h2>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/go%20context/</url>
+    <title>go context 原理</title>
+    <url>/2023/01/31/4-go/go%20context/</url>
     <content><![CDATA[<p>原文 <a href="https://go.dev/blog/context">https://go.dev/blog/context</a></p>
 <p><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></p>
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>在 Go 服务器中，每个传入的请求都在其自己的 goroutine 中处理。 </p>
 <p>请求处理程序通常会启动额外的 goroutine 来访问后台，比如数据库和 RPC 服务等。</p>
 <p> 处理请求的 goroutines 集通常需要访问特定于请求的值，例如最终用户的身份、授权令牌和请求的截止日期。</p>
 <p> 当请求被取消或超时时，所有处理该请求的 goroutines 都应该快速退出，以便系统可以回收它们正在使用的任何资源。</p>
+<span id="more"></span>
+
 <p>Google开发了一个<code>context</code>包，可以轻松地将请求范围的值、取消信号和截止日期跨 API 边界传递给处理请求所涉及的所有 goroutine。context包公开可用 。本文介绍了如何使用该包并提供了一个完整的工作示例。</p>
 <h2 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A Context carries a deadline, cancellation signal, and request-scoped values</span></span><br><span class="line"><span class="comment">// across API boundaries. Its methods are safe for simultaneous use by multiple</span></span><br><span class="line"><span class="comment">// goroutines.</span></span><br><span class="line"><span class="keyword">type</span> Context <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="comment">// Done returns a channel that is closed when this Context is canceled</span></span><br><span class="line">    <span class="comment">// or times out.</span></span><br><span class="line">    Done() &lt;-<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Err indicates why this context was canceled, after the Done channel</span></span><br><span class="line">    <span class="comment">// is closed.</span></span><br><span class="line">    Err() <span class="type">error</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Deadline returns the time when this Context will be canceled, if any.</span></span><br><span class="line">    Deadline() (deadline time.Time, ok <span class="type">bool</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Value returns the value associated with key or nil if none.</span></span><br><span class="line">    Value(key <span class="keyword">interface</span>&#123;&#125;) <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -254,6 +233,12 @@
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>在 Google，我们要求 Go 程序员将 Context 参数作为第一个参数传递给传入和传出请求之间调用路径上的每个函数。 这使得许多不同团队开发的 Go 代码能够很好地互操作。 它提供了对超时和取消的简单控制，并确保安全凭证等关键值正确传输 Go 程序。</p>
 <p>想要在 Context 上构建的服务器框架应该提供 Context 的实现，以便在它们的包和那些需要 Context 参数的包之间架起一座桥梁。 然后，他们的客户端库将接受来自调用代码的上下文。 通过为请求范围的数据和取消建立一个通用接口，Context 使包开发人员更容易共享代码以创建可扩展的服务。</p>
 ]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
   </entry>
   <entry>
     <title>go 闭包现象和原理</title>
@@ -267,11 +252,6 @@
       <tags>
         <tag>go</tag>
       </tags>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/%E5%8F%8D%E5%B0%84/</url>
-    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
   </entry>
   <entry>
     <title>深入C++虚函数</title>
@@ -313,14 +293,15 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/%E9%97%AD%E5%8C%85/</url>
-    <content><![CDATA[]]></content>
+    <title>go 接口原理</title>
+    <url>/2023/01/31/4-go/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
   </entry>
   <entry>
     <title>oracle 层级查询</title>
@@ -1046,6 +1027,86 @@
       </categories>
       <tags>
         <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++11 新特性</title>
+    <url>/2023/01/31/3-c++/c++11/</url>
+    <content><![CDATA[<span id="more"></span>
+
+]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之抽象工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>设计模式之设计原则</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/00-%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>设计模式之简单工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/02-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>理解分布式 cap 理论</title>
+    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/cap%20/</url>
+    <content><![CDATA[<h3 id="CAP理论概述"><a href="#CAP理论概述" class="headerlink" title="CAP理论概述"></a>CAP理论概述</h3><p>一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。</p>
+<span id="more"></span>
+
+
+
+<h3 id="Consistency-一致性"><a href="#Consistency-一致性" class="headerlink" title="Consistency 一致性"></a>Consistency 一致性</h3><p>系统结果一致</p>
+<h3 id="Availability-可用性"><a href="#Availability-可用性" class="headerlink" title="Availability 可用性"></a>Availability 可用性</h3><p>系统可用</p>
+<h3 id="Partition-Tolerance分区容错性"><a href="#Partition-Tolerance分区容错性" class="headerlink" title="Partition Tolerance分区容错性"></a>Partition Tolerance分区容错性</h3><p>出现分区问题，仍然可提供服务</p>
+]]></content>
+      <categories>
+        <category>分布式</category>
+      </categories>
+      <tags>
+        <tag>分布式</tag>
       </tags>
   </entry>
 </search>
