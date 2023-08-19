@@ -18,20 +18,6 @@
       </tags>
   </entry>
   <entry>
-    <title>操作系统之进程</title>
-    <url>/2023/01/31/0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/template/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>进程</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TCP协议深入理解</title>
     <url>/2023/01/31/1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/template/</url>
     <content><![CDATA[<span id="more"></span>
@@ -48,6 +34,20 @@
       </categories>
       <tags>
         <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>操作系统之进程</title>
+    <url>/2023/01/31/0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/template/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>进程</tag>
       </tags>
   </entry>
   <entry>
@@ -149,43 +149,20 @@
       </tags>
   </entry>
   <entry>
-    <title>深入C++虚函数</title>
-    <url>/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<p>我一直认为 c++ 的精髓是 虚函数。</p>
-<p>虚函数是运行时多状的基础。</p>
-<p>今天就来扒一扒虚函数的内部机制。</p>
-<span id="more"></span>
-
-<h3 id="没有虚函数"><a href="#没有虚函数" class="headerlink" title="没有虚函数"></a>没有虚函数</h3><p>我们从 内存 来看 虚函数的 底层机制。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果很明显， 不需要多说什么。</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="只有一个虚函数"><a href="#只有一个虚函数" class="headerlink" title="只有一个虚函数"></a>只有一个虚函数</h3><p>接下来，我们看一下，带虚函数的对象的内存。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>可以看出来，对象前面多了八个字节。让我们来看看多了的是什么。</p>
-<p>其实我们都知道，虚函数是在一个虚函数表里面。那么我们看看对象 b 的布局。</p>
-<p>可以看到里面有个 指针，我们把里面的值打出来，看到是 一个函数指针，指向了 func()。</p>
-<p>新定义一个变量 b1，查看 b1 的虚函数表，和内容，可以看到跟 b 是一摸一样的。说明一个类，只有一个虚函数表。</p>
-<p>![image-20230605165441623](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605165441623.png)</p>
-<h3 id="多个虚函数"><a href="#多个虚函数" class="headerlink" title="多个虚函数"></a>多个虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    <title>设计模式之抽象工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/template/</url>
+    <content><![CDATA[<span id="more"></span>
 
 
 
-<p>可以看到，对象对大小不变， 虚函数表里多了 func1。</p>
-<p>![image-20230605170310030](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605170310030.png)</p>
-<h3 id="单继承且本身不存在虚函数"><a href="#单继承且本身不存在虚函数" class="headerlink" title="单继承且本身不存在虚函数"></a>单继承且本身不存在虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derive</span> : <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> derive_1;</span><br><span class="line">    <span class="type">int</span> derive_2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    Base b1; </span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Derive d;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">//16</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<p>直接看内存， 虚函数表的地址不一样，但是指向了相同的函数。</p>
-<p>![image-20230605172826693](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605172826693.png)</p>
-<h3 id="本身不存在虚函数但存在基类虚函数覆盖"><a href="#本身不存在虚函数但存在基类虚函数覆盖" class="headerlink" title="本身不存在虚函数但存在基类虚函数覆盖"></a>本身不存在虚函数但存在基类虚函数覆盖</h3>]]></content>
+
+]]></content>
       <categories>
-        <category>语言</category>
+        <category>设计模式</category>
       </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
   </entry>
   <entry>
     <title></title>
@@ -293,16 +270,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/%E5%8F%8D%E5%B0%84/</url>
-    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2021/02/13/4-go/%E9%97%AD%E5%8C%85/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>go 闭包现象和原理</title>
     <url>/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/</url>
     <content><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><span id="more"></span>
@@ -313,6 +280,50 @@
       </categories>
       <tags>
         <tag>go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2021/02/13/4-go/%E5%8F%8D%E5%B0%84/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
+  </entry>
+  <entry>
+    <title>深入C++虚函数</title>
+    <url>/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p>我一直认为 c++ 的精髓是 虚函数。</p>
+<p>虚函数是运行时多状的基础。</p>
+<p>今天就来扒一扒虚函数的内部机制。</p>
+<span id="more"></span>
+
+<h3 id="没有虚函数"><a href="#没有虚函数" class="headerlink" title="没有虚函数"></a>没有虚函数</h3><p>我们从 内存 来看 虚函数的 底层机制。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果很明显， 不需要多说什么。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="只有一个虚函数"><a href="#只有一个虚函数" class="headerlink" title="只有一个虚函数"></a>只有一个虚函数</h3><p>接下来，我们看一下，带虚函数的对象的内存。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，对象前面多了八个字节。让我们来看看多了的是什么。</p>
+<p>其实我们都知道，虚函数是在一个虚函数表里面。那么我们看看对象 b 的布局。</p>
+<p>可以看到里面有个 指针，我们把里面的值打出来，看到是 一个函数指针，指向了 func()。</p>
+<p>新定义一个变量 b1，查看 b1 的虚函数表，和内容，可以看到跟 b 是一摸一样的。说明一个类，只有一个虚函数表。</p>
+<p>![image-20230605165441623](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605165441623.png)</p>
+<h3 id="多个虚函数"><a href="#多个虚函数" class="headerlink" title="多个虚函数"></a>多个虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，对象对大小不变， 虚函数表里多了 func1。</p>
+<p>![image-20230605170310030](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605170310030.png)</p>
+<h3 id="单继承且本身不存在虚函数"><a href="#单继承且本身不存在虚函数" class="headerlink" title="单继承且本身不存在虚函数"></a>单继承且本身不存在虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derive</span> : <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> derive_1;</span><br><span class="line">    <span class="type">int</span> derive_2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    Base b1; </span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Derive d;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">//16</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>直接看内存， 虚函数表的地址不一样，但是指向了相同的函数。</p>
+<p>![image-20230605172826693](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605172826693.png)</p>
+<h3 id="本身不存在虚函数但存在基类虚函数覆盖"><a href="#本身不存在虚函数但存在基类虚函数覆盖" class="headerlink" title="本身不存在虚函数但存在基类虚函数覆盖"></a>本身不存在虚函数但存在基类虚函数覆盖</h3>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -336,19 +347,9 @@
       </tags>
   </entry>
   <entry>
-    <title>linux 基本分析工具</title>
-    <url>/2023/01/31/8-linux/template/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-]]></content>
-      <categories>
-        <category>linux</category>
-      </categories>
-      <tags>
-        <tag>运维</tag>
-      </tags>
+    <title></title>
+    <url>/2021/02/13/4-go/%E9%97%AD%E5%8C%85/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>学习方法</title>
@@ -368,65 +369,19 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式之抽象工厂模式</title>
-    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/template/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>从零写数据库系列-scanner</title>
-    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/</url>
+    <title>linux 基本分析工具</title>
+    <url>/2023/01/31/8-linux/template/</url>
     <content><![CDATA[<span id="more"></span>
 
 
 
 ]]></content>
       <categories>
-        <category>数据库</category>
+        <category>linux</category>
       </categories>
-  </entry>
-  <entry>
-    <title>从零写数据库系列-parser</title>
-    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/</url>
-    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>从零写数据库系列-背景知识</title>
-    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/</url>
-    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
-<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
-<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
-<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
-<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
-<span id="more"></span>
-
-<p>有了这些历史背景，现在可以谈谈SQL的执行流程了。</p>
-<h2 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h2><p>词法(lexing)，语法(syntax)。</p>
-<h2 id="Analyzer"><a href="#Analyzer" class="headerlink" title="Analyzer"></a>Analyzer</h2><p>语意(Semantic)。绑定，类型检查。</p>
-<h2 id="Planner"><a href="#Planner" class="headerlink" title="Planner"></a>Planner</h2><p>System R优化器第一次提出了自底向上的动态规划搜索策略，影响了后续的很多系统。另一个创新点在于提出来基于cost-based的优化方法，如何根据sargable条件计算selective，增加了interesting order属性来对访问方法（Access Path）进行影响。</p>
-<p>Volcano&#x2F;Cascades</p>
-<p>Cascades 的实现，orca，cockroachdb。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *scope)</span></span> endAggFunc(cols opt.ColSet) (g *groupby) &#123;</span><br><span class="line">	<span class="keyword">if</span> !s.inAgg &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;mismatched calls to start/end aggFunc&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	s.inAgg = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> curr := s; curr != <span class="literal">nil</span>; curr = curr.parent &#123;</span><br><span class="line">		<span class="keyword">if</span> cols.Len() == <span class="number">0</span> || cols.Intersects(curr.colSet()) &#123;</span><br><span class="line">			curr.verifyAggregateContext()</span><br><span class="line">			<span class="keyword">if</span> curr.groupby == <span class="literal">nil</span> &#123;</span><br><span class="line">				curr.initGrouping()</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> curr.groupby</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;aggregate function is not allowed in this context&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
+      <tags>
+        <tag>运维</tag>
+      </tags>
   </entry>
   <entry>
     <title>oracle 层级查询</title>
@@ -569,6 +524,43 @@
 <h2 id="7-connect-by-算法"><a href="#7-connect-by-算法" class="headerlink" title="7. connect by 算法"></a>7. connect by 算法</h2><p>是一个查找算法。看完补充</p>
 <h3 id="7-1-基本算法描述"><a href="#7-1-基本算法描述" class="headerlink" title="7.1 基本算法描述"></a>7.1 基本算法描述</h3><p>TODO </p>
 <h3 id="7-2-算法伪代码"><a href="#7-2-算法伪代码" class="headerlink" title="7.2 算法伪代码"></a>7.2 算法伪代码</h3><p>后续补充。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>从零写数据库系列-背景知识</title>
+    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B01-%E8%83%8C%E6%99%AF/</url>
+    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>1970 年，IBM的研究员Edgar Frank Codd (TED) 发表了《A Relational Model of Data for Large Shared Data Banks》，这篇论文首次提出了关系模型。</p>
+<p>1972年，TED 又提出了关系大事和关系演算的概念。</p>
+<p>1974年，IBM的Ray Boyce和Don Chamberlin提出了SQL（Structured Query Language）语言。</p>
+<p>有了关系模型和关系代数的理论基础，又有了SQL 这种语言来表达。那么我们可以开始设计数据库系统了。</p>
+<p>在关系模型提出后，出现过两个著名的产品，System R 和 Ingres。Ingres使用的是一种叫做 QUEL 的语言，System R使用的就是早期的 SQL。由于 SQL 成为了 ANSI 的标准，所以QUEL 成为了历史。</p>
+<span id="more"></span>
+
+<p>有了这些历史背景，现在可以谈谈SQL的执行流程了。</p>
+<h2 id="Parser"><a href="#Parser" class="headerlink" title="Parser"></a>Parser</h2><p>词法(lexing)，语法(syntax)。</p>
+<h2 id="Analyzer"><a href="#Analyzer" class="headerlink" title="Analyzer"></a>Analyzer</h2><p>语意(Semantic)。绑定，类型检查。</p>
+<h2 id="Planner"><a href="#Planner" class="headerlink" title="Planner"></a>Planner</h2><p>System R优化器第一次提出了自底向上的动态规划搜索策略，影响了后续的很多系统。另一个创新点在于提出来基于cost-based的优化方法，如何根据sargable条件计算selective，增加了interesting order属性来对访问方法（Access Path）进行影响。</p>
+<p>Volcano&#x2F;Cascades</p>
+<p>Cascades 的实现，orca，cockroachdb。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *scope)</span></span> endAggFunc(cols opt.ColSet) (g *groupby) &#123;</span><br><span class="line">	<span class="keyword">if</span> !s.inAgg &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;mismatched calls to start/end aggFunc&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	s.inAgg = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> curr := s; curr != <span class="literal">nil</span>; curr = curr.parent &#123;</span><br><span class="line">		<span class="keyword">if</span> cols.Len() == <span class="number">0</span> || cols.Intersects(curr.colSet()) &#123;</span><br><span class="line">			curr.verifyAggregateContext()</span><br><span class="line">			<span class="keyword">if</span> curr.groupby == <span class="literal">nil</span> &#123;</span><br><span class="line">				curr.initGrouping()</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> curr.groupby</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;aggregate function is not allowed in this context&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>从零写数据库系列-scanner</title>
+    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
 ]]></content>
       <categories>
         <category>数据库</category>
@@ -1041,6 +1033,14 @@
 </tr>
 </tbody></table>
 ]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>从零写数据库系列-parser</title>
+    <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
       <categories>
         <category>数据库</category>
       </categories>
