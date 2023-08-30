@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were Afraid to Ask您一直想了解但又不敢问的有关编译和矢量化查询的所有信息 ABSTRACTThe query engines of most modern database systems are either based">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leoirc&#39;s Blogs">
+<meta property="og:url" content="http://example.com/2022/01/21/%E8%AE%BA%E6%96%87/1/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were Afraid to Ask您一直想了解但又不敢问的有关编译和矢量化查询的所有信息 ABSTRACTThe query engines of most modern database systems are either based">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-21T08:59:31.737Z">
+<meta property="article:modified_time" content="2023-07-20T09:36:02.194Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="数据库 C++ go">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/01/21/%E8%AE%BA%E6%96%87/1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/01/21/%E8%AE%BA%E6%96%87/1/","path":"2022/01/21/论文/1/","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title> | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Everything-You-Always-Wanted-to-Know-About-Compiled-and-Vectorized-Queries-But-Were-Afraid-to-Ask"><span class="nav-number">1.</span> <span class="nav-text">Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were Afraid to Ask</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-INTRODUCTION"><span class="nav-number">1.2.</span> <span class="nav-text">1. INTRODUCTION</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-VECTORIZED-VS-COMPILED-QUERIES"><span class="nav-number">1.3.</span> <span class="nav-text">2. VECTORIZED VS. COMPILED QUERIES</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Vectorizing-Algorithms"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 Vectorizing Algorithms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Vectorized-Hash-Join-and-Group-By"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.2 Vectorized Hash Join and Group By</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-METHODOLOGY-%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">3. METHODOLOGY 方法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/21/%E8%AE%BA%E6%96%87/1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-21 16:59:31" itemprop="dateCreated datePublished" datetime="2022-01-21T16:59:31+08:00">2022-01-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-07-20 17:36:02" itemprop="dateModified" datetime="2023-07-20T17:36:02+08:00">2023-07-20</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Everything-You-Always-Wanted-to-Know-About-Compiled-and-Vectorized-Queries-But-Were-Afraid-to-Ask"><a href="#Everything-You-Always-Wanted-to-Know-About-Compiled-and-Vectorized-Queries-But-Were-Afraid-to-Ask" class="headerlink" title="Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were Afraid to Ask"></a><strong>Everything You Always Wanted to Know About Compiled and Vectorized Queries But Were Afraid to Ask</strong></h2><p><strong>您一直想了解但又不敢问的有关编译和矢量化查询的所有信息</strong></p>
+<h3 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h3><p>The query engines of most modern database systems are either based on vectorization or data-centric code generation. These two state-of-the-art query processing paradigms are fundamentally dif- ferent in terms of system structure and query execution code. Both paradigms were used to build fast systems. However, until today it is not clear which paradigm yields faster query execution, as many implementation-specific choices obstruct a direct comparison of ar- chitectures. In this paper, we experimentally compare the two mod- els by implementing both within the same test system. This allows us to use for both models the same query processing algorithms, the same data structures, and the same parallelization framework to ul- timately create an apples-to-apples comparison. We find that both are efficient, but have different strengths and weaknesses. Vector- ization is better at hiding cache miss latency, whereas data-centric compilation requires fewer CPU instructions, which benefits cache- resident workloads. Besides raw, single-threaded performance, we also investigate SIMD as well as multi-core parallelization and dif- ferent hardware architectures. Finally, we analyze qualitative dif- ferences as a guide for system architects.</p>
+<p>大多数现代数据库系统的查询引擎要么基于矢量化，要么基于以数据为中心的代码生成。 这两种最先进的查询处理范例在系统结构和查询执行代码方面有着根本的不同。 这两种范例都用于构建快速系统。 然而，直到今天还不清楚哪种范例可以产生更快的查询执行，因为许多特定于实现的选择阻碍了架构的直接比较。 在本文中，我们通过在同一测试系统中实现这两个模型来对这两个模型进行实验比较。 这使我们能够对两个模型使用相同的查询处理算法、相同的数据结构和相同的并行化框架，以最终创建同类比较。 我们发现两者都很有效，但有不同的优点和缺点。 矢量化可以更好地隐藏缓存未命中延迟，而以数据为中心的编译需要更少的 CPU 指令，这有利于缓存驻留的工作负载。 除了原始的单线程性能之外，我们还研究了 SIMD 以及多核并行化和不同的硬件架构。 最后，我们分析定性差异，作为系统架构师的指南。</p>
+<h3 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1. INTRODUCTION"></a>1. INTRODUCTION</h3><p>In most query engines, each relational operator is implemented using Volcano-style iteration [14]. While this model worked well in the past when disk was the primary bottleneck, it is inefficient on modern CPUs for in-memory database management systems (DBMSs). Most modern query engines therefore either use <em>vec- torization</em> (pioneered by VectorWise [7, 52]) or <em>data-centric code generation</em> (pioneered by HyPer [28]). Systems that use vector- ization include DB2 BLU [40], columnar SQL Server [21], and Quickstep [33], whereas systems based on data-centric code gener- ation include Apache Spark [2] and Peloton [26].</p>
+<p>在大多数查询引擎中，每个关系运算符都是使用火山式迭代来实现的[14]。 虽然这种模型在过去磁盘是主要瓶颈时运行良好，但在内存数据库管理系统 (DBMS) 的现代 CPU 上效率较低。 因此，大多数现代查询引擎要么使用矢量化（由 VectorWise [7, 52] 首创），要么使用以数据为中心的代码生成（由 HyPer [28] 首创）。 使用矢量化的系统包括 DB2 BLU [40]、列式 SQL Server [21] 和 Quickstep [33]，而基于以数据为中心的代码生成的系统包括 Apache Spark [2] 和 Peloton [26]。</p>
+<p>Like the Volcano-style iteration model, vectorization uses pull- based iteration where each operator has a <em>next</em> method that produces result tuples. However, each <em>next</em> call fetches a block of tuples instead of just one tuple, which amortizes the iterator call over- head. The actual query processing work is performed by primitives that execute a simple operation on one or more type-specialized columns (e.g., compute hashes for a vector of integers). Together, amortization and type specialization eliminate most of the overhead of traditional engines.</p>
+<p>与火山式迭代模型一样，矢量化使用基于拉的迭代，其中每个运算符都有一个生成结果元组的 next 方法。 然而，接下来的每个调用都会获取一组元组而不是仅仅一个元组，这会分摊迭代器调用开销。 实际的查询处理工作是由对一个或多个类型专用列执行简单操作的原语执行的（例如，计算整数向量的哈希值）。 摊销和类型专业化共同消除了传统发动机的大部分开销。</p>
+<p>In data-centric code generation, each relational operator imple- ments a push-based interface (<em>produce</em> and <em>consume</em>). However, in- stead of directly processing tuples, the produce&#x2F;consume calls gen- erate code for a given query. They can also be seen as operator methods that get called during a depth-first traversal of the query plan tree, where produce is called on first visit, and consume on last visit, after all children have been processed. The resulting code is specialized for the data types of the query and fuses all operators in a pipeline of non-blocking relational operators into a single (po- tentially nested) loop. This generated code can then be compiled to efficient machine code (e.g., using the LLVM).</p>
+<p>在以数据为中心的代码生成中，每个关系运算符都实现一个基于推送的接口（生产和消费）。 然而，生产&#x2F;消费调用不是直接处理元组，而是为给定的查询生成代码。 它们也可以被视为在查询计划树的深度优先遍历期间调用的运算符方法，其中在第一次访问时调用 Produce，并在处理完所有子级后在最后一次访问时调用 Consumer。 生成的代码专门针对查询的数据类型，并将非阻塞关系运算符管道中的所有运算符融合到单个（可能是嵌套的）循环中。 然后可以将生成的代码编译为高效的机器代码（例如，使用 LLVM）。</p>
+<p>Although both models eliminate the overhead of traditional en- gines and are highly efficient, they are conceptually different from each other: Vectorization is based on the pull model (root-to-leaf traversal), vector-at-a-time processing, and interpretation. Data- centric code generation uses the push model (leaf-to-root traver- sal), tuple-at-a-time processing, and up-front compilation. As we discuss in Section 9, other designs that mix or combine ideas from data-centric compilation and vectorization have been proposed. In this paper, we focus on these two specific designs, as they have been highly influential and are in use in multiple widespread systems.</p>
+<p>尽管这两种模型都消除了传统引擎的开销并且效率很高，但它们在概念上有所不同：矢量化基于拉模型（根到叶遍历）、一次矢量处理和 解释。 以数据为中心的代码生成使用推送模型（叶到根遍历）、一次元组处理和预先编译。 正如我们在第 9 节中讨论的，已经提出了混合或结合以数据为中心的编译和矢量化思想的其他设计。 在本文中，我们重点关注这两种具体设计，因为它们具有很大的影响力并且在多个广泛的系统中使用。</p>
+<p>The differences of the two models are fundamental and deter- mine the organization of the DBMS’s execution engine source code and its performance characteristics. Because changing the model requires rewriting large parts of the source code, DBMS design- ers must decide early on which model to use. Looking at recent DBMS developments like Quickstep [33] and Peloton [26], we find that both choices are popular and plausible: Quickstep is based on vectorization, Peloton uses data-centric code generation.</p>
+<p>两种模型的差异是根本性的，决定了 DBMS 执行引擎源代码的组织及其性能特征。 由于更改模型需要重写大部分源代码，因此 DBMS 设计人员必须尽早决定使用哪个模型。 看看最近的 DBMS 开发，例如 Quickstep [33] 和 Peloton [26]，我们发现这两种选择都很流行且合理：Quickstep 基于矢量化，Peloton 使用以数据为中心的代码生成。</p>
+<p>Given the importance of this choice, it is surprising that there has not yet been a systematic study comparing the two state-of-the- art query processing models. In this paper, we provide an in-depth experimental comparison of the two models to understand when a database architect should prefer one model over the other.</p>
+<p>考虑到这种选择的重要性，令人惊讶的是还没有系统的研究来比较这两种最先进的查询处理模型。 在本文中，我们对这两种模型进行了深入的实验比较，以了解数据库架构师何时应该更喜欢一种模型而不是另一种模型。</p>
+<p>To compare vectorization and compilation, one could compare the runtime performance of emblematic DBMSs, such as HyPer and VectorWise. The problem is, however, that such full-featured DBMSs differ in many design dimensions beyond the query execu- tion model. For instance, HyPer does not employ sub-byte compression in its columnar storage [19], whereas VectorWise uses more compact compression methods [53]. Related to this choice, HyPer features predicate-pushdown in scans but VectorWise does not. Another important dimension in which both systems differ is parallelism. VectorWise queries spawn threads scheduled by the OS, and controls parallelism using explicit exchange opera- tors where the parallelism degree is fixed at query optimization time [3]. HyPer, on the other hand, runs one thread on each core and explicitly schedules query tasks on it on a morsel-driven basis using a NUMA-aware, lock-free queue to distribute work. HyPer and VectorWise also use different query processing algorithms and structures, data type representations, and query optimizers. Such different design choices affect performance and scalability, but are independent of the query execution model.</p>
+<p>为了比较矢量化和编译，可以比较代表性 DBMS（例如 HyPer 和 VectorWise）的运行时性能。 然而问题是，这种全功能的 DBMS 在查询执行模型之外的许多设计维度上都有所不同。 例如，HyPer 在其列式存储中不采用子字节压缩 [19]，而 VectorWise 使用更紧凑的压缩方法 [53]。 与此选择相关的是，HyPer 在扫描中具有谓词下推功能，但 VectorWise 则没有。 两个系统不同的另一个重要方面是并行性。 VectorWise 查询产生由操作系统调度的线程，并使用显式交换运算符控制并行性，其中并行度在查询优化时固定[3]。 另一方面，HyPer 在每个核心上运行一个线程，并使用 NUMA 感知、无锁队列来分配工作，在少量驱动的基础上显式地调度查询任务。 HyPer 和 VectorWise 还使用不同的查询处理算法和结构、数据类型表示和查询优化器。 这种不同的设计选择会影响性能和可伸缩性，但与查询执行模型无关。</p>
+<p>To isolate the fundamental properties of the execution model from incidental differences, we implemented a compilation-based relational engine and a vectorization-based engine in a single test system (available at [16]). The experiments where we employed data-centric code-generation into C++1 we call “Typer” and the vectorized engine we call ”Tectorwise” (TW). Both implementa- tions use the same algorithms and data structures. This allows an apples-to-apples comparison of both approaches because the only difference between Tectorwise and Typer is the query execution method: vectorized versus data-centric compiled execution.</p>
+<p>为了将执行模型的基本属性与偶然差异隔离开来，我们在单个测试系统中实现了基于编译的关系引擎和基于向量化的引擎（可在[16]中找到 <a target="_blank" rel="noopener" href="https://github.com/TimoKersten/db-engine-paradigms%EF%BC%89%E3%80%82">https://github.com/TimoKersten/db-engine-paradigms）。</a> 我们在 C++1 中采用以数据为中心的代码生成的实验称为“Typer”，矢量化引擎称为“Tectorwise”(TW)。 两种实现都使用相同的算法和数据结构。 这允许对两种方法进行同类比较，因为 Tectorwise 和 Typer 之间的唯一区别是查询执行方法：矢量化与以数据为中心的编译执行。</p>
+<p>Our experimental results show that both approaches lead to very efficient execution engines, and the performance differences are generally not very large. Compilation-based engines have an ad- vantage in calculation-heavy queries, whereas vectorized engines are better at hiding cache miss latency, e.g., during hash joins.</p>
+<p>我们的实验结果表明，这两种方法都会产生非常高效的执行引擎，并且性能差异通常不是很大。 基于编译的引擎在计算量大的查询中具有优势，而矢量化引擎更擅长隐藏缓存未命中延迟，例如在散列连接期间。</p>
+<p>After introducing the two models in more detail in Section 2 and describing our methodology in Section 3, we perform a micro- architectural analysis of in-memory OLAP workloads in Section 4. We then examine in Section 5 the benefit of data-parallel opera- tions (SIMD), and Section 6 discusses intra-query parallelization on multi-core CPUs. In Section 7, we investigate different hard- ware platforms (Intel, AMD, Xeon Phi) to find out which model works better on which hardware. After these quantitative OLAP performance comparisons, we discuss other factors in Section 8, including OLTP workloads and compile time. A discussion of hy- brid processing models follows in Section 9. We conclude by sum- marizing our results as a guide for system designers in Section 10.</p>
+<p>在第 2 节中更详细地介绍了这两个模型并在第 3 节中描述了我们的方法之后，我们在第 4 节中对内存中 OLAP 工作负载进行了微架构分析。然后，我们在第 5 节中研究了数据并行操作的好处。 （SIMD），第 6 节讨论多核 CPU 上的查询内并行化。 在第 7 节中，我们研究了不同的硬件平台（Intel、AMD、Xeon Phi），以找出哪种模型在哪种硬件上运行得更好。 在这些定量的 OLAP 性能比较之后，我们将在第 8 节中讨论其他因素，包括 OLTP 工作负载和编译时间。 第 9 节对混合处理模型进行了讨论。最后，我们总结了我们的结果，作为第 10 节中系统设计者的指南。</p>
+<h3 id="2-VECTORIZED-VS-COMPILED-QUERIES"><a href="#2-VECTORIZED-VS-COMPILED-QUERIES" class="headerlink" title="2. VECTORIZED VS. COMPILED QUERIES"></a>2. VECTORIZED VS. COMPILED QUERIES</h3><p>The main principle of vectorized execution is <em>batched</em> execu- tion [30] on a columnar data representation: every “work” prim- itive function that manipulates data does not work on a single data item, but on a vector (an array) of such data items that represents multiple tuples. The idea behind vectorized execution is to amor- tize the DBMS’s interpretation decisions by performing as much as possible inside the data manipulation methods. For example, this work can be to hash 1000s of values, compare 1000s of string pairs, update a 1000 aggregates, or fetch a 1000 values from 1000s of addresses.</p>
+<p>向量化执行的主要原理是在列式数据表示上进行批量执行[30]：操作数据的每个“工作”原语函数并不作用于单个数据项，而是作用于这样的向量（数组）。 表示多个元组的数据项。 矢量化执行背后的想法是通过在数据操作方法内尽可能多地执行来分摊 DBMS 的解释决策。 例如，这项工作可以是散列 1000 个值、比较 1000 个字符串对、更新 1000 个聚合或从 1000 个地址中获取 1000 个值。</p>
+<p>Data-centric compilation generates low-level code for a SQL query that fuses all adjacent non-blocking operators of a query pipeline into a single, tight loop. In order to understand the proper- ties of vectorized and compiled code, it is important to understand the structure of each variant’s code. Therefore, in this section we present example operator implementations, motivate why they are implemented in this fashion, and discuss some of their properties.</p>
+<p>以数据为中心的编译为 SQL 查询生成低级代码，将查询管道的所有相邻非阻塞运算符融合到单个紧密循环中。 为了了解矢量化和编译代码的属性，了解每个变体代码的结构非常重要。 因此，在本节中，我们将介绍示例运算符实现，解释为什么以这种方式实现它们，并讨论它们的一些属性。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">vec&lt;<span class="type">int</span>&gt; <span class="title">sel_eq_row</span><span class="params">(vec&lt;string&gt; col, vec&lt;<span class="type">int</span>&gt; tir)</span> </span></span><br><span class="line"><span class="function">  vec&lt;<span class="type">int</span>&gt; res</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;col.<span class="built_in">size</span>(); i++) <span class="comment">// for colors and tires</span></span><br><span class="line">		<span class="keyword">if</span>(col[i] == <span class="string">&quot;green&quot;</span> &amp;&amp; tir[i] == <span class="number">4</span>) <span class="comment">// compare both </span></span><br><span class="line">      res.<span class="built_in">append</span>(i) <span class="comment">// add to final result</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">res</span></span><br><span class="line">			(a) Integrated: Both predicates checked at once</span><br><span class="line">      </span><br><span class="line">vec&lt;<span class="type">int</span>&gt; <span class="built_in">sel_eq_string</span>(vec&lt;string&gt; col, string o) </span><br><span class="line">      vec&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;col.<span class="built_in">size</span>(); i++) <span class="comment">// for colors</span></span><br><span class="line">				<span class="keyword">if</span>(col[i] == o) <span class="comment">// compare color </span></span><br><span class="line">          res.<span class="built_in">append</span>(i) <span class="comment">// remember position</span></span><br><span class="line">			<span class="keyword">return</span> res</span><br><span class="line">          </span><br><span class="line">vec&lt;<span class="type">int</span>&gt; <span class="built_in">sel_eq_int</span>(vec&lt;<span class="type">int</span>&gt; tir, <span class="type">int</span> o, vec&lt;<span class="type">int</span>&gt; s) </span><br><span class="line">          vec&lt;<span class="type">int</span>&gt; res;</span><br><span class="line">					<span class="keyword">for</span>(i : s) <span class="comment">// for remembered position</span></span><br><span class="line">						<span class="keyword">if</span>(tir[i] == o) <span class="comment">// compare tires </span></span><br><span class="line">  					res.<span class="built_in">append</span>(i) <span class="comment">// add to final result</span></span><br><span class="line">					<span class="keyword">return</span> <span class="built_in">res</span></span><br><span class="line">			(b) Vectorized: Each predicate checked in one primitive</span><br><span class="line">              </span><br><span class="line"><span class="comment">//图 1：多谓词示例 – 对一个数据项评估多个谓词的直接方法是一次检查所有谓词 (1a)。 </span></span><br><span class="line"><span class="comment">//矢量化代码必须将每个谓词的求值分成一个部分 (1b)。</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-1-Vectorizing-Algorithms"><a href="#2-1-Vectorizing-Algorithms" class="headerlink" title="2.1 Vectorizing Algorithms"></a>2.1 Vectorizing Algorithms</h4><p>Typer executes queries by running generated code. This means that a developer can create operator implementations in any way they see fit. Consider the example in Figure 1a: a function that selects every row whose color is green and has four tires. There is a loop over all rows and in each iteration, all predicates are evaluated.</p>
+<p>Typer 通过运行生成的代码来执行查询。 这意味着开发人员可以以他们认为合适的任何方式创建运算符实现。 考虑图 1a 中的示例：该函数选择颜色为绿色且有四个轮胎的每一行。 所有行都有一个循环，并且在每次迭代中，都会评估所有谓词。</p>
+<p>Tectorwise implements the same algorithms as Typer, staying as close to it as possible and reasonable (for performance). This is, however, only possible to a certain degree, as every function imple- mented in vectorized style has two constraints: It can (i) only work on <em>one</em> data type2 and it (ii) must process multiple tuples. In gener- ated code these decisions can both be put into the expression of one if statement. This, however, violates (i) which forces Tectorwise to use two functions as shown in Figure 1b. A (not depicted) in- terpretation logic would start by running the first function to se- lect all elements by color, then the second function to select by number of tires. By processing multiple elements at a time, these functions also satisfy (ii). The dilemma is faced by all operators in Tectorwise and all functions are broken down into primitives that satisfy (i) and (ii). This example uses a column-wise storage format, but row-wise formats are feasible as well. To maximize throughput, database developers tend to highly optimize such func- tions. For example, with the help of predicated evaluation (*res&#x3D;i; res+&#x3D;cond) or SIMD vectorized instruction logic (see Section 5.1).</p>
+<p>Tectorwise 实现了与 Typer 相同的算法，尽可能接近并合理（为了性能）。 然而，这仅在一定程度上是可能的，因为以矢量化风格实现的每个函数都有两个约束：它只能（i）仅适用于一种数据类型2，并且（ii）必须处理多个元组。 在生成的代码中，这些决策都可以放入一个 if 语句的表达式中。 然而，这违反了 (i)，这迫使 Tectorwise 使用两个函数，如图 1b 所示。 （未描述）解释逻辑将首先运行第一个函数以按颜色选择所有元素，然后运行第二个函数以按轮胎数量选择。 通过一次处理多个元素，这些函数也满足 (ii)。 Tectorwise 中的所有算子都面临着这样的困境，所有函数都被分解为满足 (i) 和 (ii) 的原语。 本示例使用列式存储格式，但行式格式也是可行的。 为了最大化吞吐量，数据库开发人员倾向于高度优化此类功能。 例如，借助谓词求值 (*res&#x3D;i; res+&#x3D;cond) 或 SIMD 向量化指令逻辑（参见第 5.1 节）。</p>
+<p>With these constraints in mind, let us examine the details of op- erator implementations of Tectorwise. We implemented selections as shown above. Expressions are split by arithmetic operators into primitives in a similar fashion. Note that for these simple operators the Tectorwise implementation must already change the structure of the algorithms and deviate from the Typer data access patterns. The resulting materialization of intermediates makes fast caches very important for vectorized engines.</p>
+<p>考虑到这些限制，让我们检查一下 Tectorwise 运算符实现的细节。 我们实施了如上所示的选择。 表达式被算术运算符以类似的方式分割为基元。 请注意，对于这些简单的运算符，Tectorwise 实现必须已经更改了算法的结构并偏离了 Typer 数据访问模式。 由此产生的中间物的具体化使得快速缓存对于矢量化引擎非常重要。</p>
+<h4 id="2-2-Vectorized-Hash-Join-and-Group-By"><a href="#2-2-Vectorized-Hash-Join-and-Group-By" class="headerlink" title="2.2 Vectorized Hash Join and Group By"></a>2.2 Vectorized Hash Join and Group By</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">query</span>(...)</span><br><span class="line"><span class="comment">// build hash table</span></span><br><span class="line"><span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; S.<span class="built_in">size</span>(); i++) </span><br><span class="line">  ht.<span class="built_in">insert</span>(&lt;S.att1[i], S.att2[i]&gt;, S.att3[i])</span><br><span class="line"><span class="comment">// probe hash table</span></span><br><span class="line"><span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; R.<span class="built_in">size</span>(); i++)</span><br><span class="line">	<span class="type">int</span> k1 = R.att1[i]</span><br><span class="line">	string* k2 = R.att2[i]</span><br><span class="line">	<span class="type">int</span> hash = <span class="built_in">hash</span>(k1, k2)</span><br><span class="line"><span class="keyword">for</span>(Entry* e = ht.<span class="built_in">find</span>(hash); e; e = e-&gt;next)</span><br><span class="line">	<span class="keyword">if</span>(e-&gt;key1 == k1 &amp;&amp; e-&gt;key2 == *k2) </span><br><span class="line">    ... <span class="comment">// code of parent operator</span></span><br><span class="line">		(a) Code generated <span class="keyword">for</span> hash join</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> HashJoin</span><br><span class="line">	Primitives probeHash_, compareKeys_, buildGather_; </span><br><span class="line">	...</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">HashJoin::next</span><span class="params">()</span></span></span><br><span class="line"><span class="function">... <span class="comment">// consume build side and create hash table </span></span></span><br><span class="line"><span class="function">    <span class="type">int</span> n </span>= probe-&gt;<span class="built_in">next</span>()<span class="comment">// get tuples from probe side </span></span><br><span class="line">    <span class="comment">// *Interpretation*: compute hashes</span></span><br><span class="line">		vec&lt;<span class="type">int</span>&gt; hashes = probeHash_.<span class="built_in">eval</span>(n)</span><br><span class="line">		<span class="comment">// find hash candidate matches 	for hashes </span></span><br><span class="line">    vec&lt;Entry*&gt; candidates = ht.<span class="built_in">findCandidates</span>(hashes) </span><br><span class="line">    <span class="comment">// matches: int references a position in hashes </span></span><br><span class="line">    vec&lt;Entry*, <span class="type">int</span>&gt; matches = &#123;&#125;</span><br><span class="line">		<span class="comment">// check candidates to find matches </span></span><br><span class="line">		<span class="keyword">while</span>(candidates.<span class="built_in">size</span>() &gt; <span class="number">0</span>)</span><br><span class="line">			<span class="comment">// *Interpretation*</span></span><br><span class="line">			vec&lt;<span class="type">bool</span>&gt; isEqual = compareKeys_.<span class="built_in">eval</span>(n, candidates) </span><br><span class="line">      hits, candidates = <span class="built_in">extractHits</span>(isEqual, candidates)</span><br><span class="line">      matches += hits</span><br><span class="line">		<span class="comment">// *Interpretation*: gather from hash table into </span></span><br><span class="line">   	<span class="comment">// buffers for next operator </span></span><br><span class="line">    buildGather_.<span class="built_in">eval</span>(matches)</span><br><span class="line">		<span class="keyword">return</span> matches.<span class="built_in">size</span>()</span><br><span class="line">      </span><br><span class="line">		(b) Vectorized code that performs a hash join</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line"> 图 <span class="number">2</span>：Typer 和 Tectorwise 中的哈希连接实现 - 生成的代码（图 <span class="number">2</span>a）可以采用任何形式，</span><br><span class="line">      例如，它可以结合哈希表键的相等性检查。 在矢量化代码中（图 <span class="number">2b</span>），</span><br><span class="line">      这只能通过每次检查使用一个原语来实现。</span><br></pre></td></tr></table></figure>
+
+<p>Pseudo code for parts of our hash join implementations are shown in Figure 2. The idea for both, the implementation in Typer and Tectorwise, is to first consume all tuples from one input and place them into a hash table. The entries are stored in row format for better cache locality. Afterwards, for each tuple from the other in- put, we probe the hash table and yield all found combinations to the parent operator. The corresponding code that Typer generates is depicted in Figure 2a.</p>
+<p>图 2 显示了部分散列连接实现的伪代码。Typer 和 Tectorwise 中的实现的想法是首先消耗来自一个输入的所有元组并将它们放入散列表中。 条目以行格式存储，以获得更好的缓存位置。 然后，对于来自其他输入的每个元组，我们探测哈希表并将所有找到的组合生成给父运算符。 Typer 生成的相应代码如图 2a 所示。</p>
+<p>Tectorwise cannot proceed in exactly the same manner. Probing a hash table with composite keys is the intricate part here, as each probe operation needs to test equality of all parts of the composite key. Using the former approach would, however, violate (i). There- fore, the techniques from Section 2.1 are applied: The join function first creates hashes from the probe keys. It does this by evaluating the probeHash expression. A user of the vectorized hash join must configure the probeHash and other expressions that belong to the operator so that when the expressions evaluate, they use data from the operator’s children. Here, the probeHash expression hashes key columns by invoking one primitive per key column and writes the hashes into an output vector. The join function then uses this vector of hashes to generate candidate match locations in the hash table. It then inspects all discovered locations and checks for key equality. It performs the equality check by evaluating the cmpKey expression. For composite join-keys, this invokes multiple primitives: one for every key column, to avoid violating (i) and (ii). Then, the join function adds the matches to the list of matching tuples, and, in case any candidates have an overflow chain, it uses the overflow entries as new candidates for the next iteration. The algorithm coninues until the candidate vector is empty. Afterwards, the join uses buildGather to move data from the hash table into buffers for the next operator.</p>
+<p>Tectorwise 不能以完全相同的方式进行。 使用组合键探测哈希表是这里的复杂部分，因为每个探测操作都需要测试组合键所有部分的相等性。 然而，使用前一种方法会违反 (i)。 因此，应用了 2.1 节中的技术：连接函数首先根据探测键创建哈希值。 它通过评估probeHash 表达式来实现这一点。 矢量化哈希连接的用户必须配置probeHash和属于该运算符的其他表达式，以便在表达式求值时，它们使用来自该运算符子级的数据。 此处，probeHash 表达式通过为每个键列调用一个原语来对键列进行哈希处理，并将哈希值写入输出向量。 然后，连接函数使用该哈希向量在哈希表中生成候选匹配位置。 然后，它检查所有发现的位置并检查密钥是否相等。 它通过评估 cmpKey 表达式来执行相等性检查。 对于复合连接键，这会调用多个原语：每个键列一个原语，以避免违反 (i) 和 (ii)。 然后，join 函数将匹配项添加到匹配元组列表中，并且，如果任何候选项具有溢出链，它会使用溢出条目作为下一次迭代的新候选项。 该算法一直持续到候选向量为空为止。 然后，连接使用 buildGather 将数据从哈希表移动到缓冲区中以供下一个运算符使用。</p>
+<p>We take a similar approach in the group by operator. Both phases of the aggregation use a hash table that contains group keys and aggregates. The first step for all inbound tuples is to find their group in the hash table. We perform this with the same technique as in the hash join. For those tuples whose group is not found, one must be added. Unfortunately, it is not sufficient to just add one group per group-less tuple as this could lead to groups added multiple times. We therefore shuffle all group-less tuples into partitions of equal keys (proceeding component by component for composite keys), and add one group per partition to the hash table. Once the groups for all incoming tuples are known we run aggregation primitives. Transforming into vectorized form led to an even greater deviation from Typer data access patterns. For the join operator, this leads to more independent data accesses (as discussed in Section 4.1). However, aggregation incurs extra work.</p>
+<p>我们在按运算符分组时采用类似的方法。 聚合的两个阶段都使用包含组键和聚合的哈希表。 所有入站元组的第一步是在哈希表中找到它们的组。 我们使用与散列连接相同的技术来执行此操作。 对于那些没有找到组的元组，必须添加一个。 不幸的是，仅仅为每个无组元组添加一个组是不够的，因为这可能会导致多次添加组。 因此，我们将所有无组元组混入相同键的分区中（对于复合键，逐个组件进行），并将每个分区添加一个组到哈希表中。 一旦知道所有传入元组的组，我们就运行聚合原语。 转换为矢量化形式会导致与 Typer 数据访问模式的更大偏差。 对于连接运算符，这会导致更独立的数据访问（如第 4.1 节中所述）。 然而，聚合会带来额外的工作。</p>
+<p>Note that in order to implement Tectorwise operators we need to deviate from the Typer implementations. This deviation is not by choice, but due to the limitations (i) and (ii) which vectorization imposes. This yields two different implementations for each oper- ator, but at its core, each operator executes the same algorithm with the same parallelization strategy.</p>
+<p>请注意，为了实现 Tectorwise 运算符，我们需要偏离 Typer 实现。 这种偏差不是出于选择，而是由于矢量化所施加的限制 (i) 和 (ii)。 这为每个运算符产生了两种不同的实现，但其核心是每个运算符使用相同的并行化策略执行相同的算法。</p>
+<h3 id="3-METHODOLOGY-方法"><a href="#3-METHODOLOGY-方法" class="headerlink" title="3. METHODOLOGY 方法"></a>3. METHODOLOGY 方法</h3><p>To isolate the fundamental properties of the execution model from incidental differences found in real-world systems, we im- plemented a compilation-based engine (Typer) and a vectorization- based engine (Tectorwise) in a single test system (available at [16]). To make experiments directly comparable, both implementations use the same algorithms and data structures. When testing queries, we use the same physical query plans for vectorized and compiled execution. We do not include query parsing, optimization, code generation, and compilation time in our measurements. This test- ing methodology allows an apples-to-apples comparison of both approaches because the only difference between Tectorwise and Typer is the query execution method: vectorized versus data-centric compiled execution.</p>
+<p>为了将执行模型的基本属性与现实系统中发现的偶然差异隔离开来，我们在单个测试系统中实现了基于编译的引擎（Typer）和基于矢量化的引擎（Tectorwise）（可在[16]中找到） ]）。 为了使实验具有直接可比性，两种实现都使用相同的算法和数据结构。 测试查询时，我们使用相同的物理查询计划进行矢量化和编译执行。 我们的测量中不包括查询解析、优化、代码生成和编译时间。 这种测试方法允许对两种方法进行同类比较，因为 Tectorwise 和 Typer 之间的唯一区别是查询执行方法：矢量化与以数据为中心的编译执行。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/WechatIMG2.jpg" alt="Leoric 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="Leoric 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/01/21/%E8%AE%BA%E6%96%87/1/" title="">http://example.com/2022/01/21/论文/1/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/21/%E8%AE%BA%E6%96%87/2/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/31/4-go/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8C%87%E9%92%88/" rel="next" title="go 接口原理">
+                  go 接口原理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6d53cd0e79249cf482ebf39f4bc866b7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
