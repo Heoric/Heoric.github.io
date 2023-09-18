@@ -18,33 +18,33 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="VolcanoAn Extensible and Parallel Query Evaluation System Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow qu">
+    <meta name="description" content="VolcanoAn Extensible and Parallel Query Evaluation System  Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Volcano">
-<meta property="og:url" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/index.html">
+<meta property="og:url" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
-<meta property="og:description" content="VolcanoAn Extensible and Parallel Query Evaluation System Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow qu">
+<meta property="og:description" content="VolcanoAn Extensible and Parallel Query Evaluation System  Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow q">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720151302454.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720152944923.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720155442652.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720160212513.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720160833887.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720160942516.png">
-<meta property="og:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720161343962.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720151302454.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720152944923.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720155442652.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720160212513.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720160833887.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720160942516.png">
+<meta property="og:image" content="http://example.com/img/volcano-pic/image-20230720161343962.png">
 <meta property="article:published_time" content="2023-08-15T06:44:57.000Z">
-<meta property="article:modified_time" content="2023-09-18T06:47:54.441Z">
+<meta property="article:modified_time" content="2023-09-18T09:22:03.492Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/volcano-pic/image-20230720151302454.png">
+<meta name="twitter:image" content="http://example.com/img/volcano-pic/image-20230720151302454.png">
 
 
-<link rel="canonical" href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/">
+<link rel="canonical" href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/","path":"2023/08/15/2-数据库/4-论文/00-volcano/","title":"Volcano"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/","path":"2023/08/15/2-数据库/4-论文/volcano/","title":"Volcano"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Volcano | Leoirc's Blogs</title>
@@ -134,7 +134,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -145,7 +145,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -177,7 +177,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -213,7 +213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-09-18 14:47:54" itemprop="dateModified" datetime="2023-09-18T14:47:54+08:00">2023-09-18</time>
+      <time title="修改时间：2023-09-18 17:22:03" itemprop="dateModified" datetime="2023-09-18T17:22:03+08:00">2023-09-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -241,7 +241,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="Volcano"><a href="#Volcano" class="headerlink" title="Volcano"></a>Volcano</h2><p>An Extensible and Parallel Query Evaluation System</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="Volcano"><a href="#Volcano" class="headerlink" title="Volcano"></a>Volcano</h2><p>An Extensible and Parallel Query Evaluation System </p>
 <p>Volcano-一个可扩展的并行查询评估系统</p>
 <p>Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow query execution system called Volcano. The Volcano effort provides a rich environment for research and education in database systems design, heuristics for query optimization, parallel query execution, and resource allocation.</p>
 <p>摘要：为了研究数据库查询处理中可扩展性和并行性的相互作用，我们开发了一种新的数据流查询执行系统，称为 Volcano。 Volcano 的工作为数据库系统设计、查询优化启发式、并行查询执行和资源分配方面的研究和教育提供了丰富的环境。</p>
@@ -297,8 +297,7 @@
 <p>对单个记录的所有操作都故意保留以供以后定义。 不是发明一种语言来指定选择谓词、散列函数等，而是将函数传递给查询处理运算符，以便在必要时使用适当的参数进行调用。稍后将更详细地描述这些支持函数。 一个常见且重复的主题 Volcano 设计的一个亮点是它提供了查询评估机制，以允许选择和试验策略。 机制和策略的分离是操作系统设计和实现中众所周知且公认的原则，但它在数据库系统的设计和实现中尚未得到广泛和一致的使用。 它对现代操作系统的可扩展性和模块化做出了重大贡献，并且可能对可扩展数据库系统做出同样的贡献。</p>
 <p>Currently, Volcano consists of two layers, the file system layer and the query processing layer. The former provides record, file, and index operations including scans with optional predicates, and buffering; the latter is a set of query processing modules that can be nested to build complex query evaluation trees. Fig. 1 identifies Volcano’s main modules. This separation can be found in most query evaluation systems, e.g., RSS and RDS in System R [9] and Core and Corona in Starburst [23]. System catalogs or a data dictionary are not included in Volano since the system was designed to be extensible and independent from any particular data model. We start our descirption at the bottom, the file system, and then discuss the query processing modules.</p>
 <p>目前，Volcano由两层组成，文件系统层和查询处理层。 前者提供记录、文件和索引操作，包括带有可选谓词的扫描和缓冲； 后者是一组查询处理模块，可以嵌套构建复杂的查询评估树。 图 1 标识了 Volcano 的主要模块。 这种分离可以在大多数查询评估系统中找到，例如 System R [9] 中的 RSS 和 RDS 以及 Starburst [23] 中的 Core 和 Corona。 Volano 中不包含系统目录或数据字典，因为该系统被设计为可扩展且独立于任何特定数据模型。 我们从最底层的文件系统开始描述，然后讨论查询处理模块。</p>
-<img src="./volcano-pic/image-20230720151302454.png" alt="image-20230720151302454" style="zoom:50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720151302454.png"></p>
 <h4 id="A-The-File-System"><a href="#A-The-File-System" class="headerlink" title="A. The File System"></a>A. The File System</h4><p>Within our discussion of the Volcano file system, we also proceed bottom-up, from buffer management to data files and indices. The existing facilities are meant to pro- vide a backbone of a query processing system, and are designed such that modifications and additions can easily be accomplished as the need arises. The buffer manager is the most interesting part of the file system. Because buffer management is performance- critical in any database system, the Volcano buffer man- ager was designed to include mechanisms that can be used most effectively and efficiently in a large variety of con- texts and with a wide array of policies. In consequence, its features include multiple buffer pools, variable-length units of buffering that are called clustres in Volcano, and replacement hints from the next higher software level.</p>
 <p>在我们对 Volcano 文件系统的讨论中，我们也是自下而上进行的，从缓冲区管理到数据文件和索引。 现有设施旨在提供查询处理系统的骨干，其设计使得可以在需要时轻松完成修改和添加。缓冲区管理器是文件系统中最有趣的部分。 由于缓冲区管理在任何数据库系统中都对性能至关重要，因此 Volcano 缓冲区管理器被设计为包含可在各种上下文和各种策略中最有效和高效地使用的机制。 因此，它的功能包括多个缓冲池、可变长度缓冲单元（在 Volcano 中称为簇）以及来自下一个更高软件级别的替换提示。</p>
 <p>The buffer manager’s hint facility is an excellent example of Volcano’s design principle to implement mechanisms to suppent multiple policies. The buffer manager only provides the mechanisms, i.e.,pinning, page replacement, and reading and writing disk pages, while the higher level software determines the policies depending on data semantics, importance, and access patterns. It is surprising that database buffer managers derive replace- ment decisions from observed reference behavior in spite of the fact that this behavior is generated by higher level database software and thus known and foreseeable in ad- vance within the same system, albeit different subcom- ponents.</p>
@@ -327,8 +326,7 @@
 <p>数据对象的所有操作和解释，例如比较和散列，都通过指向适当支持函数入口点的指针传递给迭代器。 这些支持函数中的每一个都使用一个允许解释或编译查询评估的参数，如前面针对文件扫描谓词所述。 如果没有支持函数，Volcano 的迭代器就是空的算法外壳，无法执行任何有用的工作。 实际上，分成算法外壳和支持函数将集合的控制和迭代与记录或对象的解释分开。 这种分离是 Volcano 数据模型独立性和可扩展性的基石之一，这将在第四节中讨论。</p>
 <p>Iterators can be nested and then operate similarly to coroutines. State records are linked together by means of input pointers. The input pointers are also kept in the state records. Fig. 2 shows two operators in a query evaluation plan. Purpose and capabilities of the Jilter operator will be discussed shortly; one of its possible functions is to print items of a stream using a function passed to the filter operator as one of its arguments. The structure at the top gives access to the functions as well as to the state record. Using a pointer to this structure, the filter functions can be called and their local state can be passed to them as a procedure argument. The functions themselves, e.g., open–filter, can use the input pointer contained in the state record to invoke the input operator’s functions. Thus, the filter functions can invoke the file scan functions as needed, and can pace the file scan according to the needs of the filter. In other words, Fig. 2 shows a complete query evaluation plan that prints selected records from a file.</p>
 <p>迭代器可以嵌套，然后与协程类似地进行操作。 状态记录通过输入指针链接在一起。 输入指针也保存在状态记录中。 图 2 显示了查询评估计划中的两个运算符。 Jilter 操作员的目的和功能将很快讨论； 它的可能功能之一是使用传递给过滤器运算符作为其参数之一的函数来打印流的项目。 顶部的结构可以访问函数以及状态记录。 使用指向该结构的指针，可以调用过滤器函数，并且可以将它们的本地状态作为过程参数传递给它们。 函数本身（例如 open–filter）可以使用状态记录中包含的输入指针来调用输入运算符的函数。 因此，过滤器函数可以根据需要调用文件扫描函数，并且可以根据过滤器的需要调整文件扫描的速度。 换句话说，图 2 显示了一个完整的查询评估计划，该计划打印从文件中选择的记录。</p>
-<img src="./volcano-pic/image-20230720152944923.png" alt="image-20230720152944923" style="zoom:50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720152944923.png"></p>
 <p>Using Volcano’s standard form of iterators, an operator does not need to know what kind of operator produces its input, or whether its input comes from a complex query tree or from a simple file scan. We call this concept anon- ymous inputs or streams. Streams are a simple but pow- erful abstraction that allows combining any number and any kind of operators to evaluate a complex query, a sec- ond cornerstone to Volcano’s extensibility. Together with the iterator control paradigm, streams represent the most efficient execution model in terms of time (overhead for synchronizing operators) and space (number of records that must reside in memory concurrently) for single-pro- cess query evaluation.</p>
 <p>使用 Volcano 的标准形式的迭代器，操作符不需要知道哪种操作符产生其输入，或者其输入是来自复杂的查询树还是来自简单的文件扫描。 我们将这个概念称为匿名输入或流。 流是一种简单但功能强大的抽象，它允许组合任意数量和任意类型的运算符来评估复杂的查询，这是 Volcano 可扩展性的第二个基石。 与迭代器控制范例一起，流代表了单进程查询评估的时间（同步运算符的开销）和空间（必须同时驻留在内存中的记录数量）方面最有效的执行模型。</p>
 <p>Calling open for the top-most operator results in instan- tiations for the associated state record’s state, e.g., allo- cation of a hash table, and in open calls for all inputs. In this way, all iterators in a query are initiated recursively. In order to process the query, next for the top-most op- erator is called repeatedly until it fails with an end-of- stream indicator. The top-most operator calls the next procedure of its input if it needs more input data to pro- duce an output record. Finally, the close call recursively “shuts down” all iterators in the query. This model of query execution matches very closely the ones being in- eluded in the E database implementation language in EX- ODUS and the query executor of the Starburst relational database system.</p>
@@ -355,8 +353,7 @@
 <p>一对一匹配：与过滤运算符一起，一对一匹配运算符可能是 Volcano 中最常用的查询处理运算符之一，因为它实现了各种集合匹配功能。 在单个算子中，它实现了连接、半连接、外连接、反连接、交集、并集、差分、反差分、聚合和重复消除。 一对一匹配运算符是像排序这样的物理运算符，即可执行代数的一部分，而不是像关系代数运算符那样的逻辑运算符。 该运算符实现所有操作，其中根据一对项目之间的比较结果将项目包含在输出中。</p>
 <p>Fig. 3 shows the basic principle underlying the one-to- one match operator for binary operations, namely sepa- ration of the matching and non-matching components of two sets, called R and S in the Fig. 3, and producing ap- propriate subsets, possibly after some transformation and combination as in the case of a join. Since all these operations require basically the same steps, it was logical to mplement them in one general and efficient module. The main difference between the unary and binary operations, e.g., aggregate functions and equi-join, is that the former require comparing items of the same input while the latter require comparing items of two different inputs.</p>
 <p>图 3 显示了二元运算的一对一匹配运算符的基本原理，即分离两个集合的匹配和不匹配分量（在图 3 中称为 R 和 S），并生成 ap- 适当的子集，可能是在一些转换和组合之后，如连接的情况。 由于所有这些操作都需要基本相同的步骤，因此在一个通用且高效的模块中实现它们是合乎逻辑的。 一元和二元运算（例如聚合函数和等连接）之间的主要区别在于，前者需要比较相同输入的项目，而后者需要比较两个不同输入的项目。</p>
-<img src="./volcano-pic/image-20230720155442652.png" alt="image-20230720155442652" style="zoom:50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720155442652.png"></p>
 <p>Since the implementation of Volcano’s one-to-one match is data-model-independent and all operations on data items are imported via support functions, the module s not restricted to the relational model but can perform set matching functions for arbitrary data types. Furthermore, the hash-based version provides recursive hash table overflow avoidance [121and resolution similar to hybrid hash join [31] and can therefore handle very large nput sizes. The sort-based version of one-to-one match is based on an external sort operator and can also operate on arbitrarily large inputs.</p>
 <p>由于Volcano的一对一匹配的实现是与数据模型无关的，并且对数据项的所有操作都是通过支持函数导入的，因此该模块不限于关系模型，而是可以对任意数据类型执行集合匹配函数。 此外，基于散列的版本提供了递归散列表溢出避免[121]和类似于混合散列连接[31]的解决方案，因此可以处理非常大的输入大小。 一对一匹配的基于排序的版本基于外部排序运算符，并且还可以对任意大的输入进行操作。</p>
 <p>While there seems to be an abundance <strong>of</strong> join algo- rithms, our design goals of extensibility and limited sys- tem size led to the choice of only two algorithms (at the current time) to be implemented in Volcano, namely merge join and hybrid hash join. This choice will also allow experimental research into the duality and trade-offs between sort- and hash-based query processing algo- rithms.</p>
@@ -408,8 +405,7 @@
 <p>Volcano 包括一个选择计划运算符，允许实现多计划访问模块和动态计划。 从某种意义上说，它不是一个运算符，因为它不执行任何数据操作。 由于它提供对查询执行的控制，因此它是一个元运算符。 该运算符提供与其他运算符相同的打开-下一个-关闭协议，因此可以插入到查询计划的任何位置。 open 操作决定使用几个等效查询计划中的哪一个，并为此输入调用 open 操作。 Open 调用此策略决策的支持函数，并向其传递上述绑定参数。 接下来和关闭操作只需为打开期间选择的输入调用适当的操作。</p>
 <p>Fig. 4 shows a very simple dynamic plan. Imagine a selection predicate controlled by a program variable. The index scan and functional join can be much faster than the file scan, but not when the index is nonclustering and a large number of items must be retrieved. Using the plan of Fig. 4, however, the optimizer can prepare effectively for both cases, and the application program using this dy- namic plan will perform well for any predicate value.</p>
 <p>图 4 显示了一个非常简单的动态计划。 想象一下由程序变量控制的选择谓词。 索引扫描和函数连接可以比文件扫描快得多，但当索引是非聚集的并且必须检索大量项目时则不然。 然而，使用图 4 的计划，优化器可以有效地为这两种情况做好准备，并且使用此动态计划的应用程序对于任何谓词值都将表现良好。</p>
-<img src="./volcano-pic/image-20230720160212513.png" alt="image-20230720160212513" style="zoom: 50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720160212513.png"></p>
 <p>The <strong>choose-plan</strong> operator allows considerable flexibil- ity. If only one <strong>choose-plan</strong> operator is used as the top of a query evaluation plan, it implements a multiplan access module. If multiple <strong>choose-plan</strong> operators are included in a plan, they implement a dynamic query evaluation plan. Thus, all forms of dynamic plans identified in [17] can be realized with one simple and effective mechanism. Note that the <strong>choose-plan</strong> operator does not make the policy decision concerning which of several plans to execute; it only provides the mechanism. The policy is imported us- ing a support function. Thus, the decision can be made depending on bindings for query variables (e.g., program variables used as constants in a query predicate), on the resource and contention situation (e.g., the availability of processors and memory), other considerations such as user priority, or all of the above.</p>
 <p>选择计划运算符具有相当大的灵活性。 如果仅使用一个选择计划运算符作为查询评估计划的顶部，则它会实现多计划访问模块。 如果一个计划中包含多个选择计划运算符，它们将实现动态查询评估计划。 因此，[17]中确定的所有形式的动态计划都可以通过一种简单而有效的机制来实现。 请注意，选择计划操作员并不做出有关执行多个计划中哪一个的策略决定； 它仅提供机制。 该策略是使用支持功能导入的。 因此，可以根据查询变量的绑定（例如，在查询谓词中用作常量的程序变量）、资源和争用情况（例如，处理器和内存的可用性）、其他考虑因素（例如用户优先级）来做出决定 ，或以上全部。</p>
 <p>The <strong>choose-plan</strong> operator provides significant new freedom in query optimization and evaluation with an ex- tremely small amount of code. Since it is compatible with the query processing paradigm, its presence does not af- fect the other operators at all, and it can be used in a very flexible way. The operator is another example for Vol- cano’s design principle to provide mechanisms to imple- ment a multitude of policies. We used the same philoso- phy when designing and implementing a scheme for parallel query evaluation.</p>
@@ -420,8 +416,7 @@
 <p>当 Volcano 被移植到多处理器机器上时，希望使用当时存在的所有单进程查询处理代码而不进行任何更改。结果是非常干净的、自调度的并行处理。 我们将这种新颖的方法称为并行化查询评估引擎的运算符模型[20]。*在此模型中，所有并行问题都集中在一个运算符中，该运算符使用标准迭代器接口并向查询树中的上方和下方运算符提供标准迭代器接口。</p>
 <p>The module responsible for parallel execution and syn- chronization is called the <strong>exchange</strong> iterator in Volcano. Notice that it is an iterator with <strong>open, next,</strong> and <strong>close</strong> pro- cedures; therefore, it can be inserted at any one place or at multiple places in a complex query tree. Fig. <em>5</em> shows a complex query execution plan that includes data pro- cessing operators, i.e., file scans and joins, and exchange operators. The next two figures will show the processes created when this plan is executed.</p>
 <p>负责并行执行和同步的模块在 Volcano 中称为交换迭代器。 请注意，它是一个具有 open、next 和 close 过程的迭代器； 因此，它可以插入到复杂查询树中的任意一处或多处。 图 5 显示了一个复杂的查询执行计划，其中包括数据处理运算符，即文件扫描和连接以及交换运算符。 接下来的两幅图将显示执行该计划时创建的流程。</p>
-<img src="./volcano-pic/image-20230720160833887.png" alt="image-20230720160833887" style="zoom: 50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720160833887.png"></p>
 <p>This section describes how the <strong>exchange</strong> iterator im- plements vertical and horizontal parallelism followed by discussions of alternative modes of operation of Vol- cano’s <strong>exchange</strong> operator and modifications to the file system required for multiprocess query evaluation. The description goes into a fair amount of detail since the <strong>ex- change</strong> operator adds significantly to the power of Vol- cano. In fact, it represents a new concept in parallel query execution that is likely to prove useful in parallelizing both existing commercial database products and extensible sin- gle-process systems. It is described here for shared-mem- ory systems only; considerations for the distributed-mem- ory version are outlined as future work in the last section of this paper.</p>
 <p>本节介绍交换迭代器如何实现垂直和水平并行性，然后讨论 Volcano 交换运算符的替代操作模式以及对多进程查询评估所需的文件系统的修改。 由于交易所运营商显着增强了 Volcano 的功能，因此描述非常详细。 事实上，它代表了并行查询执行的一个新概念，可能在现有商业数据库产品和可扩展单进程系统的并行化方面很有用。 此处仅针对共享内存系统进行描述； 本文最后一部分概述了分布式内存版本的考虑因素作为未来的工作。</p>
 <h4 id="A-Vertical-Parallelism-垂直并行性"><a href="#A-Vertical-Parallelism-垂直并行性" class="headerlink" title="A. Vertical Parallelism 垂直并行性"></a><strong>A. Vertical Parallelism</strong> 垂直并行性</h4><p>The first function of exchange is to provide <strong>vertical parallelism</strong> or pipelining between processes. The <strong>open</strong> procedure creates a new process after creating a data structure in shared memory called a <strong>port</strong> for synchroni- zation and data exchange. The child process is an exact duplicate of the parent process. The exchange operator then takes different paths in the parent and child pro- cesses.</p>
@@ -430,8 +425,7 @@
 <p>在 Volcano 中，父进程充当消费者，子进程充当生产者。 消费者进程中的交换运算符充当普通迭代器，与其他迭代器的唯一区别是它通过进程间通信而不是迭代器（过程）调用接收输入。 创建子进程后，消费者中的开放交换就完成了。 Next-exchange 等待数据通过端口到达并一次返回一条记录。 关闭交换通知生产者它可以关闭，等待确认并返回。</p>
 <p>Fig. <strong>6</strong> shows the processes created for vertical paral- lelism or pipelining by the exchange operators in the query plan of the previous figure. The exchange operators have created the processes, and are executing on both sides of the process boundaries, hiding the existence of process boundaries from the “work” operators. The fact that the join operators are executing within the same process, i.e., the placement of the exchange operators in the query tree, was arbitrary. The exchange operator provides only the mechanisms for parallel query evaluation, and many other choices (policies) would have been possible. In fact, the mechanisms provided in the operator model tend to be more flexible and amenable to more different policies than in the alternative bracket model <strong>[20].</strong></p>
 <p>图 6 显示了上图查询计划中的交换操作符为垂直并行或流水线创建的进程。 交换操作员创建了流程，并在流程边界的两侧执行，向“工作”操作员隐藏了流程边界的存在。 事实上，连接运算符在同一进程中执行，即交换运算符在查询树中的放置是任意的。 交换运算符仅提供并行查询评估的机制，并且许多其他选择（策略）也是可能的。 事实上，与替代支架模型相比，运营商模型中提供的机制往往更加灵活并且能够适应更多不同的政策[20]。</p>
-<img src="./volcano-pic/image-20230720160942516.png" alt="image-20230720160942516" style="zoom:50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720160942516.png"></p>
 <p>In the producer process, the exchange operator be- comes the <strong>driver</strong> for the query tree below the exchange operator using <strong>open, next,</strong> and <strong>close</strong> on its input. The out- put of <strong>next</strong> is collected in <strong>packets,</strong> which are arrays of <strong>Next-Record</strong> structures. The packet size is an argument in the exchange iterator’s state record, and can be set be- tween l and <strong>32</strong> 000 records. When a packet is filled, it is inserted into a linked list originating in the <strong>port</strong> and a semaphore is used to inform the consumer about the new packet. Records in packets are fixed in the shared buffer and must be unfixed by a consuming operator.</p>
 <p>在生产者进程中，交换运算符成为交换运算符下方查询树的驱动程序，在其输入上使用 open、next 和 close。 next 的输出被收集在数据包中，这些数据包是 Next-Record 结构的数组。 数据包大小是交换迭代器状态记录中的一个参数，可以设置在 1 到 32 000 条记录之间。 当数据包被填满时，它将被插入到源自端口的链表中，并使用信号量来通知消费者有关新数据包的信息。 数据包中的记录固定在共享缓冲区中，并且必须由消费操作员取消固定。</p>
 <p>When its input is exhausted, the exchange operator in the producer process marks the last packet with an end- of-stream tag, passes it to the consumer, and waits until the consumer allows closing all open files. This delay is necessary in Volcano because files on virtual devices must not be closed before all their records are unpinned in the buffer. In other words, it is a peculiarity due to other de- sign decisions in Volcano rather than inherent in the ex- change iterator on the operator model of parallelization.</p>
@@ -448,8 +442,7 @@
 <p>运算符内并行性需要数据分区。 存储数据集的分区是通过使用多个文件来实现的，最好是在不同的设备上。 中间结果的分区是通过在端口中包含多个队列来实现的。 如果有多个消费者进程，则每个进程都使用自己的输入队列。 生产者使用支持函数来决定输出记录必须进入哪个队列（或者实际上，进入由生产者填充的哪个数据包）。 使用支持函数可以实现循环、键范围或散列分区。</p>
 <p>Fig. 7 shows the processes created for horizontal par- allelism or partitioning by the exchange operators in the query plan shown earlier. The join operators are executed by three processes while the file scan operators are exe- cuted by one or two processes each, typically scanning file partitions on different devices. To obtain this group- ing of processes, the only difference to the query plan used for the previous figure is that the “degree of parallelism” arguments in the exchange state records have to be set to 2 or <strong>3,</strong> respectively, and that partitioning support func- tions must be provided for the exchange operators that transfer file scan output to the joint processes. All file scan processes can transfer data to all join processes; however, data transfer between the join operators occurs only within each of the join processes. Unfortunately, this restriction renders this parallelization infeasible if the two joins are on different attributes and partitioning-based parallel join methods are used. For this case, a variant of exchange is supported in Volcano exchange operator called <strong>inrer- change,</strong> which is described in the next section.</p>
 <p>图 7 显示了前面显示的查询计划中交换运算符为水平并行或分区创建的进程。 连接运算符由三个进程执行，而文件扫描运算符分别由一两个进程执行，通常扫描不同设备上的文件分区。 为了获得这个进程分组，与上图使用的查询计划的唯一区别是交换状态记录中的“并行度”参数必须分别设置为 2 或 3，并且分区支持 必须为交换操作员提供将文件扫描输出传输到联合进程的功能。 所有文件扫描进程都可以向所有连接进程传输数据； 然而，连接运算符之间的数据传输仅发生在每个连接进程内。 不幸的是，如果两个连接位于不同的属性上并且使用基于分区的并行连接方法，则此限制使得这种并行化不可行。 对于这种情况，Volcano 交换操作符支持一种称为 inrer-change 的交换变体，这将在下一节中进行描述。</p>
-<img src="./volcano-pic/image-20230720161343962.png" alt="image-20230720161343962" style="zoom:50%;" />
-
+<p><img src="/img/volcano-pic/image-20230720161343962.png"></p>
 <p>​	If an operator or an operator subtree is executed in par- allel by a group of processes, one of them is designated the master. When a query tree is opened, only one process is running, which is naturally the master. When a master forks a child process in a producer-consumer relation- ship, the child process becomes the master within its group. The first action of the master producer is to determine how many slaves are needed by calling an appro- priate support function. If the producer operation is to run in parallel, the master producer forks the other producer processes.</p>
 <p>如果一个运算符或一个运算符子树由一组进程并行执行，则其中一个被指定为主进程。 当一棵查询树被打开时，只有一个进程在运行，这自然是主进程。 当主进程在生产者-消费者关系中分叉子进程时，子进程就成为其组内的主进程。 主生产者的第一个动作是通过调用适当的支持函数来确定需要多少个从设备。 如果生产者操作要并行运行，则主生产者会分叉其他生产者进程。</p>
 <p>After all producer processes are forked, they run with- out further synchronization among themselves, with two exceptions. First, when accessing a shared data structure, e.g., the port to the consumers or a buffer table, short- term locks must be acquired for the duration of one linked- list insertion. Second, when a producer group is also a consumer group, i.e., there are at least two exchange op- erators and three process groups involved in a vertical pipeline, the processes that are both consumers and pro- ducers synchronize twice. During the (very short) interval between synchronizations, the master of this group cre- ates a port that serves all processes in its group.</p>
@@ -508,24 +501,6 @@
     
 
     <footer class="post-footer">
-          <div class="reward-container">
-  <div>请我一杯咖啡吧！</div>
-  <button>
-    赞赏
-  </button>
-  <div class="post-reward">
-      <div>
-        <img src="/images/WechatIMG2.jpg" alt="Leoric 微信">
-        <span>微信</span>
-      </div>
-      <div>
-        <img src="/images/alipay.png" alt="Leoric 支付宝">
-        <span>支付宝</span>
-      </div>
-
-  </div>
-</div>
-
           
 
 <div class="post-copyright">
@@ -535,7 +510,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/00-volcano/" title="Volcano">http://example.com/2023/08/15/2-数据库/4-论文/00-volcano/</a>
+      <a href="http://example.com/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/" title="Volcano">http://example.com/2023/08/15/2-数据库/4-论文/volcano/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -551,8 +526,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/06/09/6-%E9%97%B2%E8%B0%88/%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/" rel="prev" title="学习方法">
-                  <i class="fa fa-angle-left"></i> 学习方法
+                <a href="/2023/06/09/6-%E9%97%B2%E8%B0%88/%E9%AB%98%E6%A0%A1%E8%A1%A8%E8%BE%BE/" rel="prev" title="高效表达">
+                  <i class="fa fa-angle-left"></i> 高效表达
                 </a>
             </div>
             <div class="post-nav-item">
@@ -640,7 +615,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"1a0adf33ad95fe62f620dca033260a6a"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f2721622a847e569e8cede82fee504e4"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
