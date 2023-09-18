@@ -1623,7 +1623,7 @@
 
 
 
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。</span><br><span class="line">正确的做法是在每个<span class="built_in">clone</span>下来的仓库中手动设置不要检查特定文件的更改情况。</span><br><span class="line">git update-index --assume-unchanged FILE </span><br><span class="line">在FILE处输入要忽略的文件。</span><br><span class="line">如果要还原的话，使用命令：</span><br><span class="line">git update-index --no-assume-unchanged FILE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pkg/storage/qianstore/internal/manual/manual.go</span><br><span class="line"></span><br><span class="line">pkg/util/goschedstats/runtime_go1.16.go </span><br><span class="line"></span><br><span class="line">pkg/util/license/init.go</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。</span><br><span class="line">正确的做法是在每个<span class="built_in">clone</span>下来的仓库中手动设置不要检查特定文件的更改情况。</span><br><span class="line">git update-index --assume-unchanged FILE </span><br><span class="line">在FILE处输入要忽略的文件。</span><br><span class="line">如果要还原的话，使用命令：</span><br><span class="line">git update-index --no-assume-unchanged FILE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pkg/.../manual/manual.go</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>工具</category>
