@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Most databases offer a choice of several transaction isolation levels, offering a tradeoff between correctness and performance. However, that performance comes at a price, as developers must study the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Real transactions are serializable">
+<meta property="og:url" content="http://example.com/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Most databases offer a choice of several transaction isolation levels, offering a tradeoff between correctness and performance. However, that performance comes at a price, as developers must study the">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-25T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-10-25T09:11:17.289Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="事务">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/","path":"2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/Real transactions are serializable/","title":"Real transactions are serializable"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Real transactions are serializable | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Isolation-in-the-SQL-Standard"><span class="nav-number">1.</span> <span class="nav-text">Isolation in the SQL Standard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Isolation-in-Real-Databases"><span class="nav-number">2.</span> <span class="nav-text">Isolation in Real Databases</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACIDRain-Finding-Transactional-Bugs"><span class="nav-number">3.</span> <span class="nav-text">ACIDRain: Finding Transactional Bugs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Real transactions are serializable | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Real transactions are serializable
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-25 14:44:57 / 修改时间：17:11:17" itemprop="dateCreated datePublished" datetime="2023-10-25T14:44:57+08:00">2023-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Most databases offer a choice of several transaction isolation levels, offering a tradeoff between correctness and performance. However, that performance comes at a price, as developers must study their transactional interactions carefully or risk introducing subtle bugs. CockroachDB provides strong (“<code>SERIALIZABLE</code>”) isolation by default to ensure that your application always sees the data it expects. In this post I’ll explain what this means and how insufficient isolation impacts real-world applications.</p>
+<p>大多数数据库提供多种事务隔离级别的选择，在正确性和性能之间进行权衡。 然而，这种性能是有代价的，因为开发人员必须仔细研究他们的事务交互，否则就有引入微妙错误的风险。 CockroachDB 默认提供强（“可串行化”）隔离，以确保您的应用程序始终看到它期望的数据。 在这篇文章中，我将解释这意味着什么以及隔离不足如何影响实际应用程序。</p>
+<span id="more"></span>
+
+<h2 id="Isolation-in-the-SQL-Standard"><a href="#Isolation-in-the-SQL-Standard" class="headerlink" title="Isolation in the SQL Standard"></a>Isolation in the SQL Standard</h2><p>The SQL standard defines four isolation levels:</p>
+<ul>
+<li><code>SERIALIZABLE</code></li>
+<li><code>REPEATABLE READ</code></li>
+<li><code>READ COMMITTED</code></li>
+<li><code>READ UNCOMMITTED</code></li>
+</ul>
+<p><code>SERIALIZABLE</code> transactions run <em>as if</em> only one transaction were running at a time; the other isolation levels allow what the SQL standard euphemistically calls “the three phenomena”: dirty reads, non-repeatable reads, and phantom reads. <a target="_blank" rel="noopener" href="http://www.cs.umb.edu/cs734/CritiqueANSI_Iso.pdf">Subsequent research</a> has identified additional “phenomena” and isolation levels.</p>
+<p>SERIALIZABLE 事务的运行就像一次只有一个事务在运行一样； 其他隔离级别允许 SQL 标准委婉地称为“三种现象”：脏读、不可重复读和幻读。 随后的研究发现了额外的“现象”和隔离级别。</p>
+<p>In modern research, these “phenomena” are more commonly called “anomalies”, or more bluntly, <a target="_blank" rel="noopener" href="http://hpts.ws/papers//2015/jepsen.pdf">“lies”</a>. When you use a non-<code>SERIALIZABLE</code> isolation level, you’re giving the database permission to return an incorrect answer in the hope that it will be faster than producing the correct one. The SQL standard recognizes that this is dangerous and requires that <code>SERIALIZABLE</code> is the default isolation level. Weaker isolation levels are provided as a potential optimization for applications that can tolerate these anomalies.</p>
+<p>在现代研究中，这些“现象”通常被称为“异常”，或者更直白地称为“谎言”。 当您使用非 SERIALIZABLE 隔离级别时，您就授予数据库返回错误答案的权限，希望它比生成正确答案更快。 SQL 标准认识到这是危险的，并要求 SERIALIZABLE 是默认的隔离级别。 提供较弱的隔离级别作为可以容忍这些异常的应用程序的潜在优化。</p>
+<h2 id="Isolation-in-Real-Databases"><a href="#Isolation-in-Real-Databases" class="headerlink" title="Isolation in Real Databases"></a>Isolation in Real Databases</h2><p>Most databases ignore the specification that <code>SERIALIZABLE</code> be the default, and instead prioritize performance over safety by defaulting to the weaker <code>READ COMMITTED</code> or <code>REPEATABLE READ</code> isolation levels. More worryingly, some databases (including Oracle, and PostgreSQL prior to version 9.1) do not provide a serializable transaction implementation at all. Oracle’s implementation of the <code>SERIALIZABLE</code> isolation level is actually a weaker mode called “snapshot isolation”.</p>
+<p>大多数数据库都会忽略 SERIALIZABLE 为默认值的规范，而是通过默认较弱的 READ COMMITTED 或 REPEATABLE READ 隔离级别来优先考虑性能而非安全性。 更令人担忧的是，一些数据库（包括Oracle和9.1版本之前的PostgreSQL）根本不提供可序列化事务的实现。 Oracle对SERIALIZABLE隔离级别的实现实际上是一种较弱的模式，称为“快照隔离”。</p>
+<p>Snapshot isolation was developed after the initial standardization of the SQL language, but has been implemented in multiple database systems because it provides a good balance of performance and consistency. It is stronger than <code>READ COMMITTED</code> but weaker than <code>SERIALIZABLE</code>. It is similar to <code>REPEATABLE READ</code> but not exactly equivalent (<code>REPEATABLE READ</code> permits phantom reads but prevents write skew, while the reverse is true of snapshot isolation). The databases that have implemented snapshot isolation have made different decisions about how to fit it into the four SQL standard levels. Oracle takes the most aggressive stance, calling their snapshot implementation <code>SERIALIZABLE</code>. CockroachDB and Microsoft SQL Server are conservative and treat <code>SNAPSHOT</code> as a separate fifth isolation level. PostgreSQL (since version 9.1) falls in between, using snapshot isolation in place of <code>REPEATABLE READ</code>.</p>
+<p>快照隔离是在 SQL 语言最初标准化之后开发的，但由于它提供了性能和一致性的良好平衡，已在多个数据库系统中实现。 它比 READ COMMITTED 强，但比 SERIALIZABLE 弱。 它与 REPEATABLE READ 类似，但并不完全相同（REPEATABLE READ 允许幻读，但防止写入倾斜，而快照隔离则相反）。 已经实现快照隔离的数据库对于如何将其适应四个 SQL 标准级别做出了不同的决定。 Oracle 采取了最激进的立场，称他们的快照实现是可串行化的。 CockroachDB 和 Microsoft SQL Server 比较保守，将 SNAPSHOT 视为单独的第五个隔离级别。 PostgreSQL（自版本 9.1 起）介于两者之间，使用快照隔离代替可重复读取。</p>
+<p>Because serializable mode is used less often in databases that default to weaker isolation, it is often less thoroughly tested or optimized. For example, PostgreSQL has a fixed-size memory pool that it uses to track conflicts between serializable transactions, which can be exhausted under heavy load.</p>
+<p>由于可序列化模式在默认隔离较弱的数据库中使用较少，因此通常没有经过彻底的测试或优化。 例如，PostgreSQL 有一个固定大小的内存池，用于跟踪可序列化事务之间的冲突，这些冲突在重负载下可能会耗尽。</p>
+<p>Most database vendors treat stronger transaction isolation as an exotic option to be enabled by applications with exceptional consistency needs. Most applications, however, are expected to work with the faster but unsafe weak isolation modes. This backwards approach to the problem exposes applications to a variety of subtle bugs. At Cockroach Labs, we like thinking about transactional anomalies so much that we named all our conference rooms after them, but I would have a hard time advising with confidence when it is both safe and beneficial to choose <code>SNAPSHOT</code> isolation instead of <code>SERIALIZABLE</code>. Our philosophy is that it’s better to start with safety and work towards performance than the other way around.</p>
+<p>大多数数据库供应商将更强的事务隔离视为一种奇特的选项，由具有特殊一致性需求的应用程序启用。 然而，大多数应用程序都希望使用更快但不安全的弱隔离模式。 这种向后解决问题的方法使应用程序面临各种微妙的错误。 在 Cockroach Labs，我们非常喜欢考虑事务异常，因此我们以它们的名字命名了所有会议室，但当选择快照隔离而不是串行隔离既安全又有益时，我很难充满信心地提出建议。 我们的理念是，最好从安全开始，努力提高性能，而不是相反。</p>
+<h2 id="ACIDRain-Finding-Transactional-Bugs"><a href="#ACIDRain-Finding-Transactional-Bugs" class="headerlink" title="ACIDRain: Finding Transactional Bugs"></a>ACIDRain: Finding Transactional Bugs</h2><p><a target="_blank" rel="noopener" href="http://www.bailis.org/papers/acidrain-sigmod2017.pdf">Recent research at Stanford</a> has explored the degree to which weak isolation leads to real-world bugs. Todd Warszawski and Peter Bailis examined 12 eCommerce applications and found 22 bugs related to transactions, five of which would have been avoided by running at a higher isolation level. Many of these bugs were simple to exploit and had direct financial implications. For example, in five of the tested applications, adding an item to your cart while checking out in another browser tab could result in the item being added to the order for free. The researchers developed tools to identify these vulnerabilities in a semi-automated way, paving the way for similar attacks (which the researchers dubbed “ACIDRain”) to become more prevalent.</p>
+<p>斯坦福大学最近的研究探讨了弱隔离导致现实世界错误的程度。 Todd Warszawski 和 Peter Bailis 检查了 12 个电子商务应用程序，发现了 22 个与事务相关的错误，其中 5 个错误可以通过在更高的隔离级别运行来避免。 其中许多错误很容易被利用，并且会产生直接的财务影响。 例如，在五个测试的应用程序中，在另一个浏览器选项卡中结帐时将商品添加到购物车可能会导致该商品免费添加到订单中。 研究人员开发了工具以半自动方式识别这些漏洞，为类似攻击（研究人员称之为“ACIDRain”）变得更加普遍铺平了道路。</p>
+<p>Most databases that default to weak transactional isolation provide workarounds, such as the (non-standard) <code>FOR UPDATE</code> and <code>LOCK IN SHARE MODE</code> modifiers for <code>SELECT</code> statements. When used correctly, these modifiers can make transactions safe even in weaker isolation levels. However, this is easy to get wrong, and even when used consistently these extensions introduce most of the downsides of <code>SERIALIZABLE</code> mode (in fact, overuse of <code>SELECT FOR UPDATE</code> in a <code>READ COMMITTED</code> transaction can perform worse than a <code>SERIALIZABLE</code> transaction, because it uses exclusive locks where serializability may only require shared locks). The ACIDRain research demonstrates the limitations of this technique: only one in three of the applications that attempted to use <code>SELECT FOR UPDATE</code> feature did so correctly; the others remained vulnerable.</p>
+<p>大多数默认为弱事务隔离的数据库都提供了解决方法，例如 SELECT 语句的（非标准）FOR UPDATE 和 LOCK IN SHARE MODE 修饰符。 如果正确使用，这些修饰符即使在较弱的隔离级别下也可以使事务安全。 然而，这很容易出错，即使一致使用，这些扩展也会引入 SERIALIZABLE 模式的大部分缺点（事实上，在 READ COMMITTED 事务中过度使用 SELECT FOR UPDATE 的性能可能比 SERIALIZABLE 事务更差，因为它使用独占模式） 可串行化可能只需要共享锁的锁）。 ACIDRain 研究表明了该技术的局限性：尝试使用 SELECT FOR UPDATE 功能的应用程序中只有三分之一正确执行了操作； 其他人仍然很脆弱。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Databases that encourage the use of weaker isolation levels have prioritized performance over the safety of your data, leaving you to study subtle interactions between your transactions and implement error-prone workarounds. CockroachDB provides <code>SERIALIZABLE</code> transactions by default to ensure that you always see the consistency that you expect from a transactional database.</p>
+<p>鼓励使用较弱隔离级别的数据库将性能置于数据安全之上，让您可以研究事务之间的微妙交互并实施容易出错的解决方法。 CockroachDB 默认提供 SERIALIZABLE 事务，以确保您始终看到事务数据库所期望的一致性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/" title="Real transactions are serializable">http://example.com/2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/Real transactions are serializable/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag"># 事务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/" rel="prev" title="Linearizability versus Serializability">
+                  <i class="fa fa-angle-left"></i> Linearizability versus Serializability
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9da063eef4b4310ceea56f163a873a0e"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
