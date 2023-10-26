@@ -16,12 +16,12 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="概览CockroachDB 设计的两个目标：可拓展和一致性。开发者经常会有疑问我们是如何做到的。这篇文章详细解释CockroachDB的内部工作原理。对于使用者来说，不需要了解底层架构，所以此文是为了那些想要了解底层的用户。 目标CockroachDB 设计目标：  使人们的生活更轻松，这意味着对于用户来说高度自动化，对于开发者来说更简单。 提供行业领先的一致性，即使在大规模部署当中也是，这意味着">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CockRoackDB 概述">
-<meta property="og:url" content="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="概览CockroachDB 设计的两个目标：可拓展和一致性。开发者经常会有疑问我们是如何做到的。这篇文章详细解释CockroachDB的内部工作原理。对于使用者来说，不需要了解底层架构，所以此文是为了那些想要了解底层的用户。 目标CockroachDB 设计目标：  使人们的生活更轻松，这意味着对于用户来说高度自动化，对于开发者来说更简单。 提供行业领先的一致性，即使在大规模部署当中也是，这意味着">
 <meta property="og:locale" content="zh_CN">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
+<link rel="canonical" href="http://heoric.github.io/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/","path":"2023/01/31/2-数据库/1-cockroachdb/cockorachdb 之 01-架构/","title":"CockRoackDB 概述"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/","path":"2023/01/31/2-数据库/1-cockroachdb/cockorachdb 之 01-架构/","title":"CockRoackDB 概述"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>CockRoackDB 概述 | Leoirc's Blogs</title>
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -713,7 +713,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" title="CockRoackDB 概述">http://example.com/2023/01/31/2-数据库/1-cockroachdb/cockorachdb 之 01-架构/</a>
+      <a href="http://heoric.github.io/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockorachdb%20%E4%B9%8B%2001-%E6%9E%B6%E6%9E%84/" title="CockRoackDB 概述">http://heoric.github.io/2023/01/31/2-数据库/1-cockroachdb/cockorachdb 之 01-架构/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！

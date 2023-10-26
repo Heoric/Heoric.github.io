@@ -16,12 +16,12 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="我一直认为 c++ 的精髓是 虚函数。 虚函数是运行时多状的基础。 今天就来扒一扒虚函数的内部机制。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入C++虚函数">
-<meta property="og:url" content="http://example.com/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="我一直认为 c++ 的精髓是 虚函数。 虚函数是运行时多状的基础。 今天就来扒一扒虚函数的内部机制。">
 <meta property="og:locale" content="zh_CN">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/">
+<link rel="canonical" href="http://heoric.github.io/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/","path":"2023/01/31/3-c++/虚函数/","title":"深入C++虚函数"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/","path":"2023/01/31/3-c++/虚函数/","title":"深入C++虚函数"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>深入C++虚函数 | Leoirc's Blogs</title>
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -278,7 +278,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/" title="深入C++虚函数">http://example.com/2023/01/31/3-c++/虚函数/</a>
+      <a href="http://heoric.github.io/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/" title="深入C++虚函数">http://heoric.github.io/2023/01/31/3-c++/虚函数/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
