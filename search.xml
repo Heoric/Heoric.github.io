@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>回溯算法</title>
+    <url>/2023/09/15/%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>回溯，全排列，N皇后。</p>
+<span id="more"></span>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">permute</span>(vector&lt;<span class="type">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="built_in">dfs</span>(nums, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; res;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(vector&lt;<span class="type">int</span>&gt; nums, <span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x == nums.<span class="built_in">size</span>() - <span class="number">1</span>) &#123;</span><br><span class="line">            res.<span class="built_in">push_back</span>(nums);      <span class="comment">// 添加排列方案</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = x; i &lt; nums.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(nums[i], nums[x]);   <span class="comment">// 交换，将 nums[i] 固定在第 x 位</span></span><br><span class="line">            <span class="built_in">dfs</span>(nums, x + <span class="number">1</span>);         <span class="comment">// 开启固定第 x + 1 位元素</span></span><br><span class="line">            <span class="built_in">swap</span>(nums[i], nums[x]);   <span class="comment">// 恢复交换</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>回溯</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>我的博客</title>
     <url>/2023/01/31/template/</url>
     <content><![CDATA[<p>我的第一篇博客</p>
@@ -18,38 +34,36 @@
       </tags>
   </entry>
   <entry>
-    <title>回溯算法</title>
-    <url>/2023/09/15/%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>回溯，全排列，N皇后。</p>
+    <title>数据库SQL总结</title>
+    <url>/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/template/</url>
+    <content><![CDATA[<p>数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。</p>
+<p>今天我们来讲讲数据库SQL。</p>
 <span id="more"></span>
 
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">permute</span>(vector&lt;<span class="type">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="built_in">dfs</span>(nums, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; res;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(vector&lt;<span class="type">int</span>&gt; nums, <span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x == nums.<span class="built_in">size</span>() - <span class="number">1</span>) &#123;</span><br><span class="line">            res.<span class="built_in">push_back</span>(nums);      <span class="comment">// 添加排列方案</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = x; i &lt; nums.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            <span class="built_in">swap</span>(nums[i], nums[x]);   <span class="comment">// 交换，将 nums[i] 固定在第 x 位</span></span><br><span class="line">            <span class="built_in">dfs</span>(nums, x + <span class="number">1</span>);         <span class="comment">// 开启固定第 x + 1 位元素</span></span><br><span class="line">            <span class="built_in">swap</span>(nums[i], nums[x]);   <span class="comment">// 恢复交换</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<p>基本SQL</p>
+<p>建表</p>
+<p>中级SQL</p>
+<p>高级SQL</p>
+<p>join</p>
 ]]></content>
       <categories>
-        <category>算法</category>
+        <category>数据库</category>
       </categories>
       <tags>
-        <tag>回溯</tag>
+        <tag>SQL</tag>
       </tags>
   </entry>
   <entry>
-    <title>TCP协议深入理解</title>
-    <url>/2023/01/31/1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/template/</url>
+    <title>c++11 新特性</title>
+    <url>/2023/01/31/3-c++/c++11/</url>
     <content><![CDATA[<span id="more"></span>
-
-
-
-
-
-
 
 ]]></content>
       <categories>
-        <category>网络</category>
+        <category>语言</category>
       </categories>
       <tags>
-        <tag>TCP/IP</tag>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -94,6 +108,149 @@
       </tags>
   </entry>
   <entry>
+    <title>深入C++虚函数</title>
+    <url>/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p>我一直认为 c++ 的精髓是 虚函数。</p>
+<p>虚函数是运行时多状的基础。</p>
+<p>今天就来扒一扒虚函数的内部机制。</p>
+<span id="more"></span>
+
+<h3 id="没有虚函数"><a href="#没有虚函数" class="headerlink" title="没有虚函数"></a>没有虚函数</h3><p>我们从 内存 来看 虚函数的 底层机制。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果很明显， 不需要多说什么。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="只有一个虚函数"><a href="#只有一个虚函数" class="headerlink" title="只有一个虚函数"></a>只有一个虚函数</h3><p>接下来，我们看一下，带虚函数的对象的内存。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，对象前面多了八个字节。让我们来看看多了的是什么。</p>
+<p>其实我们都知道，虚函数是在一个虚函数表里面。那么我们看看对象 b 的布局。</p>
+<p>可以看到里面有个 指针，我们把里面的值打出来，看到是 一个函数指针，指向了 func()。</p>
+<p>新定义一个变量 b1，查看 b1 的虚函数表，和内容，可以看到跟 b 是一摸一样的。说明一个类，只有一个虚函数表。</p>
+<p>![image-20230605165441623](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605165441623.png)</p>
+<h3 id="多个虚函数"><a href="#多个虚函数" class="headerlink" title="多个虚函数"></a>多个虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到，对象对大小不变， 虚函数表里多了 func1。</p>
+<p>![image-20230605170310030](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605170310030.png)</p>
+<h3 id="单继承且本身不存在虚函数"><a href="#单继承且本身不存在虚函数" class="headerlink" title="单继承且本身不存在虚函数"></a>单继承且本身不存在虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derive</span> : <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> derive_1;</span><br><span class="line">    <span class="type">int</span> derive_2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    Base b1; </span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Derive d;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">//16</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>直接看内存， 虚函数表的地址不一样，但是指向了相同的函数。</p>
+<p>![image-20230605172826693](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605172826693.png)</p>
+<h3 id="本身不存在虚函数但存在基类虚函数覆盖"><a href="#本身不存在虚函数但存在基类虚函数覆盖" class="headerlink" title="本身不存在虚函数但存在基类虚函数覆盖"></a>本身不存在虚函数但存在基类虚函数覆盖</h3>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++ 模版元编程</title>
+    <url>/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/</url>
+    <content><![CDATA[<p>本系列文章从零开始介绍C++模版元编程，需要有C++基础。</p>
+<span id="more"></span>
+
+<h3 id="函数模版"><a href="#函数模版" class="headerlink" title="函数模版"></a>函数模版</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> a = <span class="built_in">add</span>(<span class="number">42</span>, <span class="number">21</span>);</span><br><span class="line"><span class="keyword">auto</span> d = <span class="built_in">add</span>&lt;<span class="type">double</span>&gt;(<span class="number">41.0</span>, <span class="number">21</span>); <span class="comment">// 无法自动推导类型的时候可以显示的指定类型</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="类模版"><a href="#类模版" class="headerlink" title="类模版"></a>类模版</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">wrapper</span>(T <span class="type">const</span> v) : <span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  <span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">wrapper <span class="title">a</span><span class="params">(<span class="number">1</span>)</span></span>; <span class="comment">// 模版参数推导</span></span><br><span class="line"><span class="function">wrapper&lt;<span class="type">int</span>&gt; <span class="title">b</span><span class="params">(<span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="成员函数模版"><a href="#成员函数模版" class="headerlink" title="成员函数模版"></a>成员函数模版</h3><h4 id="模版类的成员函数"><a href="#模版类的成员函数" class="headerlink" title="模版类的成员函数"></a>模版类的成员函数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">comoosition</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">composition&lt;<span class="type">int</span>&gt; c;</span><br><span class="line">c.<span class="built_in">add</span>(<span class="number">12</span>,<span class="number">32</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="非模版类的成员函数模版"><a href="#非模版类的成员函数模版" class="headerlink" title="非模版类的成员函数模版"></a>非模版类的成员函数模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">compotion</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">compostion c;</span><br><span class="line">c.<span class="built_in">add</span>&lt;<span class="type">int</span>&gt;(<span class="number">12</span>,<span class="number">13</span>);</span><br><span class="line">c.<span class="built_in">add</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="类模版的成员函数模版"><a href="#类模版的成员函数模版" class="headerlink" title="类模版的成员函数模版"></a>类模版的成员函数模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line">pbulic:</span><br><span class="line">  <span class="built_in">wrapper</span>(T <span class="type">const</span> v) : <span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  <span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</span><br><span class="line">  <span class="function">U <span class="title">as</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;U&gt;(value);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成员函数模板的模板形参必须与类模板的模板形参不同</span></span><br><span class="line"></span><br><span class="line"><span class="function">wrapper&lt;<span class="type">double</span>&gt; <span class="title">a</span><span class="params">(<span class="number">42.1</span>)</span></span>;</span><br><span class="line"><span class="keyword">auto</span> d = a.<span class="built_in">get</span>();</span><br><span class="line"><span class="keyword">auto</span> b = a.<span class="built_in">as</span>&lt;<span class="type">int</span>&gt;();</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="模版参数"><a href="#模版参数" class="headerlink" title="模版参数"></a>模版参数</h3><h4 id="类型模版参数"><a href="#类型模版参数" class="headerlink" title="类型模版参数"></a>类型模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="comment">// 不带默认参数</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; <span class="comment">// 带默认参数</span></span><br><span class="line"><span class="keyword">class</span> wrapper &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... T&gt; <span class="comment">// 可变参数模版</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="非类型模版"><a href="#非类型模版" class="headerlink" title="非类型模版"></a>非类型模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span> V&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">foo</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span> V = <span class="number">42</span>&gt;</span><br><span class="line"><span class="keyword">class</span> foo &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span>... V&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">foo</span> &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="type">size_t</span> S&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">buffer</span> &#123;</span><br><span class="line">  T data_[S];</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">constexpr</span> T <span class="type">const</span> * <span class="title">data</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> data_; &#125;</span><br><span class="line">  <span class="keyword">constexpr</span> T&amp; <span class="keyword">operator</span>[](<span class="type">size_t</span> <span class="type">const</span> index) &#123;</span><br><span class="line">    <span class="keyword">return</span> data_[index];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">constexpr</span> T <span class="type">const</span>&amp; <span class="keyword">operator</span>[] (<span class="type">size_t</span> <span class="type">const</span> index) <span class="type">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> data_[index];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">buffer&lt;<span class="type">int</span>, <span class="number">10</span>&gt; b1; </span><br><span class="line">buffer&lt;<span class="type">int</span>, <span class="number">2</span>*<span class="number">5</span>&gt; b2;</span><br></pre></td></tr></table></figure>
+
+<p>看一种更常见的类型</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">device</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">output</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">virtual</span> ~<span class="built_in">device</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="built_in">void</span> (*action) ()&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">smart_device</span> : device &#123;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">output</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    (*action) ();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">say_hello_in_english</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">auto</span> w1 = std::make_unique&lt;smart_device&lt;&amp;say_hello_in_english&gt;&gt;();</span><br><span class="line">w1-&gt;<span class="built_in">output</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="双重模版参数"><a href="#双重模版参数" class="headerlink" title="双重模版参数"></a>双重模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">simple_wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	T value; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">fancy_wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">fancy_wrapper</span>(T <span class="type">const</span> v) :<span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line">  </span><br><span class="line">	<span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt; <span class="function">U <span class="title">as</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;U&gt;(value); </span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">template</span>&lt;<span class="keyword">typename</span>&gt; <span class="keyword">typename</span> W = fancy_wrapper&gt;</span><br><span class="line"><span class="keyword">class</span> wrapping_pair &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">wrapping_pair</span>(T <span class="type">const</span> a, U <span class="type">const</span> b) : <span class="built_in">item1</span>(a), <span class="built_in">item2</span>(b) &#123; &#125;</span><br><span class="line">	W&lt;T&gt; item1;</span><br><span class="line">  W&lt;U&gt; item2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="默认模版参数"><a href="#默认模版参数" class="headerlink" title="默认模版参数"></a>默认模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; </span><br><span class="line"><span class="keyword">class</span> foo &#123; <span class="comment">/*...*/</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U = <span class="type">double</span>&gt; </span><br><span class="line"><span class="keyword">class</span> bar &#123; <span class="comment">/*...*/</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U&gt; </span><br><span class="line"><span class="keyword">class</span> bar &#123; &#125;; <span class="comment">// error, 类模版带默认参数的参数，后面不能跟不带默认参数的参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U&gt; </span><br><span class="line"><span class="type">void</span> <span class="built_in">func</span>() &#123;&#125; <span class="comment">// OK</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; </span><br><span class="line"><span class="keyword">struct</span> foo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; <span class="comment">// error redefinition // of default parameter</span></span><br><span class="line"><span class="keyword">struct</span> foo &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="模版实例化"><a href="#模版实例化" class="headerlink" title="模版实例化"></a>模版实例化</h3><p>模版实例化可以是显式的也可以是隐式的。</p>
+<h4 id="隐式实例化"><a href="#隐式实例化" class="headerlink" title="隐式实例化"></a>隐式实例化</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">foo</span> &#123;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> 	foo&lt;<span class="type">int</span>&gt; *x; <span class="comment">// 不会实例化</span></span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; p;  <span class="comment">// 会</span></span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; p1; <span class="comment">// 会</span></span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; *q; <span class="comment">// 不会</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">foo</span> &#123;</span><br><span class="line">  <span class="type">static</span> T data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; T foo&lt;T&gt;::data = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; a;</span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; b;</span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; c;</span><br><span class="line">  std::cout &lt;&lt; a.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; b.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; c.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">  </span><br><span class="line">  b.data = <span class="number">42</span>;</span><br><span class="line">  </span><br><span class="line">  std::cout &lt;&lt; a.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; b.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 42 </span></span><br><span class="line">  std::cout &lt;&lt; c.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 42</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="显示实例化"><a href="#显示实例化" class="headerlink" title="显示实例化"></a>显示实例化</h4><p>显示实例化分为显示实例化定义和显示实例化声明。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 类模版</span></span><br><span class="line"><span class="keyword">template</span> <span class="keyword">class</span>-key <span class="keyword">template</span>-name &lt;argument-list&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数模版</span></span><br><span class="line"><span class="keyword">template</span> <span class="keyword">return</span>-type <span class="built_in">name</span>&lt;argument-list&gt; (parameter-list);</span><br><span class="line"><span class="keyword">template</span> <span class="keyword">return</span>-type <span class="built_in">name</span>(parameter-list);</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> ns &#123;</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line">    T value;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">template</span> <span class="keyword">struct</span> <span class="title class_">wrapper</span>&lt;<span class="type">int</span>&gt;; <span class="comment">// 显示实例化</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> <span class="keyword">struct</span> <span class="title class_">ns</span>::wrapper&lt;<span class="type">double</span>&gt;; <span class="comment">// 显示实例化</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> ns &#123;</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">template</span> <span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span>, <span class="type">int</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">template</span> <span class="type">double</span> <span class="title">ns::add</span><span class="params">(<span class="type">double</span>, <span class="type">double</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="模版特化"><a href="#模版特化" class="headerlink" title="模版特化"></a>模版特化</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floatiog_point</span> &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span>&lt;<span class="type">float</span>&gt; &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span> &lt;<span class="type">double</span>&gt;&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span> &lt;<span class="type">long</span> <span class="type">double</span>&gt; &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="变量模版"><a href="#变量模版" class="headerlink" title="变量模版"></a>变量模版</h3><h3 id="别名模版"><a href="#别名模版" class="headerlink" title="别名模版"></a>别名模版</h3><h3 id="lambda-模版"><a href="#lambda-模版" class="headerlink" title="lambda 模版"></a>lambda 模版</h3>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TCP协议深入理解</title>
+    <url>/2023/01/31/1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/template/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>操作系统之进程</title>
     <url>/2023/01/31/0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%BF%9B%E7%A8%8B/</url>
     <content><![CDATA[<span id="more"></span>
@@ -108,54 +265,14 @@
       </tags>
   </entry>
   <entry>
-    <title>go channel 用法及原理</title>
-    <url>/2023/01/31/4-go/go%20channel/</url>
-    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="无缓冲"><a href="#无缓冲" class="headerlink" title="无缓冲"></a>无缓冲</h2><p>创建一个channel</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">chan1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="有缓冲"><a href="#有缓冲" class="headerlink" title="有缓冲"></a>有缓冲</h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">chan2 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span> <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<span id="more"></span>
-
-<h2 id="通道方向"><a href="#通道方向" class="headerlink" title="通道方向"></a>通道方向</h2><p>指定channel的方向</p>
-<h2 id="通道选择器"><a href="#通道选择器" class="headerlink" title="通道选择器"></a>通道选择器</h2><p>select </p>
-<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><h3 id="非阻塞"><a href="#非阻塞" class="headerlink" title="非阻塞"></a>非阻塞</h3><p>default</p>
-<h3 id="超时"><a href="#超时" class="headerlink" title="超时"></a>超时</h3><p>time</p>
-<h2 id="通道关闭"><a href="#通道关闭" class="headerlink" title="通道关闭"></a>通道关闭</h2><p>close ，</p>
-<p>可以接收关闭channel的数据，但是不能向关闭的channel发送数据</p>
-<h2 id="通道遍历"><a href="#通道遍历" class="headerlink" title="通道遍历"></a>通道遍历</h2><p>for range 会阻塞</p>
-<h2 id="Timer-和-ticker"><a href="#Timer-和-ticker" class="headerlink" title="Timer 和 ticker"></a>Timer 和 ticker</h2><p>timer 可以再到期之前结束</p>
-<p>ticker 时隔一定时间执行一次。</p>
-<h2 id="通道的实现"><a href="#通道的实现" class="headerlink" title="通道的实现"></a>通道的实现</h2>]]></content>
+    <title>go 接口原理</title>
+    <url>/2023/01/31/4-go/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
       <categories>
         <category>语言</category>
       </categories>
       <tags>
         <tag>go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据库SQL总结</title>
-    <url>/2023/01/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/template/</url>
-    <content><![CDATA[<p>数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。</p>
-<p>今天我们来讲讲数据库SQL。</p>
-<span id="more"></span>
-
-<p>基本SQL</p>
-<p>建表</p>
-<p>中级SQL</p>
-<p>高级SQL</p>
-<p>join</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>SQL</tag>
       </tags>
   </entry>
   <entry>
@@ -247,6 +364,37 @@
       </tags>
   </entry>
   <entry>
+    <title>go channel 用法及原理</title>
+    <url>/2023/01/31/4-go/go%20channel/</url>
+    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="无缓冲"><a href="#无缓冲" class="headerlink" title="无缓冲"></a>无缓冲</h2><p>创建一个channel</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">chan1 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="有缓冲"><a href="#有缓冲" class="headerlink" title="有缓冲"></a>有缓冲</h2><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">chan2 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span> <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<span id="more"></span>
+
+<h2 id="通道方向"><a href="#通道方向" class="headerlink" title="通道方向"></a>通道方向</h2><p>指定channel的方向</p>
+<h2 id="通道选择器"><a href="#通道选择器" class="headerlink" title="通道选择器"></a>通道选择器</h2><p>select </p>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><h3 id="非阻塞"><a href="#非阻塞" class="headerlink" title="非阻塞"></a>非阻塞</h3><p>default</p>
+<h3 id="超时"><a href="#超时" class="headerlink" title="超时"></a>超时</h3><p>time</p>
+<h2 id="通道关闭"><a href="#通道关闭" class="headerlink" title="通道关闭"></a>通道关闭</h2><p>close ，</p>
+<p>可以接收关闭channel的数据，但是不能向关闭的channel发送数据</p>
+<h2 id="通道遍历"><a href="#通道遍历" class="headerlink" title="通道遍历"></a>通道遍历</h2><p>for range 会阻塞</p>
+<h2 id="Timer-和-ticker"><a href="#Timer-和-ticker" class="headerlink" title="Timer 和 ticker"></a>Timer 和 ticker</h2><p>timer 可以再到期之前结束</p>
+<p>ticker 时隔一定时间执行一次。</p>
+<h2 id="通道的实现"><a href="#通道的实现" class="headerlink" title="通道的实现"></a>通道的实现</h2>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>go 闭包现象和原理</title>
     <url>/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/</url>
     <content><![CDATA[<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><h3 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h3><span id="more"></span>
@@ -257,331 +405,6 @@
       </categories>
       <tags>
         <tag>go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>c++ 模版元编程</title>
-    <url>/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/</url>
-    <content><![CDATA[<p>本系列文章从零开始介绍C++模版元编程，需要有C++基础。</p>
-<span id="more"></span>
-
-<h3 id="函数模版"><a href="#函数模版" class="headerlink" title="函数模版"></a>函数模版</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> a = <span class="built_in">add</span>(<span class="number">42</span>, <span class="number">21</span>);</span><br><span class="line"><span class="keyword">auto</span> d = <span class="built_in">add</span>&lt;<span class="type">double</span>&gt;(<span class="number">41.0</span>, <span class="number">21</span>); <span class="comment">// 无法自动推导类型的时候可以显示的指定类型</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="类模版"><a href="#类模版" class="headerlink" title="类模版"></a>类模版</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">wrapper</span>(T <span class="type">const</span> v) : <span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  <span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">wrapper <span class="title">a</span><span class="params">(<span class="number">1</span>)</span></span>; <span class="comment">// 模版参数推导</span></span><br><span class="line"><span class="function">wrapper&lt;<span class="type">int</span>&gt; <span class="title">b</span><span class="params">(<span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="成员函数模版"><a href="#成员函数模版" class="headerlink" title="成员函数模版"></a>成员函数模版</h3><h4 id="模版类的成员函数"><a href="#模版类的成员函数" class="headerlink" title="模版类的成员函数"></a>模版类的成员函数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">comoosition</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">composition&lt;<span class="type">int</span>&gt; c;</span><br><span class="line">c.<span class="built_in">add</span>(<span class="number">12</span>,<span class="number">32</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="非模版类的成员函数模版"><a href="#非模版类的成员函数模版" class="headerlink" title="非模版类的成员函数模版"></a>非模版类的成员函数模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">compotion</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">compostion c;</span><br><span class="line">c.<span class="built_in">add</span>&lt;<span class="type">int</span>&gt;(<span class="number">12</span>,<span class="number">13</span>);</span><br><span class="line">c.<span class="built_in">add</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="类模版的成员函数模版"><a href="#类模版的成员函数模版" class="headerlink" title="类模版的成员函数模版"></a>类模版的成员函数模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line">pbulic:</span><br><span class="line">  <span class="built_in">wrapper</span>(T <span class="type">const</span> v) : <span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  <span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt;</span><br><span class="line">  <span class="function">U <span class="title">as</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;U&gt;(value);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成员函数模板的模板形参必须与类模板的模板形参不同</span></span><br><span class="line"></span><br><span class="line"><span class="function">wrapper&lt;<span class="type">double</span>&gt; <span class="title">a</span><span class="params">(<span class="number">42.1</span>)</span></span>;</span><br><span class="line"><span class="keyword">auto</span> d = a.<span class="built_in">get</span>();</span><br><span class="line"><span class="keyword">auto</span> b = a.<span class="built_in">as</span>&lt;<span class="type">int</span>&gt;();</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="模版参数"><a href="#模版参数" class="headerlink" title="模版参数"></a>模版参数</h3><h4 id="类型模版参数"><a href="#类型模版参数" class="headerlink" title="类型模版参数"></a>类型模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="comment">// 不带默认参数</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; <span class="comment">// 带默认参数</span></span><br><span class="line"><span class="keyword">class</span> wrapper &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... T&gt; <span class="comment">// 可变参数模版</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">wrapper</span> &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="非类型模版"><a href="#非类型模版" class="headerlink" title="非类型模版"></a>非类型模版</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span> V&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">foo</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span> V = <span class="number">42</span>&gt;</span><br><span class="line"><span class="keyword">class</span> foo &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">int</span>... V&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">foo</span> &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="type">size_t</span> S&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">buffer</span> &#123;</span><br><span class="line">  T data_[S];</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">constexpr</span> T <span class="type">const</span> * <span class="title">data</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> data_; &#125;</span><br><span class="line">  <span class="keyword">constexpr</span> T&amp; <span class="keyword">operator</span>[](<span class="type">size_t</span> <span class="type">const</span> index) &#123;</span><br><span class="line">    <span class="keyword">return</span> data_[index];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">constexpr</span> T <span class="type">const</span>&amp; <span class="keyword">operator</span>[] (<span class="type">size_t</span> <span class="type">const</span> index) <span class="type">const</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> data_[index];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">buffer&lt;<span class="type">int</span>, <span class="number">10</span>&gt; b1; </span><br><span class="line">buffer&lt;<span class="type">int</span>, <span class="number">2</span>*<span class="number">5</span>&gt; b2;</span><br></pre></td></tr></table></figure>
-
-<p>看一种更常见的类型</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">device</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">output</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">virtual</span> ~<span class="built_in">device</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="built_in">void</span> (*action) ()&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">smart_device</span> : device &#123;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">output</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    (*action) ();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">say_hello_in_english</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;Hello, world!\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">auto</span> w1 = std::make_unique&lt;smart_device&lt;&amp;say_hello_in_english&gt;&gt;();</span><br><span class="line">w1-&gt;<span class="built_in">output</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="双重模版参数"><a href="#双重模版参数" class="headerlink" title="双重模版参数"></a>双重模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">simple_wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	T value; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">fancy_wrapper</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">fancy_wrapper</span>(T <span class="type">const</span> v) :<span class="built_in">value</span>(v) &#123;&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="function">T <span class="type">const</span>&amp; <span class="title">get</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line">  </span><br><span class="line">	<span class="keyword">template</span> &lt;<span class="keyword">typename</span> U&gt; <span class="function">U <span class="title">as</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">static_cast</span>&lt;U&gt;(value); </span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">  T value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U, <span class="keyword">template</span>&lt;<span class="keyword">typename</span>&gt; <span class="keyword">typename</span> W = fancy_wrapper&gt;</span><br><span class="line"><span class="keyword">class</span> wrapping_pair &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">wrapping_pair</span>(T <span class="type">const</span> a, U <span class="type">const</span> b) : <span class="built_in">item1</span>(a), <span class="built_in">item2</span>(b) &#123; &#125;</span><br><span class="line">	W&lt;T&gt; item1;</span><br><span class="line">  W&lt;U&gt; item2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="默认模版参数"><a href="#默认模版参数" class="headerlink" title="默认模版参数"></a>默认模版参数</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; </span><br><span class="line"><span class="keyword">class</span> foo &#123; <span class="comment">/*...*/</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U = <span class="type">double</span>&gt; </span><br><span class="line"><span class="keyword">class</span> bar &#123; <span class="comment">/*...*/</span> &#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U&gt; </span><br><span class="line"><span class="keyword">class</span> bar &#123; &#125;; <span class="comment">// error, 类模版带默认参数的参数，后面不能跟不带默认参数的参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>, <span class="keyword">typename</span> U&gt; </span><br><span class="line"><span class="type">void</span> <span class="built_in">func</span>() &#123;&#125; <span class="comment">// OK</span></span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; </span><br><span class="line"><span class="keyword">struct</span> foo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T = <span class="type">int</span>&gt; <span class="comment">// error redefinition // of default parameter</span></span><br><span class="line"><span class="keyword">struct</span> foo &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="模版实例化"><a href="#模版实例化" class="headerlink" title="模版实例化"></a>模版实例化</h3><p>模版实例化可以是显式的也可以是隐式的。</p>
-<h4 id="隐式实例化"><a href="#隐式实例化" class="headerlink" title="隐式实例化"></a>隐式实例化</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">foo</span> &#123;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> 	foo&lt;<span class="type">int</span>&gt; *x; <span class="comment">// 不会实例化</span></span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; p;  <span class="comment">// 会</span></span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; p1; <span class="comment">// 会</span></span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; *q; <span class="comment">// 不会</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">foo</span> &#123;</span><br><span class="line">  <span class="type">static</span> T data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; T foo&lt;T&gt;::data = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  foo&lt;<span class="type">int</span>&gt; a;</span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; b;</span><br><span class="line">  foo&lt;<span class="type">double</span>&gt; c;</span><br><span class="line">  std::cout &lt;&lt; a.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; b.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; c.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">  </span><br><span class="line">  b.data = <span class="number">42</span>;</span><br><span class="line">  </span><br><span class="line">  std::cout &lt;&lt; a.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0 </span></span><br><span class="line">  std::cout &lt;&lt; b.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 42 </span></span><br><span class="line">  std::cout &lt;&lt; c.data &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 42</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="显示实例化"><a href="#显示实例化" class="headerlink" title="显示实例化"></a>显示实例化</h4><p>显示实例化分为显示实例化定义和显示实例化声明。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 类模版</span></span><br><span class="line"><span class="keyword">template</span> <span class="keyword">class</span>-key <span class="keyword">template</span>-name &lt;argument-list&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数模版</span></span><br><span class="line"><span class="keyword">template</span> <span class="keyword">return</span>-type <span class="built_in">name</span>&lt;argument-list&gt; (parameter-list);</span><br><span class="line"><span class="keyword">template</span> <span class="keyword">return</span>-type <span class="built_in">name</span>(parameter-list);</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> ns &#123;</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">wrapper</span> &#123;</span><br><span class="line">    T value;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">template</span> <span class="keyword">struct</span> <span class="title class_">wrapper</span>&lt;<span class="type">int</span>&gt;; <span class="comment">// 显示实例化</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> <span class="keyword">struct</span> <span class="title class_">ns</span>::wrapper&lt;<span class="type">double</span>&gt;; <span class="comment">// 显示实例化</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> ns &#123;</span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">  <span class="function">T <span class="title">add</span><span class="params">(T <span class="type">const</span> a, T <span class="type">const</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">template</span> <span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span>, <span class="type">int</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">template</span> <span class="type">double</span> <span class="title">ns::add</span><span class="params">(<span class="type">double</span>, <span class="type">double</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h3 id="模版特化"><a href="#模版特化" class="headerlink" title="模版特化"></a>模版特化</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floatiog_point</span> &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span>&lt;<span class="type">float</span>&gt; &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span> &lt;<span class="type">double</span>&gt;&#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">is_floating_point</span> &lt;<span class="type">long</span> <span class="type">double</span>&gt; &#123;</span><br><span class="line">  <span class="keyword">constexpr</span> <span class="type">static</span> <span class="type">bool</span> value = <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="变量模版"><a href="#变量模版" class="headerlink" title="变量模版"></a>变量模版</h3><h3 id="别名模版"><a href="#别名模版" class="headerlink" title="别名模版"></a>别名模版</h3><h3 id="lambda-模版"><a href="#lambda-模版" class="headerlink" title="lambda 模版"></a>lambda 模版</h3>]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>c++11 新特性</title>
-    <url>/2023/01/31/3-c++/c++11/</url>
-    <content><![CDATA[<span id="more"></span>
-
-]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深入C++虚函数</title>
-    <url>/2023/01/31/3-c++/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<p>我一直认为 c++ 的精髓是 虚函数。</p>
-<p>虚函数是运行时多状的基础。</p>
-<p>今天就来扒一扒虚函数的内部机制。</p>
-<span id="more"></span>
-
-<h3 id="没有虚函数"><a href="#没有虚函数" class="headerlink" title="没有虚函数"></a>没有虚函数</h3><p>我们从 内存 来看 虚函数的 底层机制。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果很明显， 不需要多说什么。</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="只有一个虚函数"><a href="#只有一个虚函数" class="headerlink" title="只有一个虚函数"></a>只有一个虚函数</h3><p>接下来，我们看一下，带虚函数的对象的内存。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>可以看出来，对象前面多了八个字节。让我们来看看多了的是什么。</p>
-<p>其实我们都知道，虚函数是在一个虚函数表里面。那么我们看看对象 b 的布局。</p>
-<p>可以看到里面有个 指针，我们把里面的值打出来，看到是 一个函数指针，指向了 func()。</p>
-<p>新定义一个变量 b1，查看 b1 的虚函数表，和内容，可以看到跟 b 是一摸一样的。说明一个类，只有一个虚函数表。</p>
-<p>![image-20230605165441623](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605165441623.png)</p>
-<h3 id="多个虚函数"><a href="#多个虚函数" class="headerlink" title="多个虚函数"></a>多个虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">  	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 16</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 8</span></span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">// 12</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>可以看到，对象对大小不变， 虚函数表里多了 func1。</p>
-<p>![image-20230605170310030](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605170310030.png)</p>
-<h3 id="单继承且本身不存在虚函数"><a href="#单继承且本身不存在虚函数" class="headerlink" title="单继承且本身不存在虚函数"></a>单继承且本身不存在虚函数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> base_1;</span><br><span class="line">    <span class="type">int</span> base_2;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derive</span> : <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> derive_1;</span><br><span class="line">    <span class="type">int</span> derive_2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    Base b1; </span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_1) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">offsetof</span>(Base, base_2) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Derive d;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">sizeof</span>(b) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>; <span class="comment">//16</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>直接看内存， 虚函数表的地址不一样，但是指向了相同的函数。</p>
-<p>![image-20230605172826693](&#x2F;Users&#x2F;leoric&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230605172826693.png)</p>
-<h3 id="本身不存在虚函数但存在基类虚函数覆盖"><a href="#本身不存在虚函数但存在基类虚函数覆盖" class="headerlink" title="本身不存在虚函数但存在基类虚函数覆盖"></a>本身不存在虚函数但存在基类虚函数覆盖</h3>]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>go 接口原理</title>
-    <url>/2023/01/31/4-go/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2>]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>设计模式之设计原则</title>
-    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/00-%E6%A6%82%E8%BF%B0/</url>
-    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
-<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
-</li>
-<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
-</li>
-</ul>
-<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
-<li><p>对拓展开放，对更改封闭。</p>
-</li>
-<li><p>类模块应该是可拓展的，但是不可修改。</p>
-</li>
-</ul>
-<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
-<li>一个类应该仅有一个引起它变化的原因。</li>
-<li>变化的方向隐含着类的责任。</li>
-</ul>
-<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
-<li>子类必须能够体会他们的基类（IS-A）。</li>
-<li>继承表达类型抽象。</li>
-</ul>
-<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
-<li><p>不应该强迫客户程序依赖他们不用的方法</p>
-</li>
-<li><p>接口应该小而完备</p>
-</li>
-</ul>
-<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
-<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
-<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
-</ul>
-<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><span id="more"></span>
-
-
-
-<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
-<p>结构型</p>
-<p>行为型</p>
-<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
-<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
-<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
-<p>枚举，if-else。 设计抽象类，和子类。</p>
-<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
-<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>设计模式之抽象工厂模式</title>
-    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/2021/02/13/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
-<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
-</li>
-<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
-</li>
-</ul>
-<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
-<li><p>对拓展开放，对更改封闭。</p>
-</li>
-<li><p>类模块应该是可拓展的，但是不可修改。</p>
-</li>
-</ul>
-<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
-<li>一个类应该仅有一个引起它变化的原因。</li>
-<li>变化的方向隐含着类的责任。</li>
-</ul>
-<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
-<li>子类必须能够体会他们的基类（IS-A）。</li>
-<li>继承表达类型抽象。</li>
-</ul>
-<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
-<li><p>不应该强迫客户程序依赖他们不用的方法</p>
-</li>
-<li><p>接口应该小而完备</p>
-</li>
-</ul>
-<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
-<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
-<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
-</ul>
-<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
-<p>结构型</p>
-<p>行为型</p>
-<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
-<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
-<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
-<p>枚举，if-else。 设计抽象类，和子类。</p>
-<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
-<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
-  </entry>
-  <entry>
-    <title>设计模式之简单工厂模式</title>
-    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/02-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>高效表达</title>
-    <url>/2023/06/09/6-%E9%97%B2%E8%B0%88/%E9%AB%98%E6%A0%A1%E8%A1%A8%E8%BE%BE/</url>
-    <content><![CDATA[<p>我们在和别人沟通的时候，经常会遇到这种情况，自己觉得表达清楚了，可是对方却不明白你在说什么。</p>
-<p>比如跟同事分享自己的设计方案，明明准备的非常好，别人却不理解。跟领导汇报工作，明明做了很多，领导确认为你没做多少。下面我们就来聊聊如何高效表达。用最简单的话表达最有价值的信息。</p>
-<span id="more"></span>
-
-<h2 id="定主题"><a href="#定主题" class="headerlink" title="定主题"></a>定主题</h2><p>高效表达的第一步就是先说观点。</p>
-<p>第一用一句话先表达你的观点。</p>
-<p>第二直接表达，不要绕弯子。</p>
-]]></content>
-      <categories>
-        <category>方法</category>
-      </categories>
-      <tags>
-        <tag>表达</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>理解分布式 cap 理论</title>
-    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/cap%20/</url>
-    <content><![CDATA[<h3 id="CAP理论概述"><a href="#CAP理论概述" class="headerlink" title="CAP理论概述"></a>CAP理论概述</h3><p>一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。</p>
-<span id="more"></span>
-
-
-
-<h3 id="Consistency-一致性"><a href="#Consistency-一致性" class="headerlink" title="Consistency 一致性"></a>Consistency 一致性</h3><p>系统结果一致</p>
-<h3 id="Availability-可用性"><a href="#Availability-可用性" class="headerlink" title="Availability 可用性"></a>Availability 可用性</h3><p>系统可用</p>
-<h3 id="Partition-Tolerance分区容错性"><a href="#Partition-Tolerance分区容错性" class="headerlink" title="Partition Tolerance分区容错性"></a>Partition Tolerance分区容错性</h3><p>出现分区问题，仍然可提供服务</p>
-]]></content>
-      <categories>
-        <category>分布式</category>
-      </categories>
-      <tags>
-        <tag>分布式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深入理解raft</title>
-    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/raft/</url>
-    <content><![CDATA[<span id="more"></span>
-
-
-
-]]></content>
-      <categories>
-        <category>分布式</category>
-      </categories>
-      <tags>
-        <tag>raft</tag>
       </tags>
   </entry>
   <entry>
@@ -689,6 +512,200 @@
       <tags>
         <tag>运维</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>理解分布式 cap 理论</title>
+    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/cap%20/</url>
+    <content><![CDATA[<h3 id="CAP理论概述"><a href="#CAP理论概述" class="headerlink" title="CAP理论概述"></a>CAP理论概述</h3><p>一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。</p>
+<span id="more"></span>
+
+
+
+<h3 id="Consistency-一致性"><a href="#Consistency-一致性" class="headerlink" title="Consistency 一致性"></a>Consistency 一致性</h3><p>系统结果一致</p>
+<h3 id="Availability-可用性"><a href="#Availability-可用性" class="headerlink" title="Availability 可用性"></a>Availability 可用性</h3><p>系统可用</p>
+<h3 id="Partition-Tolerance分区容错性"><a href="#Partition-Tolerance分区容错性" class="headerlink" title="Partition Tolerance分区容错性"></a>Partition Tolerance分区容错性</h3><p>出现分区问题，仍然可提供服务</p>
+]]></content>
+      <categories>
+        <category>分布式</category>
+      </categories>
+      <tags>
+        <tag>分布式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之抽象工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/01-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>深入理解raft</title>
+    <url>/2023/01/31/7-%E5%88%86%E5%B8%83%E5%BC%8F/raft/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+]]></content>
+      <categories>
+        <category>分布式</category>
+      </categories>
+      <tags>
+        <tag>raft</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>高效表达</title>
+    <url>/2023/06/09/6-%E9%97%B2%E8%B0%88/%E9%AB%98%E6%A0%A1%E8%A1%A8%E8%BE%BE/</url>
+    <content><![CDATA[<p>我们在和别人沟通的时候，经常会遇到这种情况，自己觉得表达清楚了，可是对方却不明白你在说什么。</p>
+<p>比如跟同事分享自己的设计方案，明明准备的非常好，别人却不理解。跟领导汇报工作，明明做了很多，领导确认为你没做多少。下面我们就来聊聊如何高效表达。用最简单的话表达最有价值的信息。</p>
+<span id="more"></span>
+
+<h2 id="定主题"><a href="#定主题" class="headerlink" title="定主题"></a>定主题</h2><p>高效表达的第一步就是先说观点。</p>
+<p>第一用一句话先表达你的观点。</p>
+<p>第二直接表达，不要绕弯子。</p>
+]]></content>
+      <categories>
+        <category>方法</category>
+      </categories>
+      <tags>
+        <tag>表达</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之设计原则</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/00-%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
+<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
+</li>
+<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
+</li>
+</ul>
+<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
+<li><p>对拓展开放，对更改封闭。</p>
+</li>
+<li><p>类模块应该是可拓展的，但是不可修改。</p>
+</li>
+</ul>
+<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
+<li>一个类应该仅有一个引起它变化的原因。</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
+<li>子类必须能够体会他们的基类（IS-A）。</li>
+<li>继承表达类型抽象。</li>
+</ul>
+<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
+<li><p>不应该强迫客户程序依赖他们不用的方法</p>
+</li>
+<li><p>接口应该小而完备</p>
+</li>
+</ul>
+<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
+<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
+<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
+</ul>
+<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><span id="more"></span>
+
+
+
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
+<p>结构型</p>
+<p>行为型</p>
+<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
+<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
+<p>枚举，if-else。 设计抽象类，和子类。</p>
+<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
+<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>设计模式之简单工厂模式</title>
+    <url>/2023/01/31/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/02-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82/</url>
+    <content><![CDATA[<span id="more"></span>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>安装软件加速</title>
+    <url>/2023/01/31/%E8%AE%BA%E6%96%87/0-brew/</url>
+    <content><![CDATA[<p>安装软件加速</p>
+<span id="more"></span>
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">ALL_PROXY=socks5://127.0.0.1:1086 brew update</span><br><span class="line"></span><br><span class="line">brew upgrade go</span><br><span class="line"></span><br><span class="line">ALL_PROXY=socks5://127.0.0.1:1086 brew install xxx</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2021/02/13/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="面向对象设计原则"><a href="#面向对象设计原则" class="headerlink" title="面向对象设计原则"></a>面向对象设计原则</h2><h3 id="依赖倒置原则（DIP）"><a href="#依赖倒置原则（DIP）" class="headerlink" title="依赖倒置原则（DIP）"></a>依赖倒置原则（DIP）</h3><ul>
+<li><p>高层模块（稳定）不应该依赖底层模块（变化），二者都应该依赖于抽象（稳定）。</p>
+</li>
+<li><p>抽象（稳定）不应该依赖于实现细节（变化），实现细节应该依赖于抽象（稳定）。</p>
+</li>
+</ul>
+<h3 id="开放封闭原则（OCP）"><a href="#开放封闭原则（OCP）" class="headerlink" title="开放封闭原则（OCP）"></a>开放封闭原则（OCP）</h3><ul>
+<li><p>对拓展开放，对更改封闭。</p>
+</li>
+<li><p>类模块应该是可拓展的，但是不可修改。</p>
+</li>
+</ul>
+<h3 id="单一职责原则（SRP）"><a href="#单一职责原则（SRP）" class="headerlink" title="单一职责原则（SRP）"></a>单一职责原则（SRP）</h3><ul>
+<li>一个类应该仅有一个引起它变化的原因。</li>
+<li>变化的方向隐含着类的责任。</li>
+</ul>
+<h3 id="Liskov-替换原则（LSP）"><a href="#Liskov-替换原则（LSP）" class="headerlink" title="Liskov 替换原则（LSP）"></a>Liskov 替换原则（LSP）</h3><ul>
+<li>子类必须能够体会他们的基类（IS-A）。</li>
+<li>继承表达类型抽象。</li>
+</ul>
+<h3 id="接口隔离原则（ISP）"><a href="#接口隔离原则（ISP）" class="headerlink" title="接口隔离原则（ISP）"></a>接口隔离原则（ISP）</h3><ul>
+<li><p>不应该强迫客户程序依赖他们不用的方法</p>
+</li>
+<li><p>接口应该小而完备</p>
+</li>
+</ul>
+<h3 id="优先使用对象组合，而不是类继承"><a href="#优先使用对象组合，而不是类继承" class="headerlink" title="优先使用对象组合，而不是类继承"></a>优先使用对象组合，而不是类继承</h3><ul>
+<li>类继承通常为 “白箱复用”，对象组合通常为 “黑箱复用”。</li>
+<li>继承在某种程度上破坏了封装性，子类父类耦合性高。</li>
+</ul>
+<h3 id="封装变化点"><a href="#封装变化点" class="headerlink" title="封装变化点"></a>封装变化点</h3><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>创建型</p>
+<p>结构型</p>
+<p>行为型</p>
+<h3 id="针对接口编程，而不是针对实现编程"><a href="#针对接口编程，而不是针对实现编程" class="headerlink" title="针对接口编程，而不是针对实现编程"></a>针对接口编程，而不是针对实现编程</h3><h2 id="模版方法"><a href="#模版方法" class="headerlink" title="模版方法"></a>模版方法</h2><p>library 提供需需函数，application 实现library 的虚函数，librayr 提供程序的流程。</p>
+<p>晚绑定 代替 早绑定。   早-&gt;晚。</p>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>支持多种税收的计算，</p>
+<p>枚举，if-else。 设计抽象类，和子类。</p>
+<h2 id="观察者模式-x2F-event"><a href="#观察者模式-x2F-event" class="headerlink" title="观察者模式&#x2F; event"></a>观察者模式&#x2F; event</h2><p>文件分割器，进度条的显示。</p>
+<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2>]]></content>
   </entry>
   <entry>
     <title>CockRoackDB 概述</title>
@@ -1207,6 +1224,117 @@
       </categories>
   </entry>
   <entry>
+    <title>git 忽略文件</title>
+    <url>/2023/09/17/10-%E5%B7%A5%E5%85%B7/git/0-brew/</url>
+    <content><![CDATA[<p>git 用法记录</p>
+<span id="more"></span>
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。</span><br><span class="line">正确的做法是在每个<span class="built_in">clone</span>下来的仓库中手动设置不要检查特定文件的更改情况。</span><br><span class="line">git update-index --assume-unchanged FILE </span><br><span class="line">在FILE处输入要忽略的文件。</span><br><span class="line">如果要还原的话，使用命令：</span><br><span class="line">git update-index --no-assume-unchanged FILE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pkg/.../manual/manual.go</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Many Faces of Consistency</title>
+    <url>/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/</url>
+    <content><![CDATA[<p><em>The notion of consistency is used across di</em>ff<em>erent computer science disciplines from distributed systems to database systems to computer architecture. It turns out that consistency can mean quite di</em>ff<em>erent things across these disciplines, depending on who uses it and in what context it appears. We identify two broad types of consistency,</em> state consistency <em>and</em> operation consistency*, which di<em>ff</em>er fundamentally in meaning and scope. We explain how these types map to the many examples of consistency in each discipline.*</p>
+<p>一致性的概念用于不同的计算机科学学科，从分布式系统到数据库系统再到计算机体系结构。 事实证明，一致性在这些学科中可能意味着完全不同的事情，具体取决于谁使用它以及它出现在什么背景下。 我们确定了两大类一致性：状态一致性和操作一致性，它们在含义和范围上有根本的不同。 我们解释这些类型如何映射到每个学科中的许多一致性示例。</p>
+<span id="more"></span>
+
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h2><p>Consistency is an important consideration in computer systems that <em>share</em> and <em>replicate</em> data. Whereas early computing systems had private data exclusively, shared data has become increasingly common as computers have evolved from calculating machines to tools of information exchange. Shared data occurs in many types of systems, from distributed systems to database systems to multiprocessor systems. For example, in distributed systems, users across the network share files (e.g., source code), network names (e.g., DNS entries), data blobs (e.g., images in a key-value store), or system metadata (e.g., configuration information). In database systems, users share tables containing account information, product descriptions, flight bookings, and seat assignments. Within a computer, processor cores share cache lines and physical memory.</p>
+<p>一致性是共享和复制数据的计算机系统中的一个重要考虑因素。 早期的计算系统只拥有私有数据，而随着计算机从计算机器发展为信息交换工具，共享数据变得越来越普遍。 共享数据出现在许多类型的系统中，从分布式系统到数据库系统再到多处理器系统。 例如，在分布式系统中，网络上的用户共享文件（例如源代码）、网络名称（例如 DNS 条目）、数据 blob（例如键值存储中的图像）或系统元数据（例如配置） 信息）。 在数据库系统中，用户共享包含帐户信息、产品描述、航班预订和座位分配的表。 在计算机内，处理器核心共享高速缓存行和物理内存。</p>
+<p>In addition to sharing, computer systems increasingly replicate data within and across components. In distributed systems, each site may hold a local replica of files, network names, blobs, or system metadata— these replicas, called caches, increase performance of the system. Database systems also replicate rows or tables for speed or to tolerate disasters. Within a computer, parts of memory are replicated at various points in the cache hierarchy (l1, l2, l3 caches), again for speed. We use the term replica broadly to mean any copies of the data maintained by the system.</p>
+<p>除了共享之外，计算机系统还越来越多地在组件内部和组件之间复制数据。 在分布式系统中，每个站点都可以保存文件、网络名称、blob 或系统元数据的本地副本 - 这些副本（称为缓存）可以提高系统的性能。 数据库系统还复制行或表以提高速度或容忍灾难。 在计算机内，部分内存会在缓存层次结构（l1、l2、l3 缓存）中的各个点进行复制，同样是为了提高速度。 我们广泛使用术语“副本”来表示系统维护的数据的任何副本。</p>
+<p>In all these systems, data sharing and replication raise a fundamental question: what should happen if a client modifies some data items and simultaneously, or within a short time, another client reads or modifies the same items, possibly at a different replica?</p>
+<p>在所有这些系统中，数据共享和复制提出了一个基本问题：如果一个客户端修改了某些数据项，并且同时或在短时间内，另一个客户端可能在不同的副本上读取或修改了相同的项目，那么会发生什么情况？</p>
+<p>This question does not have a single answer that is right in every context. A consistency property governs the possible outcomes by limiting how data can change or what clients can observe in each case. For example, with DNS, a change to a domain may not be visible for hours; the only guarantee is that updates will be seen eventually—an example of a property called eventual consistency [23]. But with flight seat assignments, updates must be immediate and mutually exclusive, to ensure that no two passengers receive the same seat—an example of a strong type of consistency provided by serializability [5]. Other consistency properties include causal consis- tency [13], read-my-writes [21], bounded staleness [1], continuous consistency [1, 25], release consistency [10], fork consistency [16], epsilon serializability [18], and more.</p>
+<p>这个问题没有一个在所有情况下都正确的答案。 一致性属性通过限制数据的更改方式或客户端在每种情况下可以观察到的内容来控制可能的结果。 例如，对于 DNS，对域的更改可能在数小时内不可见； 唯一的保证是最终会看到更新——一个称为最终一致性的属性的例子[23]。 但对于航班座位分配，更新必须是立即且互斥的，以确保没有两名乘客获得相同的座位——这是可串行性提供的强一致性的一个例子 [5]。 其他一致性属性包括因果一致性 [13]、读我的写 [21]、有界陈旧性 [1]、连续一致性 [1, 25]、发布一致性 [10]、分叉一致性 [16]、epsilon 可串行性 [ 18]等等。</p>
+<p>Consistency is important because developers must understand the answer to the above fundamental question. This is especially true when the clients interacting with the system are not humans but other computer programs that must be coded to deal with all possible outcomes.</p>
+<p>一致性很重要，因为开发人员必须理解上述基本问题的答案。 当与系统交互的客户端不是人类而是必须编码以处理所有可能结果的其他计算机程序时尤其如此。</p>
+<p>In this article, we examine many examples of how consistency is used across three computer science disci- plines: distributed systems, database systems, and computer architecture. We find that the use of consistency varies significantly across these disciplines. To bring some clarity, we identify two fundamentally different types of consistency: state consistency and operation consistency. State consistency concerns the state of the system and establishes constraints on the allowable relationships between different data items or different replicas of the same items. For instance, state consistency might require that two replicas store the same value when updates are not outstanding. Operation consistency concerns operations on the system and establishes constraints on what results they may return. For instance, operation consistency might require that a read of a file reflects the contents of the most recent write on that file. State consistency tends to be simpler and application dependent, while operation consistency tends to be more complex and application agnostic. Both types of consistency are important and, in our opinion, our communities should more clearly disentangle them.</p>
+<p>在本文中，我们研究了如何在三个计算机科学学科（分布式系统、数据库系统和计算机体系结构）中使用一致性的许多示例。 我们发现，在这些学科中，一致性的使用存在显着差异。 为了清楚起见，我们确定了两种根本不同类型的一致性：状态一致性和操作一致性。 状态一致性涉及系统的状态，并对不同数据项或相同项的不同副本之间允许的关系建立约束。 例如，状态一致性可能要求两个副本在更新未完成时存储相同的值。 操作一致性涉及系统上的操作，并对它们可能返回的结果建立约束。 例如，操作一致性可能要求文件的读取反映该文件最近写入的内容。 状态一致性往往更简单且依赖于应用程序，而操作一致性往往更复杂且与应用程序无关。 这两种类型的一致性都很重要，我们认为，我们的社区应该更清楚地理清它们。</p>
+<p>While this article discusses different forms of consistency, it focuses on the <em>semantics</em> of consistency rather than the <em>mechanisms</em> of consistency. Semantics refer to what consistency properties the system provides, while mechanisms refer to how the system enforces those properties. Semantics and mechanisms are closely related but it is important to understand the former without needing to understand the latter.</p>
+<p>虽然本文讨论了不同形式的一致性，但它重点关注一致性的语义而不是一致性的机制。 语义是指系统提供哪些一致性属性，而机制是指系统如何强制执行这些属性。 语义和机制密切相关，但重要的是理解前者而不需要理解后者。</p>
+<p>The rest of this article is organized as follows. We first explain the abstract system model and terminology used throughout the article in Section 2. We present the two types of consistency and their various embodiments in Section 3. We indicate how these consistency types occur across different disciplines in Section 4.</p>
+<p>本文的其余部分组织如下。 我们首先在第 2 节中解释整篇文章中使用的抽象系统模型和术语。我们在第 3 节中介绍了两种类型的一致性及其各种实施例。我们在第 4 节中指出了这些一致性类型如何在不同学科中发生。</p>
+<h2 id="2-Abstract-model"><a href="#2-Abstract-model" class="headerlink" title="2 Abstract model"></a>2 Abstract model</h2><p>We consider a setting with multiple <em>clients</em> that submit <em>operations</em> to be executed by the system. Clients could be human users, computer programs, or other systems that do not concern us. Operations might include simple read and write, read-modify-write, start and commit a transaction, and range queries. Operations typically act on data items, which could be blocks, files, key-value pairs, DNS entries, rows of tables, memory locations, and so on.</p>
+<p>我们考虑具有多个客户端的设置，这些客户端提交要由系统执行的操作。 客户端可以是人类用户、计算机程序或与我们无关的其他系统。 操作可能包括简单的读取和写入、读取-修改-写入、启动和提交事务以及范围查询。 操作通常作用于数据项，这些数据项可以是块、文件、键值对、DNS 条目、表行、内存位置等。</p>
+<p>The system has a <em>state</em>, which includes the current values of the data items. In some cases, we are interested in the consistency of client caches and other replicas. In these cases, the caches and other replicas are considered to be part of the system and the system state includes their contents.</p>
+<p>系统具有状态，其中包括数据项的当前值。 在某些情况下，我们对客户端缓存和其他副本的一致性感兴趣。 在这些情况下，缓存和其他副本被视为系统的一部分，并且系统状态包括它们的内容。</p>
+<p>An operation execution is not instantaneous; rather, it <em>starts</em> when a client submits the operation, and it <em>finishes</em> when the client obtains its response from the system. If the operation execution returns no response, then it finishes when the system is no longer actively processing it.</p>
+<p>操作执行不是即时的； 相反，它在客户端提交操作时开始，在客户端从系统获得响应时结束。 如果操作执行没有返回响应，则当系统不再主动处理它时，操作就会完成。</p>
+<p>Operations are distinct from operation executions. Operations are static and a system has relatively few of them, such as read and write. Operation executions, on the other hand, are dynamic and numerous. A client can execute the same operation many times, but each operation execution is unique. While technically we should separate operations from operation executions, we often blur the distinction when it is clear from the context (e.g., we might say that the read operation finishes, rather than the execution of the read operation finishes).</p>
+<p>操作与操作执行不同。 操作是静态的，系统中的操作相对较少，例如读和写。 另一方面，操作执行是动态的且数量众多。 一个客户端可以多次执行相同的操作，但每次操作的执行都是唯一的。 虽然从技术上讲，我们应该将操作与操作执行分开，但当上下文清楚时，我们经常会模糊区别（例如，我们可能会说读操作完成，而不是读操作的执行完成）。</p>
+<h2 id="3-Two-types-of-consistency"><a href="#3-Two-types-of-consistency" class="headerlink" title="3 Two types of consistency"></a>3 Two types of consistency</h2><p>We are interested in what happens when shared and replicated data is accessed concurrently or nearly con- currently by many clients. Generally speaking, consistency places constraints on the allowable outcomes of operations, according to the needs of the application. We now define two broad types of consistency. One places constraints on the state, the other on the results of operations.</p>
+<p>我们感兴趣的是当许多客户端同时或几乎同时访问共享和复制的数据时会发生什么。 一般来说，一致性根据应用程序的需要对操作的允许结果施加限制。 我们现在定义两种广泛的一致性类型。 一是对 状态施加限制，二是对操作结果施加限制。</p>
+<h3 id="3-1-State-consistency"><a href="#3-1-State-consistency" class="headerlink" title="3.1 State consistency"></a>3.1 State consistency</h3><p>State consistency pertains to the state of the system; it consists of properties that users expect the state to satisfy despite concurrent access and the existence of multiple replicas. State consistency is also applicable when data can be corrupted by errors (crashes, bit flips, bugs, etc), but this is not the focus of this article.</p>
+<p>状态一致性与系统的状态有关； 它由用户期望状态满足的属性组成，尽管存在并发访问和存在多个副本。 当数据可能因错误（崩溃、位翻转、错误等）而损坏时，状态一致性也适用，但这不是本文的重点。</p>
+<p>State consistency can be of many subcategories, based on how the properties of state are expressed. We explain these subcategories next.</p>
+<p>根据状态属性的表达方式，状态一致性可以分为许多子类别。 接下来我们将解释这些子类别。</p>
+<h4 id="3-1-1-Invariants-不变量"><a href="#3-1-1-Invariants-不变量" class="headerlink" title="3.1.1 Invariants 不变量"></a>3.1.1 Invariants 不变量</h4><p>The simplest subcategory of state consistency is one defined by an invariant—a predicate on the state that must evaluate to true. For instance, in a concurrent program, a singly linked list must not contain cycles. In a multiprocessor system, if the local caches of two processors keep a value for some address, it must be the same value. In a social network, if user x is a friend of user y then y is a friend of x. In a photo sharing application, if a photo album includes an image then the image’s owner is the album.</p>
+<p>状态一致性最简单的子类别是由不变量定义的，即状态上必须评估为 true 的谓词。 例如，在并发程序中，单链表不能包含循环。 在多处理器系统中，如果两个处理器的本地缓存保存某个地址的值，则该值必须是相同的值。 在社交网络中，如果用户 x 是用户 y 的朋友，则 y 也是 x 的朋友。 在照片共享应用程序中，如果相册包含图像，则该图像的所有者就是相册。</p>
+<p>In database systems, two important examples are uniqueness constraints and referential integrity. A <em>unique- ness constraint</em> on a column of a table requires that each value appearing in that column must occur in at most one row. This property is crucial for the primary keys of tables.</p>
+<p>在数据库系统中，两个重要的例子是唯一性约束和引用完整性。 表的列的唯一性约束要求该列中出现的每个值必须最多出现在一行中。 该属性对于表的主键至关重要。</p>
+<p><em>Referential integrity</em> concerns a table that refers to keys of another table. Databases may store relations between tables by including keys of a table within columns in another table. Referential integrity requires that the included keys are indeed keys in the first table. For instance, in a bank database, suppose that an accounts table includes a column for the account owner, which is a user id; meanwhile, the user id is the primary key in a users table, which has detailed information for each user. A referential integrity constraint requires that user ids in the accounts table must indeed exist in the users table.</p>
+<p>参照完整性涉及引用另一个表的键的表。 数据库可以通过将一个表的键包含在另一个表的列中来存储表之间的关系。 参照完整性要求包含的键确实是第一个表中的键。 例如，在银行数据库中，假设帐户表包含帐户所有者的列，即用户 ID； 同时，用户id是用户表中的主键，该表包含每个用户的详细信息。 参照完整性约束要求帐户表中的用户 ID 必须确实存在于用户表中。</p>
+<p>Another example of state consistency based on invariants is <em>mutual consistency</em>, used in distributed systems that are replicated using techniques such as primary-backup [2]. Mutual consistency requires that replicas have the same state when there are no outstanding updates. During updates, replicas may diverge temporarily since the updates are not applied simultaneously at all replicas.</p>
+<p>基于不变量的状态一致性的另一个例子是相互一致性，用于使用主备份等技术进行复制的分布式系统[2]。 相互一致性要求副本在没有未完成的更新时具有相同的状态。 在更新期间，副本可能会暂时出现分歧，因为更新不会同时应用于所有副本。</p>
+<h4 id="3-1-2-Error-bounds-误差范围"><a href="#3-1-2-Error-bounds-误差范围" class="headerlink" title="3.1.2 Error bounds 误差范围"></a>3.1.2 Error bounds 误差范围</h4><p>If the state contains numerical data, the consistency property could indicate a maximum deviation or error from the expected. For instance, the values at two replicas may diverge by at most ε. In an internet-of-things system, the reported value of a sensor, such as a thermometer, must be within ε from the actual value being measured. This example relates the state of the system to the state of the world. Error bounds were first proposed within the database community [1] and the basic idea was later revived in the distributed systems community [25].</p>
+<p>如果状态包含数值数据，则一致性属性可能表示与预期的最大偏差或错误。 例如，两个副本上的值最多可能会差异ε。 在图Internet系统中，传感器的报告值（例如温度计）必须在ε内，从实际的值中。 这个示例将系统状态与世界状态联系起来。 误差界最初是在数据库社区中提出的[1]，后来在分布式系统社区中恢复了基本思想[25]。</p>
+<h4 id="3-1-3-Limits-on-proportion-of-violations-违规比例限制"><a href="#3-1-3-Limits-on-proportion-of-violations-违规比例限制" class="headerlink" title="3.1.3 Limits on proportion of violations 违规比例限制"></a>3.1.3 Limits on proportion of violations 违规比例限制</h4><p>If there are many properties or invariants, it may be unrealistic to expect all of them to hold, but rather just a high percentage. For instance, the system may require that at most one user’s invariants are violated in a pool of a million users; this could make sense if the system can compensate a small fraction of users for inconsistencies in their data.</p>
+<p>如果存在许多属性或不变量，则期望它们全部成立而只是高百分比成立可能是不现实的。 例如，系统可能要求在一百万个用户的池中最多违反一个用户的不变量； 如果系统可以补偿一小部分用户的数据不一致，那么这可能是有意义的。</p>
+<h4 id="3-1-4-Importance-重要性"><a href="#3-1-4-Importance-重要性" class="headerlink" title="3.1.4 Importance 重要性"></a>3.1.4 Importance 重要性</h4><p>Properties or invariants may be critical, important, advisable, desirable, or optional, where users expect only the critical properties to hold at all times. Developers can use more expensive and effective mechanisms for the more important invariants. For instance, when a user changes her password at a web site, the system might require all replicas of the user account to have the same password before acknowledging the change to the user. This property is implemented by contacting all replicas and waiting for replies, which can be an overly expensive mechanism for less important properties.</p>
+<p>属性或不变量可能是关键的、重要的、可取的、理想的或可选的，其中用户期望始终只保留关键属性。 开发人员可以针对更重要的不变量使用更昂贵和更有效的机制。 例如，当用户在网站上更改密码时，系统可能要求该用户帐户的所有副本都具有相同的密码，然后再向用户确认更改。 该属性是通过联系所有副本并等待回复来实现的，对于不太重要的属性来说，这可能是一种过于昂贵的机制。</p>
+<h4 id="3-1-5-Eventual-invariants-最终不变量"><a href="#3-1-5-Eventual-invariants-最终不变量" class="headerlink" title="3.1.5 Eventual invariants 最终不变量"></a>3.1.5 Eventual invariants 最终不变量</h4><p>An invariant may need to hold only after some time has passed. For example, under eventual consistency, replicas need not be the same at all times, as long as they <em>eventually</em> become the same when updates stop occurring. This eventual property is appropriate because replicas may be updated in the background or using some anti-entropy mechanism, where it takes an indeterminate amount of time for a replica to receive and process an update. Eventual consistency was coined by the distributed systems community [23], though the database community previously proposed the idea of reconciling replicas that diverge during partitions [9].</p>
+<p>不变量可能只需要在经过一段时间后才保持不变。 例如，在最终一致性下，副本不需要始终相同，只要当更新停止发生时它们最终变得相同即可。 此最终属性是合适的，因为副本可以在后台或使用某种反熵机制进行更新，其中副本接收和处理更新需要不确定的时间。 最终一致性是由分布式系统社区[23]创造的，尽管数据库社区之前提出了协调分区期间分歧的副本的想法[9]。</p>
+<p>State consistency is limited to properties on state, but in many cases clients care less about the state and more about the results that they obtain from the system. In other words, what matters is the behavior that clients observe from interacting with the system. These cases call for a different form of consistency, which we discuss next.</p>
+<p>状态一致性仅限于状态的属性，但在许多情况下，客户端不太关心状态，而更关心他们从系统获得的结果。 换句话说，重要的是客户通过与系统交互观察到的行为。 这些情况需要不同形式的一致性，我们接下来讨论。</p>
+<h3 id="3-2-Operation-consistency"><a href="#3-2-Operation-consistency" class="headerlink" title="3.2 Operation consistency"></a>3.2 Operation consistency</h3><p>Operation consistency pertains to the operation executions by clients; it consists of properties that indicate whether operations return acceptable results. These properties can tie together many operation executions, as shown in the examples below.</p>
+<p>操作一致性涉及客户端执行的操作； 它由指示操作是否返回可接受的结果的属性组成。 这些属性可以将许多操作执行联系在一起，如下面的示例所示。</p>
+<p>Operation consistency has subcategories, with different ways to define the consistency property. We explain these subcategories next.</p>
+<p>操作一致性有不同的子类别，有不同的方法来定义一致性属性。 接下来我们将解释这些子类别。</p>
+<h4 id="3-2-1-Sequential-equivalence-顺序等价"><a href="#3-2-1-Sequential-equivalence-顺序等价" class="headerlink" title="3.2.1 Sequential equivalence 顺序等价"></a>3.2.1 Sequential equivalence 顺序等价</h4><p>This subcategory defines the permitted operation results of a concurrent execution in terms of the permitted oper- ation results in a sequential execution—one in which operations are executed one at a time, without concurrency. More specifically, there must be a way to take the execution of all operations submitted by any subset of clients, and then <em>reduce</em> them to a sequential execution that is correct. The exact nature of the reduction depends on the specific consistency property. Technically, the notion of a correct sequential execution is system dependent, so it needs to be specified as well, but it is often obvious and therefore omitted.</p>
+<p>该子类别根据顺序执行（一次执行一个操作，无并发）中允许的操作结果来定义并发执行的允许操作结果。 更具体地说，必须有一种方法来执行任何客户端子集提交的所有操作，然后将它们简化为正确的顺序执行。 减少的确切性质取决于特定的一致性属性。 从技术上讲，正确顺序执行的概念取决于系统，因此也需要指定它，但它通常是显而易见的，因此被省略。</p>
+<p>We now give some examples of sequential equivalence. 现在我们给出一些顺序等价的例子。</p>
+<p><em>Linearizability [12]</em> is a strong form of consistency. Intuitively, the constraint is that each operation must appear to occur at an instantaneous point between its start and finish times, where execution at these instanta- neous points form a valid sequential execution. More precisely, we define a partial order &lt; from the concurrent execution, as follows: <em>op</em>1 &lt; <em>op</em>2 iff <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a legal total order <em>T</em> of all operations with their results, such that (1) <em>T</em> is consistent with &lt;, meaning that if <em>op</em>1 &lt; <em>op</em>2 then <em>op</em>1 appears before <em>op</em>2 in <em>T</em>, and (2) <em>T</em> defines a correct sequential execution. Linearizability has been traditionally used to define the correct behavior of concurrent data structures; more recently, it has also been used in distributed systems.</p>
+<p>线性化[12]是一致性的一种强形式。 直观上，约束是每个操作必须出现在其开始时间和结束时间之间的瞬时点，其中在这些瞬时点的执行形成有效的顺序执行。 更准确地说，我们从并发执行中定义一个偏序 &lt; ，如下所示： op1 &lt; op2 iff op1 在 op2 开始之前完成。 所有操作及其结果必须存在合法的全序 T，使得 (1) T 与 &lt; 一致，这意味着如果 op1 &lt; op2 则 op1 在 T 中出现在 op2 之前，并且 (2) T 定义了正确的顺序执行 。 线性化传统上被用来定义并发数据结构的正确行为。 最近，它也被用于分布式系统。</p>
+<p><em>Sequential consistency [14]</em> is also a strong form of consistency, albeit weaker than linearizability. Intuitively, it requires that operations execute as if they were totally ordered in a way that respects the order in which each client issues operations. More precisely, we define a partial order &lt; as follows: <em>op</em>1 &lt; <em>op</em>2 iff both operations are executed by the same client and <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a total order <em>T</em> such that (1) <em>T</em> is consistent with &lt;, and (2) <em>T</em> defines a correct sequential execution. These conditions are similar to linearizability, except that &lt; reflects just the local order of operations at each client. Sequential consistency is used to define a strongly consistent memory model of a computer, but it could also be used in the context of concurrent data structures.</p>
+<p>顺序一致性[14]也是一致性的一种强形式，尽管比线性化弱。 直观上，它要求操作执行时就好像它们是完全有序的，并且尊重每个客户端发出操作的顺序。 更准确地说，我们定义一个偏序 &lt; 如下： op1 &lt; op2 当且仅当两个操作都由同一客户端执行并且 op1 在 op2 开始之前完成。 必须存在一个全序 T，使得 (1) T 与 &lt; 一致，并且 (2) T 定义了正确的顺序执行。 这些条件类似于线性化能力，除了 &lt; 只反映每个客户端的本地操作顺序。 顺序一致性用于定义计算机的强一致性内存模型，但它也可以用在并发数据结构的上下文中。</p>
+<p>The next examples pertain to systems that support <em>transactions</em>. Intuitively, a transaction is a bundle of one or more operations that must be executed as a whole. More precisely, there are special operations to start, commit, and abort transactions; and operations on data items are associated with a transaction. The system provides an isolation property, which ensures that transactions do not significantly interfere with one another. There are many isolation properties: serializability, strong session serializability, order-preserving serializability, snapshot isolation, read committed, repeatable reads, etc. All of these are forms of operation consistency, and several of them are of the sequential equivalence subcategory. Here are some examples, all of which are used in the context of database systems.</p>
+<p>下一个示例涉及支持事务的系统。 直观上，事务是一组必须作为一个整体执行的一个或多个操作。 更准确地说，有一些特殊的操作来启动、提交和中止事务； 对数据项的操作与事务相关联。 该系统提供了一种隔离属性，可确保事务不会严重干扰彼此。 隔离属性有很多：可序列化、强会话可序列化、保序可序列化、快照隔离、已提交读、可重复读等。所有这些都是操作一致性的形式，其中一些属于顺序等效子类别。 以下是一些示例，所有这些示例都在数据库系统的上下文中使用。</p>
+<p><em>Serializability [5]</em> intuitively guarantees that each transaction appears to execute in series. More precisely, serializability imposes a constraint on the operations in a system: the schedule corresponding to those operations must be equivalent to a serial schedule of transactions. The serial schedule is called a serialization of the schedule.</p>
+<p>可串行性[5]直观地保证每个事务看起来都是串行执行的。 更准确地说，可串行性对系统中的操作施加了约束：与这些操作相对应的调度必须等于事务的串行调度。 串行调度称为调度的串行化。</p>
+<p><em>Strong session serializability [8]</em> addresses an issue with serializability. Serializability allows transactions of the same client to be reordered, which can be undesirable at times. Strong session serializability imposes additional constraints on top of serializability. More precisely, each transaction is associated with a session, and the constraint is that serializability must hold (as defined above) and the serialization must respect the order of transactions within every session: if transaction <em>T</em>1 occurs before <em>T</em>2 in the same session, then <em>T</em>2 is not serialized before <em>T</em>1.</p>
+<p>强大的会话可串行性[8]解决了可串行性的问题。 可串行性允许对同一客户端的事务进行重新排序，这有时是不可取的。 强大的会话可串行性在可串行性之上施加了额外的约束。 更准确地说，每个事务都与一个会话关联，并且约束是可串行性必须保持（如上面所定义），并且序列化必须遵守每个会话中事务的顺序：如果事务 T1 在同一会话中发生在 T2 之前，则 T2 在 T1 之前未序列化。</p>
+<p><em>Order-preserving serializability [24]</em>, also called strict serializability [6, 17] or strong serializability [7], requires that the serialization order respect the real-time ordering of transactions. More precisely, the constraint is that serializability must hold and the serialization must satisfy the requirement that, if transaction <em>T</em>1 commits before <em>T</em>2 starts, then <em>T</em>2 is not serialized before <em>T</em>1.</p>
+<p>保序序列化[24]，也称为严格序列化[6, 17]或强序列化[7]，要求序列化顺序尊重事务的实时排序。 更准确地说，约束是可串行性必须成立，并且串行化必须满足以下要求：如果事务 T1 在 T2 开始之前提交，则 T2 不会在 T1 之前序列化。</p>
+<h4 id="3-2-2-Reference-equivalence-参考等效"><a href="#3-2-2-Reference-equivalence-参考等效" class="headerlink" title="3.2.2 Reference equivalence 参考等效"></a>3.2.2 Reference equivalence 参考等效</h4><p>Reference equivalence is a generalization of sequential equivalence. It defines the permitted operation results by requiring the concurrent execution to be equivalent to a given reference, where the notion of equivalence and the reference depend on the consistency property. We now give some examples for systems with transactions. These examples occur often in the context of database systems.</p>
+<p>参考等价是顺序等价的推广。 它通过要求并发执行等效于给定的引用来定义允许的操作结果，其中等效的概念和引用取决于一致性属性。 我们现在给出一些具有事务的系统的示例。 这些例子经常出现在数据库系统的环境中。</p>
+<p><em>Snapshot isolation [4]</em> requires that transactions behave identically to a certain reference implementation, that is, transactions must have the same outcome as in the reference implementation, and operations must return the same results. The reference implementation is as follows. When a transaction starts, it gets assigned a monotonic start timestamp. When the transaction reads data, it reads from a snapshot of the system as of the start timestamp. When a transaction <em>T</em>1 wishes to commit, the system obtains a monotonic commit timestamp and verifies whether there is some other transaction <em>T</em>2 such that (1) <em>T</em>2 updates some item that <em>T</em>1 also updates, and (2) <em>T</em>2 has committed with a commit timestamp between <em>T</em>1’s start and commit timestamp. If so, then <em>T</em>1 is aborted; otherwise, <em>T</em>1 is committed and all its updates are applied instantaneously as of the time of <em>T</em>1’s commit timestamp.</p>
+<p>快照隔离[4]要求事务的行为与某个参考实现相同，即事务必须具有与参考实现相同的结果，并且操作必须返回相同的结果。 参考实现如下。 当事务开始时，它会被分配一个单调的开始时间戳。 当事务读取数据时，它从截至开始时间戳的系统快照中读取。 当事务 T1 希望提交时，系统获取单调提交时间戳并验证是否存在其他事务 T2，以便 (1) T2 更新 T1 也更新的某些项目，以及 (2) T2 已提交，且提交时间戳介于 T1 的开始和提交时间戳。 如果是，则 T1 中止； 否则，T1 将被提交，并且自 T1 的提交时间戳记起立即应用其所有更新。</p>
+<p>Interestingly, the next two properties are examples of reference equivalence where the reference is itself defined by another consistency property. This other property is in the serial equivalence subcategory in the first example, and it is in the reference equivalence subcategory in the second example.</p>
+<p>有趣的是，接下来的两个属性是引用等效的示例，其中引用本身是由另一个一致性属性定义的。 该其他属性在第一个示例中位于序列等效子类别中，在第二个示例中位于参考等效子类别中。</p>
+<p><em>One-copy serializability [5]</em> pertains to a replicated database system. The replicated system must behave like a reference system, which is a system that is not replicated and provides serializability.</p>
+<p>单副本可串行化[5]适用于复制数据库系统。 复制系统的行为必须类似于参考系统，参考系统是一个不复制并提供可串行性的系统。</p>
+<p><em>One-copy snapshot isolation [15]</em> also pertains to a replicated system. The requirement is that it must behave like a system that is not replicated and that provides snapshot isolation.</p>
+<p>单副本快照隔离[15]也适用于复制系统。 要求是它的行为必须像一个不复制且提供快照隔离的系统。</p>
+<h4 id="3-2-3-Read-write-centric-以读写为中心"><a href="#3-2-3-Read-write-centric-以读写为中心" class="headerlink" title="3.2.3 Read-write centric 以读写为中心"></a>3.2.3 Read-write centric 以读写为中心</h4><p>The above subcategories of operation consistency apply to systems with arbitrary operations. The read-write centric subcategory applies to systems with two very specific operations: read and write. These systems are important because they include many types of storage systems, such as block storage systems, key value storage systems, and processors accessing memory. By focusing on the two operations, this subcategory permits prop- erties that directly evoke the semantics of the operations. In particular, a write operation returns no information other than an acknowledgment or error status, which has no consistency implications. Thus, the consistency properties focus on the results of reads. Common to these properties is the notion of a read <em>seeing</em> the values of a set of writes, as we now explain. Each read is affected by some writes in the system; if every write covers the entire data item, then writes overwrite each other and the read returns the value written by one of them. But if the writes update just part of a data item, the read returns a combination of the written values in some appropriate order. In either case, the crucial consideration is the set of writes that <em>could</em> have potentially affected the read, irrespective of whether the writes are partial or not; we say that the read <em>sees</em> those writes. This notion is used to define several known consistency properties, as we now exemplify.</p>
+<p>上述操作一致性的子类别适用于具有任意操作的系统。 以读写为中心的子类别适用于具有两个非常具体的操作的系统：读和写。 这些系统很重要，因为它们包括许多类型的存储系统，例如块存储系统、键值存储系统和访问内存的处理器。 通过关注这两个操作，该子类别允许直接唤起操作语义的属性。 特别是，写操作除了确认或错误状态之外不返回任何信息，这没有一致性影响。 因此，一致性属性集中于读取的结果。 正如我们现在所解释的，这些属性的共同点是读取看到一组写入的值的概念。 每次读都会受到系统中一些写的影响； 如果每次写入都覆盖整个数据项，则写入会相互覆盖，并且读取会返回其中之一写入的值。 但是，如果写入仅更新数据项的一部分，则读取将按某种适当的顺序返回写入值的组合。 无论哪种情况，关键的考虑因素是可能影响读取的一组写入，无论写入是否部分； 我们说读可以看到那些写。 正如我们现在举例的那样，这个概念用于定义几个已知的一致性属性。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>oracle 层级查询</title>
     <url>/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/2-oracle/oracle%E7%B3%BB%E5%88%97%E4%B9%8B%2002-%E5%B1%82%E7%BA%A7%E6%9F%A5%E8%AF%A2/</url>
     <content><![CDATA[<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="1-Hierarchical-Queries"><a href="#1-Hierarchical-Queries" class="headerlink" title="1. Hierarchical Queries"></a>1. Hierarchical Queries</h2><p>如果嫌描述啰嗦，直接 看 例子<a href="#info"> prior 例子</a></p>
@@ -1351,6 +1479,169 @@
       <categories>
         <category>数据库</category>
       </categories>
+  </entry>
+  <entry>
+    <title>存储</title>
+    <url>/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/</url>
+    <content><![CDATA[<p>数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。</p>
+<p>今天我们来讲讲数据库SQL。</p>
+<span id="more"></span>
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Relational Databases</span><br><span class="line">Storage</span><br><span class="line">Execution</span><br><span class="line">Concurrency Control</span><br><span class="line">Recovery</span><br><span class="line">Distributed Databases</span><br><span class="line">Potpourri</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如何将数据存储在磁盘上 ？</p>
+<p>需要暴露那些 API ？</p>
+<p>如何表示磁盘上文件中的数据 ？</p>
+<p>如果管理内存和磁盘之间的数据移动。（buffer pools）</p>
+<p>第一个问题</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">File Storage</span><br><span class="line">Page Layout</span><br><span class="line">Tuple Layout</span><br></pre></td></tr></table></figure>
+
+
+
+<p>首先 如何将 数据库组织在 一系列 page 中。</p>
+<p>然后 如何将 这些 page 保存在文件中</p>
+<p>然后 这些 page 中的 tuple 是什么样的</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Storage Manager 负责维护磁盘上的文件。</span><br><span class="line">这些文件为 page 的 集合。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">page storage architecture</span><br><span class="line">不同数据库管理 page 文件使用不同的方式</span><br><span class="line"></span><br><span class="line">HEAP FILE</span><br><span class="line">Sequential/Sorted FILE</span><br><span class="line">hashing File</span><br></pre></td></tr></table></figure>
+
+
+
+<p>HEAP FILE 无序的</p>
+<p>链表。page目录</p>
+<h4 id="该如何表示page-存储架构"><a href="#该如何表示page-存储架构" class="headerlink" title="该如何表示page 存储架构?"></a>该如何表示page 存储架构?</h4><p>最常⻅的方式是使用Heap File Organization.</p>
+<p>数据库中的 heap 文件是一个无序的 page 集合。</p>
+<p>用 page 目录来表示page 对应的位置。</p>
+<p>page header里面有 page 大小，checksum，数据库版本之类的东西。</p>
+<p>当新版本发布时候，可以判断根据不同版本来解析page。</p>
+<h4 id="在一个page中，我们可以通过两种不同的方式来表示数据"><a href="#在一个page中，我们可以通过两种不同的方式来表示数据" class="headerlink" title="在一个page中，我们可以通过两种不同的方式来表示数据"></a>在一个page中，我们可以通过两种不同的方式来表示数据</h4><p>面向 tuple 的方式 和 log-structured 的策略</p>
+<p>page header 里面有个 slot 数组 ，表明 tuple 数据。</p>
+<h3 id="buffer-pool"><a href="#buffer-pool" class="headerlink" title="buffer pool"></a>buffer pool</h3><p>malloc 一块内存，分成固定大小的 chunk，叫做  frame。</p>
+<p>page table 用来跟踪内存中有哪些 page。必须是线程安全的</p>
+<p>page catalog 记录page 在数据库的文件的什么位置。需要持久化。</p>
+<p>page table 记录 buffer pool 中 page 的位置，不需要持久化。</p>
+<p>LRU 算法 LRU 的变体clock；</p>
+<p>优化 ：</p>
+<ol>
+<li><p>LRU-K</p>
+</li>
+<li><p>多个buff er池</p>
+</li>
+<li><p>priority hints(优先级提示)</p>
+</li>
+</ol>
+<h2 id="hash-table"><a href="#hash-table" class="headerlink" title="hash table"></a>hash table</h2><ul>
+<li>hash functions</li>
+<li>Static Hashing Schemes</li>
+<li>Dynamic Hashing Schemes</li>
+</ul>
+<p>hash functions</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">CRC-64 (1975)</span><br><span class="line">MurmurHash (2008)</span><br><span class="line">Google CityHash (2011)</span><br><span class="line">FaceBook XXHash (2012)   ---- 最好</span><br><span class="line">Google FarmHash (2014)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>SQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linearizability versus Serializability</title>
+    <url>/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/</url>
+    <content><![CDATA[<h2 id="Linearizability-versus-Serializability"><a href="#Linearizability-versus-Serializability" class="headerlink" title="[Linearizability versus Serializability]"></a>[Linearizability versus Serializability]</h2><p>线性化与串行化</p>
+<p>原文链接</p>
+<p>(<a href="http://www.bailis.org/blog/linearizability-versus-serializability/">http://www.bailis.org/blog/linearizability-versus-serializability/</a>)</p>
+<span id="more"></span>
+
+<p>Linearizability and serializability are both important properties about interleavings of operations in databases and distributed systems, and it’s easy to get them confused. This post gives a short, simple, and hopefully practical overview of the differences between the two.</p>
+<p>线性化和串行化都是数据库和分布式系统中操作交错的重要属性，很容易将它们混淆。 这篇文章对两者之间的差异进行了简短、简单且实用的概述。</p>
+<h4 id="Linearizability-single-operation-single-object-real-time-order"><a href="#Linearizability-single-operation-single-object-real-time-order" class="headerlink" title="Linearizability: single-operation, single-object, real-time order"></a>Linearizability: single-operation, single-object, real-time order</h4><p><em><a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Linearizability</a> is a guarantee about single operations on single objects.</em> It provides a real-time (i.e., wall-clock) guarantee on the behavior of a set of single operations (often reads and writes) on a single object (e.g., distributed register or data item).</p>
+<p>线性化是对单个对象上的单个操作的保证。 它为单个对象（例如分布式寄存器或数据项）上的一组单个操作（通常是读取和写入）的行为提供实时（即挂钟）保证。</p>
+<p>In plain English, under linearizability, writes should appear to be instantaneous. Imprecisely, once a write completes, all later reads (where “later” is defined by wall-clock start time) should return the value of that write or the value of a later write. Once a read returns a particular value, all later reads should return that value or the value of a later write.</p>
+<p>用简单的英语来说，在线性化下，写入应该看起来是瞬时的。 不精确地说，一旦写入完成，所有后续读取（其中“稍后”由挂钟开始时间定义）都应返回该写入的值或稍后写入的值。 一旦读取返回特定值，所有后续读取都应返回该值或后续写入的值。</p>
+<p>Linearizability for read and write operations is synonymous with the term “atomic consistency” and is the “C,” or “consistency,” in Gilbert and Lynch’s <a href="http://lpd.epfl.ch/sgilbert/pubs/BrewersConjecture-SigAct.pdf">proof of the CAP Theorem</a>. We say linearizability is <em>composable</em> (or “local”) because, if operations on each object in a system are linearizable, then all operations in the system are linearizable.</p>
+<p>读写操作的线性化与术语“原子一致性”同义，在 Gilbert 和 Lynch 的 CAP 定理证明中是“C”或“一致性”。 我们说线性化是可组合的（或“局部的”），因为如果系统中每个对象的操作都是线性化的，那么系统中的所有操作都是线性化的。</p>
+<h4 id="Serializability-multi-operation-multi-object-arbitrary-total-order"><a href="#Serializability-multi-operation-multi-object-arbitrary-total-order" class="headerlink" title="Serializability: multi-operation, multi-object, arbitrary total order"></a>Serializability: multi-operation, multi-object, arbitrary total order</h4><p><em>Serializability is a guarantee about transactions, or groups of one or more operations over one or more objects.</em> It guarantees that the execution of a set of transactions (usually containing read and write operations) over multiple items is equivalent to <em>some</em> serial execution (total ordering) of the transactions.</p>
+<p><em>可串行性是对事务或对一个或多个对象的一个或多个操作组的保证。</em>它保证对多个项目执行一组事务（通常包含读取和写入操作）相当于<em>某些</em>串行 事务的执行（总排序）。</p>
+<p>Serializability is the traditional “I,” or isolation, in <a href="http://sites.fas.harvard.edu/~cs265/papers/haerder-1983.pdf">ACID</a>. If users’ transactions each preserve application correctness (“C,” or consistency, in ACID), a serializable execution also preserves correctness. Therefore, serializability is a mechanism for guaranteeing database correctness.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:mechanism">1</a></p>
+<p>可串行性是 ACID 中传统的“I”或隔离。 如果每个用户的事务都保持应用程序的正确性（“C”，即 ACID 中的一致性），则可序列化执行也会保持正确性。 因此，可序列化是保证数据库正确性的一种机制。1</p>
+<p>Unlike linearizability, serializability does not—by itself—impose any real-time constraints on the ordering of transactions. Serializability is also not composable. Serializability does not imply any kind of deterministic order—it simply requires that <em>some</em> equivalent serial execution exists.</p>
+<p>与线性化不同，可串行化本身并不对事务的排序施加任何实时约束。 可串行化也是不可组合的。 可串行性并不意味着任何类型的确定性顺序 - 它只是需要存在某种等效的串行执行。</p>
+<h4 id="Strict-Serializability-Why-don’t-we-have-both"><a href="#Strict-Serializability-Why-don’t-we-have-both" class="headerlink" title="Strict Serializability: Why don’t we have both?"></a>Strict Serializability: Why don’t we have both?</h4><p>Combining serializability and linearizability yields <em>strict serializability</em>: transaction behavior is equivalent to some serial execution, and the serial order corresponds to real time. For example, say I begin and commit transaction T1, which writes to item <em>x</em>, and you later begin and commit transaction T2, which reads from <em>x</em>. A database providing strict serializability for these transactions will place T1 before T2 in the serial ordering, and T2 will read T1’s write. A database providing serializability (but not strict serializability) could order T2 before T1.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:implementation">2</a></p>
+<p>将串行化和线性化相结合会产生严格的串行化：事务行为相当于某种串行执行，并且串行顺序对应于实时。 例如，假设我开始并提交事务 T1，它写入项目 x，而您稍后开始并提交事务 T2，它从 x 读取。 为这些事务提供严格可串行性的数据库将在串行排序中将 T1 置于 T2 之前，并且 T2 将读取 T1 的写入。 提供可序列化（但不是严格可序列化）的数据库可以在 T1.2 之前排序 T2</p>
+<p>As <a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Herlihy and Wing</a> note, “linearizability can be viewed as a special case of strict serializability where transactions are restricted to consist of a single operation applied to a single object.”</p>
+<p>正如 Herlihy 和 Wing 所指出的，“线性化可以被视为严格串行化的一种特殊情况，其中事务仅限于由应用于单个对象的单个操作组成。”</p>
+<h4 id="Coordination-costs-and-real-world-deployments"><a href="#Coordination-costs-and-real-world-deployments" class="headerlink" title="Coordination costs and real-world deployments"></a>Coordination costs and real-world deployments</h4><p>Neither linearizability nor serializability is achievable without coordination. That is we can’t provide either guarantee with availability (i.e., CAP “AP”) under an asynchronous network.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:hardness">3</a></p>
+<p>如果没有协调，线性化和串行化都无法实现。 也就是说，我们无法在异步网络下提供可用性保证（即 CAP“AP”）。3</p>
+<p>In practice, your database is <a href="http://www.bailis.org/blog/when-is-acid-acid-rarely/">unlikely to provide serializability</a>, and your multi-core processor is <a href="http://preshing.com/20120930/weak-vs-strong-memory-models/">unlikely to provide linearizability</a>—at least by default. As the above theory hints, achieving these properties requires a lot of expensive coordination. So, instead, real systems often use cheaper-to-implement and often <a href="http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem/">harder-to-understand</a> models. This trade-off between efficiency and programmability represents a fascinating and challenging design space.</p>
+<p>实际上，您的数据库不太可能提供可串行化，并且您的多核处理器也不太可能提供线性化——至少在默认情况下是这样。 正如上述理论所暗示的，实现这些特性需要大量昂贵的协调。 因此，实际系统通常使用实施成本较低且通常较难理解的模型。 效率和可编程性之间的这种权衡代表了一个令人着迷且具有挑战性的设计空间。</p>
+<h4 id="A-note-on-terminology-and-more-reading"><a href="#A-note-on-terminology-and-more-reading" class="headerlink" title="A note on terminology, and more reading"></a>A note on terminology, and more reading</h4><p>One of the reasons these definitions are so confusing is that linearizability hails from the distributed systems and concurrent programming communities, and serializability comes from the database community. Today, almost everyone uses <em>both</em> distributed systems and databases, which often leads to overloaded terminology (e.g., “consistency,” “atomicity”).</p>
+<p>这些定义如此令人困惑的原因之一是，线性化来自分布式系统和并发编程社区，而串行化来自数据库社区。 如今，几乎每个人都使用分布式系统和数据库，这常常导致术语过多（例如“一致性”、“原子性”）。</p>
+<p>There are many more precise treatments of these concepts. I like <a href="http://link.springer.com/book/10.1007%2F978-3-642-15260-3">this book</a>, but there is plenty of free, concise, and (often) accurate material on the internet, such as <a href="https://www.cs.rochester.edu/~scott/458/notes/04-concurrent_data_structures">these notes</a>.</p>
+<p>这些概念还有许多更精确的处理方法。 我喜欢这本书，但是互联网上有大量免费、简洁且（通常）准确的材料，例如这些笔记。</p>
+<h4 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h4><ol>
+<li><p>But it’s not the only mechanism!</p>
+<p>但这不是唯一的机制！</p>
+<p>Granted, serializability is (more or less) the most <em>general</em> means of maintaining database correctness. In what’s becoming one of my favorite “underground” (i.e., relatively poorly-cited) references, <a href="http://en.wikipedia.org/wiki/H._T._Kung">H.T. Kung</a> and <a href="http://en.wikipedia.org/wiki/Christos_Papadimitriou">Christos Papadimitriou</a> dropped a paper in SIGMOD 1979 on “<a href="http://www.eecs.harvard.edu/~htk/publication/1979-sigmod-kung-papadimitriou.pdf">An Optimality Theory of Concurrency Control for Databases</a>.” In it, they essentially show that, if all you have are transactions’ syntactic modifications to database state (e.g., read and write) and <em>no</em> information about application logic, serializability is, in some sense, “optimal”: in effect, a schedule that is not serializable might modify the database state in a way that produces inconsistency for some (arbitrary) notion of correctness that is not known to the database.</p>
+<p>诚然，可序列化（或多或少）是维护数据库正确性的最通用方法。 在成为我最喜欢的“地下”（即引用相对较少的）参考文献之一中，H.T. Kung 和 Christos Papadimitriou 在 SIGMOD 1979 上发表了一篇关于“数据库并发控制的最优理论”的论文。 在其中，它们本质上表明，如果您拥有的只是事务对数据库状态的语法修改（例如，读取和写入）并且没有有关应用程序逻辑的信息，那么可串行性在某种意义上是“最佳的”：实际上，是一个时间表 不可序列化的可能会修改数据库状态，从而导致数据库未知的某些（任意）正确性概念产生不一致。</p>
+<p>However, if <em>do</em> you know more about your user’s notions of correctness (say, you <em>are</em> the user!), you can often do a lot more in terms of concurrency control and can circumvent many of the fundamental overheads imposed by serializability. Recognizing when you don’t need serializability (and subsequently exploiting this fact) is the best way I know to “beat CAP.” <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:mechanism">↩</a></p>
+<p>但是，如果您更多地了解用户的正确性概念（例如，您是用户！），您通常可以在并发控制方面做更多的事情，并且可以规避可串行性带来的许多基本开销。 认识到何时不需要可序列化（并随后利用这一事实）是我所知道的“击败 CAP”的最佳方法。 ↩</p>
+</li>
+<li><p>Note that some implementations of serializability (such as two-phase locking with long write locks and long read locks) actually provide strict serializability. As <a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Herlihy and Wing</a> point out, other implementations (such as some MVCC implementations) may not.</p>
+<p>请注意，某些可串行性的实现（例如具有长写锁和长读锁的两阶段锁定）实际上提供了严格的可串行性。 正如 Herlihy 和 Wing 指出的那样，其他实现（例如某些 MVCC 实现）可能不会。</p>
+<p>So, why didn’t the early papers that defined serializability call attention to this real-time ordering? In some sense, real time doesn’t really matter: all serializable schedules are equivalent in terms of their power to preserve database correctness! However, there are some weird edge cases: for example, returning NULL in response to every read-only transaction is serializable (provided we start with an empty database) but rather unhelpful.</p>
+<p>那么，为什么早期定义可串行化的论文没有引起人们对这种实时排序的关注呢？ 从某种意义上说，实时并不重要：所有可序列化的调度在保持数据库正确性方面的能力都是相同的！ 然而，有一些奇怪的边缘情况：例如，响应每个只读事务返回 NULL 是可序列化的（假设我们从空数据库开始），但毫无帮助。</p>
+<p>One tantalizingly plausible theory for this omission is that, back in the 1970s when serializability theory was being invented, everyone was running on single-site systems anyway, so linearizability essentially “came for free.” However, I believe this theory is unlikely: for example, database pioneer <a href="http://en.wikipedia.org/wiki/Phil_Bernstein">Phil Bernstein</a> was already looking at distributed transaction execution in his SDD-1 system <a href="http://www.dtic.mil/cgi-bin/GetTRDoc?AD=ADA131789">as early as 1977</a> (and there are <a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4567884">older references</a> yet). Even in this early work, Bernstein (and company) are careful to stress that “there may in fact be <em>several</em> such equivalent serial orderings” [emphasis theirs]. To further put this theory to rest, Papadimitriou makes clear in his seminal <a href="https://www.cs.purdue.edu/homes/bb/cs542-06Spr-bb/SCDU-Papa-79.pdf">1979 JACM</a> article that he’s familiar with problems inherent in a distributed setting. (If you ever want to be blown away by the literature, look at how much of the foundational work on concurrency control was done by the early 1980s.) <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:implementation">↩</a></p>
+<p>对于这一遗漏，一个看似合理的理论是，早在 20 世纪 70 年代，当串行化理论被发明时，每个人都在单站点系统上运行，因此线性化本质上是“免费的”。 然而，我认为这个理论不太可能：例如，数据库先驱 Phil Bernstein 早在 1977 年就已经在他的 SDD-1 系统中研究分布式事务执行（并且还有更早的参考资料）。 即使在这项早期工作中，伯恩斯坦（和公司）也小心地强调“实际上可能有几个这样的等效序列顺序”[强调他们的]。 为了进一步证实这一理论，Papadimitriou 在其 1979 年 JACM 的开创性文章中明确表示，他熟悉分布式环境中固有的问题。 （如果您想被文献所震撼，请看看 20 世纪 80 年代初完成了多少并发控制的基础工作。） ↩</p>
+</li>
+<li><p>For distributed systems nerds: achieving linearizability for reads and writes is, in a formal sense, “easier” to achieve than serializability. This is probably deserving of another post (encouragement appreciated!), but here’s some intuition: terminating atomic register read&#x2F;write operations <a href="http://www.cse.huji.ac.il/course/2004/dist/p124-attiya.pdf">are achievable</a> in a fail-stop model. Yet atomic commitment—which is needed to execute multi-site serializable transactions (think: AC is to 2PC as consensus is to Paxos)—is not: the <a href="http://www.cs.utexas.edu/~lorenzo/corsi/cs380d/past/03F/notes/fischer.pdf">FLP result</a> says consensus is unachievable in a fail-stop model (hence <em>with One Faulty Process</em>), and (non-blocking) atomic commitment is <a href="http://link.springer.com/chapter/10.1007/BFb0022140">“harder” than consensus</a> (<a href="http://infoscience.epfl.ch/record/83471/files/1596162953p115-delporte.pdf">see also</a>). Also, keep in mind that linearizability for read-modify-write <a href="http://cs.brown.edu/~mph/Herlihy91/p124-herlihy.pdf">is harder than</a> linearizable read&#x2F;write. (linearizable read&#x2F;write《 consensus《 atomic commitment) <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:hardness">↩</a></p>
+<p>对于分布式系统迷来说：从形式上来说，实现读写的线性化比串行化“更容易”实现。 这可能值得另一篇文章（感谢鼓励！），但这里有一些直觉：终止原子寄存器读&#x2F;写操作在故障停止模型中是可以实现的。 然而，原子承诺——执行多站点可序列化事务所需的原子承诺（想想：AC 之于 2PC，共识之于 Paxos）——却并非如此：FLP 结果表明，在故障停止模型中无法达成共识（因此出现了一个错误进程） ），并且（非阻塞）原子承诺比共识“更难”（另请参阅）。 另外，请记住，读-修改-写的线性化比线性化读&#x2F;写更难。 (线性化读&#x2F;写《共识》《原子承诺) ↩</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
   </entry>
   <entry>
     <title>Volcano</title>
@@ -1616,142 +1907,6 @@
       </tags>
   </entry>
   <entry>
-    <title>git 忽略文件</title>
-    <url>/2023/09/17/10-%E5%B7%A5%E5%85%B7/git/0-brew/</url>
-    <content><![CDATA[<p>git 用法记录</p>
-<span id="more"></span>
-
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。</span><br><span class="line">正确的做法是在每个<span class="built_in">clone</span>下来的仓库中手动设置不要检查特定文件的更改情况。</span><br><span class="line">git update-index --assume-unchanged FILE </span><br><span class="line">在FILE处输入要忽略的文件。</span><br><span class="line">如果要还原的话，使用命令：</span><br><span class="line">git update-index --no-assume-unchanged FILE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pkg/.../manual/manual.go</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>安装软件加速</title>
-    <url>/2023/01/31/%E8%AE%BA%E6%96%87/0-brew/</url>
-    <content><![CDATA[<p>安装软件加速</p>
-<span id="more"></span>
-
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">ALL_PROXY=socks5://127.0.0.1:1086 brew update</span><br><span class="line"></span><br><span class="line">brew upgrade go</span><br><span class="line"></span><br><span class="line">ALL_PROXY=socks5://127.0.0.1:1086 brew install xxx</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>存储</title>
-    <url>/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/</url>
-    <content><![CDATA[<p>数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。</p>
-<p>今天我们来讲讲数据库SQL。</p>
-<span id="more"></span>
-
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Relational Databases</span><br><span class="line">Storage</span><br><span class="line">Execution</span><br><span class="line">Concurrency Control</span><br><span class="line">Recovery</span><br><span class="line">Distributed Databases</span><br><span class="line">Potpourri</span><br></pre></td></tr></table></figure>
-
-
-
-<p>如何将数据存储在磁盘上 ？</p>
-<p>需要暴露那些 API ？</p>
-<p>如何表示磁盘上文件中的数据 ？</p>
-<p>如果管理内存和磁盘之间的数据移动。（buffer pools）</p>
-<p>第一个问题</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">File Storage</span><br><span class="line">Page Layout</span><br><span class="line">Tuple Layout</span><br></pre></td></tr></table></figure>
-
-
-
-<p>首先 如何将 数据库组织在 一系列 page 中。</p>
-<p>然后 如何将 这些 page 保存在文件中</p>
-<p>然后 这些 page 中的 tuple 是什么样的</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Storage Manager 负责维护磁盘上的文件。</span><br><span class="line">这些文件为 page 的 集合。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">page storage architecture</span><br><span class="line">不同数据库管理 page 文件使用不同的方式</span><br><span class="line"></span><br><span class="line">HEAP FILE</span><br><span class="line">Sequential/Sorted FILE</span><br><span class="line">hashing File</span><br></pre></td></tr></table></figure>
-
-
-
-<p>HEAP FILE 无序的</p>
-<p>链表。page目录</p>
-<h4 id="该如何表示page-存储架构"><a href="#该如何表示page-存储架构" class="headerlink" title="该如何表示page 存储架构?"></a>该如何表示page 存储架构?</h4><p>最常⻅的方式是使用Heap File Organization.</p>
-<p>数据库中的 heap 文件是一个无序的 page 集合。</p>
-<p>用 page 目录来表示page 对应的位置。</p>
-<p>page header里面有 page 大小，checksum，数据库版本之类的东西。</p>
-<p>当新版本发布时候，可以判断根据不同版本来解析page。</p>
-<h4 id="在一个page中，我们可以通过两种不同的方式来表示数据"><a href="#在一个page中，我们可以通过两种不同的方式来表示数据" class="headerlink" title="在一个page中，我们可以通过两种不同的方式来表示数据"></a>在一个page中，我们可以通过两种不同的方式来表示数据</h4><p>面向 tuple 的方式 和 log-structured 的策略</p>
-<p>page header 里面有个 slot 数组 ，表明 tuple 数据。</p>
-<h3 id="buffer-pool"><a href="#buffer-pool" class="headerlink" title="buffer pool"></a>buffer pool</h3><p>malloc 一块内存，分成固定大小的 chunk，叫做  frame。</p>
-<p>page table 用来跟踪内存中有哪些 page。必须是线程安全的</p>
-<p>page catalog 记录page 在数据库的文件的什么位置。需要持久化。</p>
-<p>page table 记录 buffer pool 中 page 的位置，不需要持久化。</p>
-<p>LRU 算法 LRU 的变体clock；</p>
-<p>优化 ：</p>
-<ol>
-<li><p>LRU-K</p>
-</li>
-<li><p>多个buff er池</p>
-</li>
-<li><p>priority hints(优先级提示)</p>
-</li>
-</ol>
-<h2 id="hash-table"><a href="#hash-table" class="headerlink" title="hash table"></a>hash table</h2><ul>
-<li>hash functions</li>
-<li>Static Hashing Schemes</li>
-<li>Dynamic Hashing Schemes</li>
-</ul>
-<p>hash functions</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">CRC-64 (1975)</span><br><span class="line">MurmurHash (2008)</span><br><span class="line">Google CityHash (2011)</span><br><span class="line">FaceBook XXHash (2012)   ---- 最好</span><br><span class="line">Google FarmHash (2014)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>SQL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Real transactions are serializable</title>
     <url>/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/</url>
     <content><![CDATA[<p>Most databases offer a choice of several transaction isolation levels, offering a tradeoff between correctness and performance. However, that performance comes at a price, as developers must study their transactional interactions carefully or risk introducing subtle bugs. CockroachDB provides strong (“<code>SERIALIZABLE</code>”) isolation by default to ensure that your application always sees the data it expects. In this post I’ll explain what this means and how insufficient isolation impacts real-world applications.</p>
@@ -1783,67 +1938,6 @@
 <p>大多数默认为弱事务隔离的数据库都提供了解决方法，例如 SELECT 语句的（非标准）FOR UPDATE 和 LOCK IN SHARE MODE 修饰符。 如果正确使用，这些修饰符即使在较弱的隔离级别下也可以使事务安全。 然而，这很容易出错，即使一致使用，这些扩展也会引入 SERIALIZABLE 模式的大部分缺点（事实上，在 READ COMMITTED 事务中过度使用 SELECT FOR UPDATE 的性能可能比 SERIALIZABLE 事务更差，因为它使用独占模式） 可串行化可能只需要共享锁的锁）。 ACIDRain 研究表明了该技术的局限性：尝试使用 SELECT FOR UPDATE 功能的应用程序中只有三分之一正确执行了操作； 其他人仍然很脆弱。</p>
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Databases that encourage the use of weaker isolation levels have prioritized performance over the safety of your data, leaving you to study subtle interactions between your transactions and implement error-prone workarounds. CockroachDB provides <code>SERIALIZABLE</code> transactions by default to ensure that you always see the consistency that you expect from a transactional database.</p>
 <p>鼓励使用较弱隔离级别的数据库将性能置于数据安全之上，让您可以研究事务之间的微妙交互并实施容易出错的解决方法。 CockroachDB 默认提供 SERIALIZABLE 事务，以确保您始终看到事务数据库所期望的一致性。</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>事务</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linearizability versus Serializability</title>
-    <url>/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/</url>
-    <content><![CDATA[<h2 id="Linearizability-versus-Serializability"><a href="#Linearizability-versus-Serializability" class="headerlink" title="[Linearizability versus Serializability]"></a>[Linearizability versus Serializability]</h2><p>线性化与串行化</p>
-<p>原文链接</p>
-<p>(<a href="http://www.bailis.org/blog/linearizability-versus-serializability/">http://www.bailis.org/blog/linearizability-versus-serializability/</a>)</p>
-<span id="more"></span>
-
-<p>Linearizability and serializability are both important properties about interleavings of operations in databases and distributed systems, and it’s easy to get them confused. This post gives a short, simple, and hopefully practical overview of the differences between the two.</p>
-<p>线性化和串行化都是数据库和分布式系统中操作交错的重要属性，很容易将它们混淆。 这篇文章对两者之间的差异进行了简短、简单且实用的概述。</p>
-<h4 id="Linearizability-single-operation-single-object-real-time-order"><a href="#Linearizability-single-operation-single-object-real-time-order" class="headerlink" title="Linearizability: single-operation, single-object, real-time order"></a>Linearizability: single-operation, single-object, real-time order</h4><p><em><a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Linearizability</a> is a guarantee about single operations on single objects.</em> It provides a real-time (i.e., wall-clock) guarantee on the behavior of a set of single operations (often reads and writes) on a single object (e.g., distributed register or data item).</p>
-<p>线性化是对单个对象上的单个操作的保证。 它为单个对象（例如分布式寄存器或数据项）上的一组单个操作（通常是读取和写入）的行为提供实时（即挂钟）保证。</p>
-<p>In plain English, under linearizability, writes should appear to be instantaneous. Imprecisely, once a write completes, all later reads (where “later” is defined by wall-clock start time) should return the value of that write or the value of a later write. Once a read returns a particular value, all later reads should return that value or the value of a later write.</p>
-<p>用简单的英语来说，在线性化下，写入应该看起来是瞬时的。 不精确地说，一旦写入完成，所有后续读取（其中“稍后”由挂钟开始时间定义）都应返回该写入的值或稍后写入的值。 一旦读取返回特定值，所有后续读取都应返回该值或后续写入的值。</p>
-<p>Linearizability for read and write operations is synonymous with the term “atomic consistency” and is the “C,” or “consistency,” in Gilbert and Lynch’s <a href="http://lpd.epfl.ch/sgilbert/pubs/BrewersConjecture-SigAct.pdf">proof of the CAP Theorem</a>. We say linearizability is <em>composable</em> (or “local”) because, if operations on each object in a system are linearizable, then all operations in the system are linearizable.</p>
-<p>读写操作的线性化与术语“原子一致性”同义，在 Gilbert 和 Lynch 的 CAP 定理证明中是“C”或“一致性”。 我们说线性化是可组合的（或“局部的”），因为如果系统中每个对象的操作都是线性化的，那么系统中的所有操作都是线性化的。</p>
-<h4 id="Serializability-multi-operation-multi-object-arbitrary-total-order"><a href="#Serializability-multi-operation-multi-object-arbitrary-total-order" class="headerlink" title="Serializability: multi-operation, multi-object, arbitrary total order"></a>Serializability: multi-operation, multi-object, arbitrary total order</h4><p><em>Serializability is a guarantee about transactions, or groups of one or more operations over one or more objects.</em> It guarantees that the execution of a set of transactions (usually containing read and write operations) over multiple items is equivalent to <em>some</em> serial execution (total ordering) of the transactions.</p>
-<p><em>可串行性是对事务或对一个或多个对象的一个或多个操作组的保证。</em>它保证对多个项目执行一组事务（通常包含读取和写入操作）相当于<em>某些</em>串行 事务的执行（总排序）。</p>
-<p>Serializability is the traditional “I,” or isolation, in <a href="http://sites.fas.harvard.edu/~cs265/papers/haerder-1983.pdf">ACID</a>. If users’ transactions each preserve application correctness (“C,” or consistency, in ACID), a serializable execution also preserves correctness. Therefore, serializability is a mechanism for guaranteeing database correctness.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:mechanism">1</a></p>
-<p>可串行性是 ACID 中传统的“I”或隔离。 如果每个用户的事务都保持应用程序的正确性（“C”，即 ACID 中的一致性），则可序列化执行也会保持正确性。 因此，可序列化是保证数据库正确性的一种机制。1</p>
-<p>Unlike linearizability, serializability does not—by itself—impose any real-time constraints on the ordering of transactions. Serializability is also not composable. Serializability does not imply any kind of deterministic order—it simply requires that <em>some</em> equivalent serial execution exists.</p>
-<p>与线性化不同，可串行化本身并不对事务的排序施加任何实时约束。 可串行化也是不可组合的。 可串行性并不意味着任何类型的确定性顺序 - 它只是需要存在某种等效的串行执行。</p>
-<h4 id="Strict-Serializability-Why-don’t-we-have-both"><a href="#Strict-Serializability-Why-don’t-we-have-both" class="headerlink" title="Strict Serializability: Why don’t we have both?"></a>Strict Serializability: Why don’t we have both?</h4><p>Combining serializability and linearizability yields <em>strict serializability</em>: transaction behavior is equivalent to some serial execution, and the serial order corresponds to real time. For example, say I begin and commit transaction T1, which writes to item <em>x</em>, and you later begin and commit transaction T2, which reads from <em>x</em>. A database providing strict serializability for these transactions will place T1 before T2 in the serial ordering, and T2 will read T1’s write. A database providing serializability (but not strict serializability) could order T2 before T1.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:implementation">2</a></p>
-<p>将串行化和线性化相结合会产生严格的串行化：事务行为相当于某种串行执行，并且串行顺序对应于实时。 例如，假设我开始并提交事务 T1，它写入项目 x，而您稍后开始并提交事务 T2，它从 x 读取。 为这些事务提供严格可串行性的数据库将在串行排序中将 T1 置于 T2 之前，并且 T2 将读取 T1 的写入。 提供可序列化（但不是严格可序列化）的数据库可以在 T1.2 之前排序 T2</p>
-<p>As <a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Herlihy and Wing</a> note, “linearizability can be viewed as a special case of strict serializability where transactions are restricted to consist of a single operation applied to a single object.”</p>
-<p>正如 Herlihy 和 Wing 所指出的，“线性化可以被视为严格串行化的一种特殊情况，其中事务仅限于由应用于单个对象的单个操作组成。”</p>
-<h4 id="Coordination-costs-and-real-world-deployments"><a href="#Coordination-costs-and-real-world-deployments" class="headerlink" title="Coordination costs and real-world deployments"></a>Coordination costs and real-world deployments</h4><p>Neither linearizability nor serializability is achievable without coordination. That is we can’t provide either guarantee with availability (i.e., CAP “AP”) under an asynchronous network.<a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fn:hardness">3</a></p>
-<p>如果没有协调，线性化和串行化都无法实现。 也就是说，我们无法在异步网络下提供可用性保证（即 CAP“AP”）。3</p>
-<p>In practice, your database is <a href="http://www.bailis.org/blog/when-is-acid-acid-rarely/">unlikely to provide serializability</a>, and your multi-core processor is <a href="http://preshing.com/20120930/weak-vs-strong-memory-models/">unlikely to provide linearizability</a>—at least by default. As the above theory hints, achieving these properties requires a lot of expensive coordination. So, instead, real systems often use cheaper-to-implement and often <a href="http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem/">harder-to-understand</a> models. This trade-off between efficiency and programmability represents a fascinating and challenging design space.</p>
-<p>实际上，您的数据库不太可能提供可串行化，并且您的多核处理器也不太可能提供线性化——至少在默认情况下是这样。 正如上述理论所暗示的，实现这些特性需要大量昂贵的协调。 因此，实际系统通常使用实施成本较低且通常较难理解的模型。 效率和可编程性之间的这种权衡代表了一个令人着迷且具有挑战性的设计空间。</p>
-<h4 id="A-note-on-terminology-and-more-reading"><a href="#A-note-on-terminology-and-more-reading" class="headerlink" title="A note on terminology, and more reading"></a>A note on terminology, and more reading</h4><p>One of the reasons these definitions are so confusing is that linearizability hails from the distributed systems and concurrent programming communities, and serializability comes from the database community. Today, almost everyone uses <em>both</em> distributed systems and databases, which often leads to overloaded terminology (e.g., “consistency,” “atomicity”).</p>
-<p>这些定义如此令人困惑的原因之一是，线性化来自分布式系统和并发编程社区，而串行化来自数据库社区。 如今，几乎每个人都使用分布式系统和数据库，这常常导致术语过多（例如“一致性”、“原子性”）。</p>
-<p>There are many more precise treatments of these concepts. I like <a href="http://link.springer.com/book/10.1007%2F978-3-642-15260-3">this book</a>, but there is plenty of free, concise, and (often) accurate material on the internet, such as <a href="https://www.cs.rochester.edu/~scott/458/notes/04-concurrent_data_structures">these notes</a>.</p>
-<p>这些概念还有许多更精确的处理方法。 我喜欢这本书，但是互联网上有大量免费、简洁且（通常）准确的材料，例如这些笔记。</p>
-<h4 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h4><ol>
-<li><p>But it’s not the only mechanism!</p>
-<p>但这不是唯一的机制！</p>
-<p>Granted, serializability is (more or less) the most <em>general</em> means of maintaining database correctness. In what’s becoming one of my favorite “underground” (i.e., relatively poorly-cited) references, <a href="http://en.wikipedia.org/wiki/H._T._Kung">H.T. Kung</a> and <a href="http://en.wikipedia.org/wiki/Christos_Papadimitriou">Christos Papadimitriou</a> dropped a paper in SIGMOD 1979 on “<a href="http://www.eecs.harvard.edu/~htk/publication/1979-sigmod-kung-papadimitriou.pdf">An Optimality Theory of Concurrency Control for Databases</a>.” In it, they essentially show that, if all you have are transactions’ syntactic modifications to database state (e.g., read and write) and <em>no</em> information about application logic, serializability is, in some sense, “optimal”: in effect, a schedule that is not serializable might modify the database state in a way that produces inconsistency for some (arbitrary) notion of correctness that is not known to the database.</p>
-<p>诚然，可序列化（或多或少）是维护数据库正确性的最通用方法。 在成为我最喜欢的“地下”（即引用相对较少的）参考文献之一中，H.T. Kung 和 Christos Papadimitriou 在 SIGMOD 1979 上发表了一篇关于“数据库并发控制的最优理论”的论文。 在其中，它们本质上表明，如果您拥有的只是事务对数据库状态的语法修改（例如，读取和写入）并且没有有关应用程序逻辑的信息，那么可串行性在某种意义上是“最佳的”：实际上，是一个时间表 不可序列化的可能会修改数据库状态，从而导致数据库未知的某些（任意）正确性概念产生不一致。</p>
-<p>However, if <em>do</em> you know more about your user’s notions of correctness (say, you <em>are</em> the user!), you can often do a lot more in terms of concurrency control and can circumvent many of the fundamental overheads imposed by serializability. Recognizing when you don’t need serializability (and subsequently exploiting this fact) is the best way I know to “beat CAP.” <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:mechanism">↩</a></p>
-<p>但是，如果您更多地了解用户的正确性概念（例如，您是用户！），您通常可以在并发控制方面做更多的事情，并且可以规避可串行性带来的许多基本开销。 认识到何时不需要可序列化（并随后利用这一事实）是我所知道的“击败 CAP”的最佳方法。 ↩</p>
-</li>
-<li><p>Note that some implementations of serializability (such as two-phase locking with long write locks and long read locks) actually provide strict serializability. As <a href="http://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf">Herlihy and Wing</a> point out, other implementations (such as some MVCC implementations) may not.</p>
-<p>请注意，某些可串行性的实现（例如具有长写锁和长读锁的两阶段锁定）实际上提供了严格的可串行性。 正如 Herlihy 和 Wing 指出的那样，其他实现（例如某些 MVCC 实现）可能不会。</p>
-<p>So, why didn’t the early papers that defined serializability call attention to this real-time ordering? In some sense, real time doesn’t really matter: all serializable schedules are equivalent in terms of their power to preserve database correctness! However, there are some weird edge cases: for example, returning NULL in response to every read-only transaction is serializable (provided we start with an empty database) but rather unhelpful.</p>
-<p>那么，为什么早期定义可串行化的论文没有引起人们对这种实时排序的关注呢？ 从某种意义上说，实时并不重要：所有可序列化的调度在保持数据库正确性方面的能力都是相同的！ 然而，有一些奇怪的边缘情况：例如，响应每个只读事务返回 NULL 是可序列化的（假设我们从空数据库开始），但毫无帮助。</p>
-<p>One tantalizingly plausible theory for this omission is that, back in the 1970s when serializability theory was being invented, everyone was running on single-site systems anyway, so linearizability essentially “came for free.” However, I believe this theory is unlikely: for example, database pioneer <a href="http://en.wikipedia.org/wiki/Phil_Bernstein">Phil Bernstein</a> was already looking at distributed transaction execution in his SDD-1 system <a href="http://www.dtic.mil/cgi-bin/GetTRDoc?AD=ADA131789">as early as 1977</a> (and there are <a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4567884">older references</a> yet). Even in this early work, Bernstein (and company) are careful to stress that “there may in fact be <em>several</em> such equivalent serial orderings” [emphasis theirs]. To further put this theory to rest, Papadimitriou makes clear in his seminal <a href="https://www.cs.purdue.edu/homes/bb/cs542-06Spr-bb/SCDU-Papa-79.pdf">1979 JACM</a> article that he’s familiar with problems inherent in a distributed setting. (If you ever want to be blown away by the literature, look at how much of the foundational work on concurrency control was done by the early 1980s.) <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:implementation">↩</a></p>
-<p>对于这一遗漏，一个看似合理的理论是，早在 20 世纪 70 年代，当串行化理论被发明时，每个人都在单站点系统上运行，因此线性化本质上是“免费的”。 然而，我认为这个理论不太可能：例如，数据库先驱 Phil Bernstein 早在 1977 年就已经在他的 SDD-1 系统中研究分布式事务执行（并且还有更早的参考资料）。 即使在这项早期工作中，伯恩斯坦（和公司）也小心地强调“实际上可能有几个这样的等效序列顺序”[强调他们的]。 为了进一步证实这一理论，Papadimitriou 在其 1979 年 JACM 的开创性文章中明确表示，他熟悉分布式环境中固有的问题。 （如果您想被文献所震撼，请看看 20 世纪 80 年代初完成了多少并发控制的基础工作。） ↩</p>
-</li>
-<li><p>For distributed systems nerds: achieving linearizability for reads and writes is, in a formal sense, “easier” to achieve than serializability. This is probably deserving of another post (encouragement appreciated!), but here’s some intuition: terminating atomic register read&#x2F;write operations <a href="http://www.cse.huji.ac.il/course/2004/dist/p124-attiya.pdf">are achievable</a> in a fail-stop model. Yet atomic commitment—which is needed to execute multi-site serializable transactions (think: AC is to 2PC as consensus is to Paxos)—is not: the <a href="http://www.cs.utexas.edu/~lorenzo/corsi/cs380d/past/03F/notes/fischer.pdf">FLP result</a> says consensus is unachievable in a fail-stop model (hence <em>with One Faulty Process</em>), and (non-blocking) atomic commitment is <a href="http://link.springer.com/chapter/10.1007/BFb0022140">“harder” than consensus</a> (<a href="http://infoscience.epfl.ch/record/83471/files/1596162953p115-delporte.pdf">see also</a>). Also, keep in mind that linearizability for read-modify-write <a href="http://cs.brown.edu/~mph/Herlihy91/p124-herlihy.pdf">is harder than</a> linearizable read&#x2F;write. (linearizable read&#x2F;write《 consensus《 atomic commitment) <a href="http://www.bailis.org/blog/linearizability-versus-serializability/#fnref:hardness">↩</a></p>
-<p>对于分布式系统迷来说：从形式上来说，实现读写的线性化比串行化“更容易”实现。 这可能值得另一篇文章（感谢鼓励！），但这里有一些直觉：终止原子寄存器读&#x2F;写操作在故障停止模型中是可以实现的。 然而，原子承诺——执行多站点可序列化事务所需的原子承诺（想想：AC 之于 2PC，共识之于 Paxos）——却并非如此：FLP 结果表明，在故障停止模型中无法达成共识（因此出现了一个错误进程） ），并且（非阻塞）原子承诺比共识“更难”（另请参阅）。 另外，请记住，读-修改-写的线性化比线性化读&#x2F;写更难。 (线性化读&#x2F;写《共识》《原子承诺) ↩</p>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>数据库</category>

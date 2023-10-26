@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="The notion of consistency is used across different computer science disciplines from distributed systems to database systems to computer architecture. It turns out that consistency can mean quite diff">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Many Faces of Consistency">
+<meta property="og:url" content="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="The notion of consistency is used across different computer science disciplines from distributed systems to database systems to computer architecture. It turns out that consistency can mean quite diff">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-26T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-10-26T03:59:26.908Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="事务">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/","path":"2023/10/26/2-数据库/4-论文/The Many Faces of Consistency/","title":"The Many Faces of Consistency"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>The Many Faces of Consistency | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.</span> <span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Abstract-model"><span class="nav-number">2.</span> <span class="nav-text">2 Abstract model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Two-types-of-consistency"><span class="nav-number">3.</span> <span class="nav-text">3 Two types of consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-State-consistency"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 State consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-Invariants-%E4%B8%8D%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.1.1 Invariants 不变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-Error-bounds-%E8%AF%AF%E5%B7%AE%E8%8C%83%E5%9B%B4"><span class="nav-number">3.1.2.</span> <span class="nav-text">3.1.2 Error bounds 误差范围</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-Limits-on-proportion-of-violations-%E8%BF%9D%E8%A7%84%E6%AF%94%E4%BE%8B%E9%99%90%E5%88%B6"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.1.3 Limits on proportion of violations 违规比例限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-Importance-%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">3.1.4.</span> <span class="nav-text">3.1.4 Importance 重要性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-5-Eventual-invariants-%E6%9C%80%E7%BB%88%E4%B8%8D%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.5.</span> <span class="nav-text">3.1.5 Eventual invariants 最终不变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Operation-consistency"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Operation consistency</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-Sequential-equivalence-%E9%A1%BA%E5%BA%8F%E7%AD%89%E4%BB%B7"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1 Sequential equivalence 顺序等价</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-Reference-equivalence-%E5%8F%82%E8%80%83%E7%AD%89%E6%95%88"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2 Reference equivalence 参考等效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-Read-write-centric-%E4%BB%A5%E8%AF%BB%E5%86%99%E4%B8%BA%E4%B8%AD%E5%BF%83"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3 Read-write centric 以读写为中心</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="The Many Faces of Consistency | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          The Many Faces of Consistency
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-26 14:44:57 / 修改时间：11:59:26" itemprop="dateCreated datePublished" datetime="2023-10-26T14:44:57+08:00">2023-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><em>The notion of consistency is used across di</em>ff<em>erent computer science disciplines from distributed systems to database systems to computer architecture. It turns out that consistency can mean quite di</em>ff<em>erent things across these disciplines, depending on who uses it and in what context it appears. We identify two broad types of consistency,</em> state consistency <em>and</em> operation consistency*, which di<em>ff</em>er fundamentally in meaning and scope. We explain how these types map to the many examples of consistency in each discipline.*</p>
+<p>一致性的概念用于不同的计算机科学学科，从分布式系统到数据库系统再到计算机体系结构。 事实证明，一致性在这些学科中可能意味着完全不同的事情，具体取决于谁使用它以及它出现在什么背景下。 我们确定了两大类一致性：状态一致性和操作一致性，它们在含义和范围上有根本的不同。 我们解释这些类型如何映射到每个学科中的许多一致性示例。</p>
+<span id="more"></span>
+
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h2><p>Consistency is an important consideration in computer systems that <em>share</em> and <em>replicate</em> data. Whereas early computing systems had private data exclusively, shared data has become increasingly common as computers have evolved from calculating machines to tools of information exchange. Shared data occurs in many types of systems, from distributed systems to database systems to multiprocessor systems. For example, in distributed systems, users across the network share files (e.g., source code), network names (e.g., DNS entries), data blobs (e.g., images in a key-value store), or system metadata (e.g., configuration information). In database systems, users share tables containing account information, product descriptions, flight bookings, and seat assignments. Within a computer, processor cores share cache lines and physical memory.</p>
+<p>一致性是共享和复制数据的计算机系统中的一个重要考虑因素。 早期的计算系统只拥有私有数据，而随着计算机从计算机器发展为信息交换工具，共享数据变得越来越普遍。 共享数据出现在许多类型的系统中，从分布式系统到数据库系统再到多处理器系统。 例如，在分布式系统中，网络上的用户共享文件（例如源代码）、网络名称（例如 DNS 条目）、数据 blob（例如键值存储中的图像）或系统元数据（例如配置） 信息）。 在数据库系统中，用户共享包含帐户信息、产品描述、航班预订和座位分配的表。 在计算机内，处理器核心共享高速缓存行和物理内存。</p>
+<p>In addition to sharing, computer systems increasingly replicate data within and across components. In distributed systems, each site may hold a local replica of files, network names, blobs, or system metadata— these replicas, called caches, increase performance of the system. Database systems also replicate rows or tables for speed or to tolerate disasters. Within a computer, parts of memory are replicated at various points in the cache hierarchy (l1, l2, l3 caches), again for speed. We use the term replica broadly to mean any copies of the data maintained by the system.</p>
+<p>除了共享之外，计算机系统还越来越多地在组件内部和组件之间复制数据。 在分布式系统中，每个站点都可以保存文件、网络名称、blob 或系统元数据的本地副本 - 这些副本（称为缓存）可以提高系统的性能。 数据库系统还复制行或表以提高速度或容忍灾难。 在计算机内，部分内存会在缓存层次结构（l1、l2、l3 缓存）中的各个点进行复制，同样是为了提高速度。 我们广泛使用术语“副本”来表示系统维护的数据的任何副本。</p>
+<p>In all these systems, data sharing and replication raise a fundamental question: what should happen if a client modifies some data items and simultaneously, or within a short time, another client reads or modifies the same items, possibly at a different replica?</p>
+<p>在所有这些系统中，数据共享和复制提出了一个基本问题：如果一个客户端修改了某些数据项，并且同时或在短时间内，另一个客户端可能在不同的副本上读取或修改了相同的项目，那么会发生什么情况？</p>
+<p>This question does not have a single answer that is right in every context. A consistency property governs the possible outcomes by limiting how data can change or what clients can observe in each case. For example, with DNS, a change to a domain may not be visible for hours; the only guarantee is that updates will be seen eventually—an example of a property called eventual consistency [23]. But with flight seat assignments, updates must be immediate and mutually exclusive, to ensure that no two passengers receive the same seat—an example of a strong type of consistency provided by serializability [5]. Other consistency properties include causal consis- tency [13], read-my-writes [21], bounded staleness [1], continuous consistency [1, 25], release consistency [10], fork consistency [16], epsilon serializability [18], and more.</p>
+<p>这个问题没有一个在所有情况下都正确的答案。 一致性属性通过限制数据的更改方式或客户端在每种情况下可以观察到的内容来控制可能的结果。 例如，对于 DNS，对域的更改可能在数小时内不可见； 唯一的保证是最终会看到更新——一个称为最终一致性的属性的例子[23]。 但对于航班座位分配，更新必须是立即且互斥的，以确保没有两名乘客获得相同的座位——这是可串行性提供的强一致性的一个例子 [5]。 其他一致性属性包括因果一致性 [13]、读我的写 [21]、有界陈旧性 [1]、连续一致性 [1, 25]、发布一致性 [10]、分叉一致性 [16]、epsilon 可串行性 [ 18]等等。</p>
+<p>Consistency is important because developers must understand the answer to the above fundamental question. This is especially true when the clients interacting with the system are not humans but other computer programs that must be coded to deal with all possible outcomes.</p>
+<p>一致性很重要，因为开发人员必须理解上述基本问题的答案。 当与系统交互的客户端不是人类而是必须编码以处理所有可能结果的其他计算机程序时尤其如此。</p>
+<p>In this article, we examine many examples of how consistency is used across three computer science disci- plines: distributed systems, database systems, and computer architecture. We find that the use of consistency varies significantly across these disciplines. To bring some clarity, we identify two fundamentally different types of consistency: state consistency and operation consistency. State consistency concerns the state of the system and establishes constraints on the allowable relationships between different data items or different replicas of the same items. For instance, state consistency might require that two replicas store the same value when updates are not outstanding. Operation consistency concerns operations on the system and establishes constraints on what results they may return. For instance, operation consistency might require that a read of a file reflects the contents of the most recent write on that file. State consistency tends to be simpler and application dependent, while operation consistency tends to be more complex and application agnostic. Both types of consistency are important and, in our opinion, our communities should more clearly disentangle them.</p>
+<p>在本文中，我们研究了如何在三个计算机科学学科（分布式系统、数据库系统和计算机体系结构）中使用一致性的许多示例。 我们发现，在这些学科中，一致性的使用存在显着差异。 为了清楚起见，我们确定了两种根本不同类型的一致性：状态一致性和操作一致性。 状态一致性涉及系统的状态，并对不同数据项或相同项的不同副本之间允许的关系建立约束。 例如，状态一致性可能要求两个副本在更新未完成时存储相同的值。 操作一致性涉及系统上的操作，并对它们可能返回的结果建立约束。 例如，操作一致性可能要求文件的读取反映该文件最近写入的内容。 状态一致性往往更简单且依赖于应用程序，而操作一致性往往更复杂且与应用程序无关。 这两种类型的一致性都很重要，我们认为，我们的社区应该更清楚地理清它们。</p>
+<p>While this article discusses different forms of consistency, it focuses on the <em>semantics</em> of consistency rather than the <em>mechanisms</em> of consistency. Semantics refer to what consistency properties the system provides, while mechanisms refer to how the system enforces those properties. Semantics and mechanisms are closely related but it is important to understand the former without needing to understand the latter.</p>
+<p>虽然本文讨论了不同形式的一致性，但它重点关注一致性的语义而不是一致性的机制。 语义是指系统提供哪些一致性属性，而机制是指系统如何强制执行这些属性。 语义和机制密切相关，但重要的是理解前者而不需要理解后者。</p>
+<p>The rest of this article is organized as follows. We first explain the abstract system model and terminology used throughout the article in Section 2. We present the two types of consistency and their various embodiments in Section 3. We indicate how these consistency types occur across different disciplines in Section 4.</p>
+<p>本文的其余部分组织如下。 我们首先在第 2 节中解释整篇文章中使用的抽象系统模型和术语。我们在第 3 节中介绍了两种类型的一致性及其各种实施例。我们在第 4 节中指出了这些一致性类型如何在不同学科中发生。</p>
+<h2 id="2-Abstract-model"><a href="#2-Abstract-model" class="headerlink" title="2 Abstract model"></a>2 Abstract model</h2><p>We consider a setting with multiple <em>clients</em> that submit <em>operations</em> to be executed by the system. Clients could be human users, computer programs, or other systems that do not concern us. Operations might include simple read and write, read-modify-write, start and commit a transaction, and range queries. Operations typically act on data items, which could be blocks, files, key-value pairs, DNS entries, rows of tables, memory locations, and so on.</p>
+<p>我们考虑具有多个客户端的设置，这些客户端提交要由系统执行的操作。 客户端可以是人类用户、计算机程序或与我们无关的其他系统。 操作可能包括简单的读取和写入、读取-修改-写入、启动和提交事务以及范围查询。 操作通常作用于数据项，这些数据项可以是块、文件、键值对、DNS 条目、表行、内存位置等。</p>
+<p>The system has a <em>state</em>, which includes the current values of the data items. In some cases, we are interested in the consistency of client caches and other replicas. In these cases, the caches and other replicas are considered to be part of the system and the system state includes their contents.</p>
+<p>系统具有状态，其中包括数据项的当前值。 在某些情况下，我们对客户端缓存和其他副本的一致性感兴趣。 在这些情况下，缓存和其他副本被视为系统的一部分，并且系统状态包括它们的内容。</p>
+<p>An operation execution is not instantaneous; rather, it <em>starts</em> when a client submits the operation, and it <em>finishes</em> when the client obtains its response from the system. If the operation execution returns no response, then it finishes when the system is no longer actively processing it.</p>
+<p>操作执行不是即时的； 相反，它在客户端提交操作时开始，在客户端从系统获得响应时结束。 如果操作执行没有返回响应，则当系统不再主动处理它时，操作就会完成。</p>
+<p>Operations are distinct from operation executions. Operations are static and a system has relatively few of them, such as read and write. Operation executions, on the other hand, are dynamic and numerous. A client can execute the same operation many times, but each operation execution is unique. While technically we should separate operations from operation executions, we often blur the distinction when it is clear from the context (e.g., we might say that the read operation finishes, rather than the execution of the read operation finishes).</p>
+<p>操作与操作执行不同。 操作是静态的，系统中的操作相对较少，例如读和写。 另一方面，操作执行是动态的且数量众多。 一个客户端可以多次执行相同的操作，但每次操作的执行都是唯一的。 虽然从技术上讲，我们应该将操作与操作执行分开，但当上下文清楚时，我们经常会模糊区别（例如，我们可能会说读操作完成，而不是读操作的执行完成）。</p>
+<h2 id="3-Two-types-of-consistency"><a href="#3-Two-types-of-consistency" class="headerlink" title="3 Two types of consistency"></a>3 Two types of consistency</h2><p>We are interested in what happens when shared and replicated data is accessed concurrently or nearly con- currently by many clients. Generally speaking, consistency places constraints on the allowable outcomes of operations, according to the needs of the application. We now define two broad types of consistency. One places constraints on the state, the other on the results of operations.</p>
+<p>我们感兴趣的是当许多客户端同时或几乎同时访问共享和复制的数据时会发生什么。 一般来说，一致性根据应用程序的需要对操作的允许结果施加限制。 我们现在定义两种广泛的一致性类型。 一是对 状态施加限制，二是对操作结果施加限制。</p>
+<h3 id="3-1-State-consistency"><a href="#3-1-State-consistency" class="headerlink" title="3.1 State consistency"></a>3.1 State consistency</h3><p>State consistency pertains to the state of the system; it consists of properties that users expect the state to satisfy despite concurrent access and the existence of multiple replicas. State consistency is also applicable when data can be corrupted by errors (crashes, bit flips, bugs, etc), but this is not the focus of this article.</p>
+<p>状态一致性与系统的状态有关； 它由用户期望状态满足的属性组成，尽管存在并发访问和存在多个副本。 当数据可能因错误（崩溃、位翻转、错误等）而损坏时，状态一致性也适用，但这不是本文的重点。</p>
+<p>State consistency can be of many subcategories, based on how the properties of state are expressed. We explain these subcategories next.</p>
+<p>根据状态属性的表达方式，状态一致性可以分为许多子类别。 接下来我们将解释这些子类别。</p>
+<h4 id="3-1-1-Invariants-不变量"><a href="#3-1-1-Invariants-不变量" class="headerlink" title="3.1.1 Invariants 不变量"></a>3.1.1 Invariants 不变量</h4><p>The simplest subcategory of state consistency is one defined by an invariant—a predicate on the state that must evaluate to true. For instance, in a concurrent program, a singly linked list must not contain cycles. In a multiprocessor system, if the local caches of two processors keep a value for some address, it must be the same value. In a social network, if user x is a friend of user y then y is a friend of x. In a photo sharing application, if a photo album includes an image then the image’s owner is the album.</p>
+<p>状态一致性最简单的子类别是由不变量定义的，即状态上必须评估为 true 的谓词。 例如，在并发程序中，单链表不能包含循环。 在多处理器系统中，如果两个处理器的本地缓存保存某个地址的值，则该值必须是相同的值。 在社交网络中，如果用户 x 是用户 y 的朋友，则 y 也是 x 的朋友。 在照片共享应用程序中，如果相册包含图像，则该图像的所有者就是相册。</p>
+<p>In database systems, two important examples are uniqueness constraints and referential integrity. A <em>unique- ness constraint</em> on a column of a table requires that each value appearing in that column must occur in at most one row. This property is crucial for the primary keys of tables.</p>
+<p>在数据库系统中，两个重要的例子是唯一性约束和引用完整性。 表的列的唯一性约束要求该列中出现的每个值必须最多出现在一行中。 该属性对于表的主键至关重要。</p>
+<p><em>Referential integrity</em> concerns a table that refers to keys of another table. Databases may store relations between tables by including keys of a table within columns in another table. Referential integrity requires that the included keys are indeed keys in the first table. For instance, in a bank database, suppose that an accounts table includes a column for the account owner, which is a user id; meanwhile, the user id is the primary key in a users table, which has detailed information for each user. A referential integrity constraint requires that user ids in the accounts table must indeed exist in the users table.</p>
+<p>参照完整性涉及引用另一个表的键的表。 数据库可以通过将一个表的键包含在另一个表的列中来存储表之间的关系。 参照完整性要求包含的键确实是第一个表中的键。 例如，在银行数据库中，假设帐户表包含帐户所有者的列，即用户 ID； 同时，用户id是用户表中的主键，该表包含每个用户的详细信息。 参照完整性约束要求帐户表中的用户 ID 必须确实存在于用户表中。</p>
+<p>Another example of state consistency based on invariants is <em>mutual consistency</em>, used in distributed systems that are replicated using techniques such as primary-backup [2]. Mutual consistency requires that replicas have the same state when there are no outstanding updates. During updates, replicas may diverge temporarily since the updates are not applied simultaneously at all replicas.</p>
+<p>基于不变量的状态一致性的另一个例子是相互一致性，用于使用主备份等技术进行复制的分布式系统[2]。 相互一致性要求副本在没有未完成的更新时具有相同的状态。 在更新期间，副本可能会暂时出现分歧，因为更新不会同时应用于所有副本。</p>
+<h4 id="3-1-2-Error-bounds-误差范围"><a href="#3-1-2-Error-bounds-误差范围" class="headerlink" title="3.1.2 Error bounds 误差范围"></a>3.1.2 Error bounds 误差范围</h4><p>If the state contains numerical data, the consistency property could indicate a maximum deviation or error from the expected. For instance, the values at two replicas may diverge by at most ε. In an internet-of-things system, the reported value of a sensor, such as a thermometer, must be within ε from the actual value being measured. This example relates the state of the system to the state of the world. Error bounds were first proposed within the database community [1] and the basic idea was later revived in the distributed systems community [25].</p>
+<p>如果状态包含数值数据，则一致性属性可能表示与预期的最大偏差或错误。 例如，两个副本上的值最多可能会差异ε。 在图Internet系统中，传感器的报告值（例如温度计）必须在ε内，从实际的值中。 这个示例将系统状态与世界状态联系起来。 误差界最初是在数据库社区中提出的[1]，后来在分布式系统社区中恢复了基本思想[25]。</p>
+<h4 id="3-1-3-Limits-on-proportion-of-violations-违规比例限制"><a href="#3-1-3-Limits-on-proportion-of-violations-违规比例限制" class="headerlink" title="3.1.3 Limits on proportion of violations 违规比例限制"></a>3.1.3 Limits on proportion of violations 违规比例限制</h4><p>If there are many properties or invariants, it may be unrealistic to expect all of them to hold, but rather just a high percentage. For instance, the system may require that at most one user’s invariants are violated in a pool of a million users; this could make sense if the system can compensate a small fraction of users for inconsistencies in their data.</p>
+<p>如果存在许多属性或不变量，则期望它们全部成立而只是高百分比成立可能是不现实的。 例如，系统可能要求在一百万个用户的池中最多违反一个用户的不变量； 如果系统可以补偿一小部分用户的数据不一致，那么这可能是有意义的。</p>
+<h4 id="3-1-4-Importance-重要性"><a href="#3-1-4-Importance-重要性" class="headerlink" title="3.1.4 Importance 重要性"></a>3.1.4 Importance 重要性</h4><p>Properties or invariants may be critical, important, advisable, desirable, or optional, where users expect only the critical properties to hold at all times. Developers can use more expensive and effective mechanisms for the more important invariants. For instance, when a user changes her password at a web site, the system might require all replicas of the user account to have the same password before acknowledging the change to the user. This property is implemented by contacting all replicas and waiting for replies, which can be an overly expensive mechanism for less important properties.</p>
+<p>属性或不变量可能是关键的、重要的、可取的、理想的或可选的，其中用户期望始终只保留关键属性。 开发人员可以针对更重要的不变量使用更昂贵和更有效的机制。 例如，当用户在网站上更改密码时，系统可能要求该用户帐户的所有副本都具有相同的密码，然后再向用户确认更改。 该属性是通过联系所有副本并等待回复来实现的，对于不太重要的属性来说，这可能是一种过于昂贵的机制。</p>
+<h4 id="3-1-5-Eventual-invariants-最终不变量"><a href="#3-1-5-Eventual-invariants-最终不变量" class="headerlink" title="3.1.5 Eventual invariants 最终不变量"></a>3.1.5 Eventual invariants 最终不变量</h4><p>An invariant may need to hold only after some time has passed. For example, under eventual consistency, replicas need not be the same at all times, as long as they <em>eventually</em> become the same when updates stop occurring. This eventual property is appropriate because replicas may be updated in the background or using some anti-entropy mechanism, where it takes an indeterminate amount of time for a replica to receive and process an update. Eventual consistency was coined by the distributed systems community [23], though the database community previously proposed the idea of reconciling replicas that diverge during partitions [9].</p>
+<p>不变量可能只需要在经过一段时间后才保持不变。 例如，在最终一致性下，副本不需要始终相同，只要当更新停止发生时它们最终变得相同即可。 此最终属性是合适的，因为副本可以在后台或使用某种反熵机制进行更新，其中副本接收和处理更新需要不确定的时间。 最终一致性是由分布式系统社区[23]创造的，尽管数据库社区之前提出了协调分区期间分歧的副本的想法[9]。</p>
+<p>State consistency is limited to properties on state, but in many cases clients care less about the state and more about the results that they obtain from the system. In other words, what matters is the behavior that clients observe from interacting with the system. These cases call for a different form of consistency, which we discuss next.</p>
+<p>状态一致性仅限于状态的属性，但在许多情况下，客户端不太关心状态，而更关心他们从系统获得的结果。 换句话说，重要的是客户通过与系统交互观察到的行为。 这些情况需要不同形式的一致性，我们接下来讨论。</p>
+<h3 id="3-2-Operation-consistency"><a href="#3-2-Operation-consistency" class="headerlink" title="3.2 Operation consistency"></a>3.2 Operation consistency</h3><p>Operation consistency pertains to the operation executions by clients; it consists of properties that indicate whether operations return acceptable results. These properties can tie together many operation executions, as shown in the examples below.</p>
+<p>操作一致性涉及客户端执行的操作； 它由指示操作是否返回可接受的结果的属性组成。 这些属性可以将许多操作执行联系在一起，如下面的示例所示。</p>
+<p>Operation consistency has subcategories, with different ways to define the consistency property. We explain these subcategories next.</p>
+<p>操作一致性有不同的子类别，有不同的方法来定义一致性属性。 接下来我们将解释这些子类别。</p>
+<h4 id="3-2-1-Sequential-equivalence-顺序等价"><a href="#3-2-1-Sequential-equivalence-顺序等价" class="headerlink" title="3.2.1 Sequential equivalence 顺序等价"></a>3.2.1 Sequential equivalence 顺序等价</h4><p>This subcategory defines the permitted operation results of a concurrent execution in terms of the permitted oper- ation results in a sequential execution—one in which operations are executed one at a time, without concurrency. More specifically, there must be a way to take the execution of all operations submitted by any subset of clients, and then <em>reduce</em> them to a sequential execution that is correct. The exact nature of the reduction depends on the specific consistency property. Technically, the notion of a correct sequential execution is system dependent, so it needs to be specified as well, but it is often obvious and therefore omitted.</p>
+<p>该子类别根据顺序执行（一次执行一个操作，无并发）中允许的操作结果来定义并发执行的允许操作结果。 更具体地说，必须有一种方法来执行任何客户端子集提交的所有操作，然后将它们简化为正确的顺序执行。 减少的确切性质取决于特定的一致性属性。 从技术上讲，正确顺序执行的概念取决于系统，因此也需要指定它，但它通常是显而易见的，因此被省略。</p>
+<p>We now give some examples of sequential equivalence. 现在我们给出一些顺序等价的例子。</p>
+<p><em>Linearizability [12]</em> is a strong form of consistency. Intuitively, the constraint is that each operation must appear to occur at an instantaneous point between its start and finish times, where execution at these instanta- neous points form a valid sequential execution. More precisely, we define a partial order &lt; from the concurrent execution, as follows: <em>op</em>1 &lt; <em>op</em>2 iff <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a legal total order <em>T</em> of all operations with their results, such that (1) <em>T</em> is consistent with &lt;, meaning that if <em>op</em>1 &lt; <em>op</em>2 then <em>op</em>1 appears before <em>op</em>2 in <em>T</em>, and (2) <em>T</em> defines a correct sequential execution. Linearizability has been traditionally used to define the correct behavior of concurrent data structures; more recently, it has also been used in distributed systems.</p>
+<p>线性化[12]是一致性的一种强形式。 直观上，约束是每个操作必须出现在其开始时间和结束时间之间的瞬时点，其中在这些瞬时点的执行形成有效的顺序执行。 更准确地说，我们从并发执行中定义一个偏序 &lt; ，如下所示： op1 &lt; op2 iff op1 在 op2 开始之前完成。 所有操作及其结果必须存在合法的全序 T，使得 (1) T 与 &lt; 一致，这意味着如果 op1 &lt; op2 则 op1 在 T 中出现在 op2 之前，并且 (2) T 定义了正确的顺序执行 。 线性化传统上被用来定义并发数据结构的正确行为。 最近，它也被用于分布式系统。</p>
+<p><em>Sequential consistency [14]</em> is also a strong form of consistency, albeit weaker than linearizability. Intuitively, it requires that operations execute as if they were totally ordered in a way that respects the order in which each client issues operations. More precisely, we define a partial order &lt; as follows: <em>op</em>1 &lt; <em>op</em>2 iff both operations are executed by the same client and <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a total order <em>T</em> such that (1) <em>T</em> is consistent with &lt;, and (2) <em>T</em> defines a correct sequential execution. These conditions are similar to linearizability, except that &lt; reflects just the local order of operations at each client. Sequential consistency is used to define a strongly consistent memory model of a computer, but it could also be used in the context of concurrent data structures.</p>
+<p>顺序一致性[14]也是一致性的一种强形式，尽管比线性化弱。 直观上，它要求操作执行时就好像它们是完全有序的，并且尊重每个客户端发出操作的顺序。 更准确地说，我们定义一个偏序 &lt; 如下： op1 &lt; op2 当且仅当两个操作都由同一客户端执行并且 op1 在 op2 开始之前完成。 必须存在一个全序 T，使得 (1) T 与 &lt; 一致，并且 (2) T 定义了正确的顺序执行。 这些条件类似于线性化能力，除了 &lt; 只反映每个客户端的本地操作顺序。 顺序一致性用于定义计算机的强一致性内存模型，但它也可以用在并发数据结构的上下文中。</p>
+<p>The next examples pertain to systems that support <em>transactions</em>. Intuitively, a transaction is a bundle of one or more operations that must be executed as a whole. More precisely, there are special operations to start, commit, and abort transactions; and operations on data items are associated with a transaction. The system provides an isolation property, which ensures that transactions do not significantly interfere with one another. There are many isolation properties: serializability, strong session serializability, order-preserving serializability, snapshot isolation, read committed, repeatable reads, etc. All of these are forms of operation consistency, and several of them are of the sequential equivalence subcategory. Here are some examples, all of which are used in the context of database systems.</p>
+<p>下一个示例涉及支持事务的系统。 直观上，事务是一组必须作为一个整体执行的一个或多个操作。 更准确地说，有一些特殊的操作来启动、提交和中止事务； 对数据项的操作与事务相关联。 该系统提供了一种隔离属性，可确保事务不会严重干扰彼此。 隔离属性有很多：可序列化、强会话可序列化、保序可序列化、快照隔离、已提交读、可重复读等。所有这些都是操作一致性的形式，其中一些属于顺序等效子类别。 以下是一些示例，所有这些示例都在数据库系统的上下文中使用。</p>
+<p><em>Serializability [5]</em> intuitively guarantees that each transaction appears to execute in series. More precisely, serializability imposes a constraint on the operations in a system: the schedule corresponding to those operations must be equivalent to a serial schedule of transactions. The serial schedule is called a serialization of the schedule.</p>
+<p>可串行性[5]直观地保证每个事务看起来都是串行执行的。 更准确地说，可串行性对系统中的操作施加了约束：与这些操作相对应的调度必须等于事务的串行调度。 串行调度称为调度的串行化。</p>
+<p><em>Strong session serializability [8]</em> addresses an issue with serializability. Serializability allows transactions of the same client to be reordered, which can be undesirable at times. Strong session serializability imposes additional constraints on top of serializability. More precisely, each transaction is associated with a session, and the constraint is that serializability must hold (as defined above) and the serialization must respect the order of transactions within every session: if transaction <em>T</em>1 occurs before <em>T</em>2 in the same session, then <em>T</em>2 is not serialized before <em>T</em>1.</p>
+<p>强大的会话可串行性[8]解决了可串行性的问题。 可串行性允许对同一客户端的事务进行重新排序，这有时是不可取的。 强大的会话可串行性在可串行性之上施加了额外的约束。 更准确地说，每个事务都与一个会话关联，并且约束是可串行性必须保持（如上面所定义），并且序列化必须遵守每个会话中事务的顺序：如果事务 T1 在同一会话中发生在 T2 之前，则 T2 在 T1 之前未序列化。</p>
+<p><em>Order-preserving serializability [24]</em>, also called strict serializability [6, 17] or strong serializability [7], requires that the serialization order respect the real-time ordering of transactions. More precisely, the constraint is that serializability must hold and the serialization must satisfy the requirement that, if transaction <em>T</em>1 commits before <em>T</em>2 starts, then <em>T</em>2 is not serialized before <em>T</em>1.</p>
+<p>保序序列化[24]，也称为严格序列化[6, 17]或强序列化[7]，要求序列化顺序尊重事务的实时排序。 更准确地说，约束是可串行性必须成立，并且串行化必须满足以下要求：如果事务 T1 在 T2 开始之前提交，则 T2 不会在 T1 之前序列化。</p>
+<h4 id="3-2-2-Reference-equivalence-参考等效"><a href="#3-2-2-Reference-equivalence-参考等效" class="headerlink" title="3.2.2 Reference equivalence 参考等效"></a>3.2.2 Reference equivalence 参考等效</h4><p>Reference equivalence is a generalization of sequential equivalence. It defines the permitted operation results by requiring the concurrent execution to be equivalent to a given reference, where the notion of equivalence and the reference depend on the consistency property. We now give some examples for systems with transactions. These examples occur often in the context of database systems.</p>
+<p>参考等价是顺序等价的推广。 它通过要求并发执行等效于给定的引用来定义允许的操作结果，其中等效的概念和引用取决于一致性属性。 我们现在给出一些具有事务的系统的示例。 这些例子经常出现在数据库系统的环境中。</p>
+<p><em>Snapshot isolation [4]</em> requires that transactions behave identically to a certain reference implementation, that is, transactions must have the same outcome as in the reference implementation, and operations must return the same results. The reference implementation is as follows. When a transaction starts, it gets assigned a monotonic start timestamp. When the transaction reads data, it reads from a snapshot of the system as of the start timestamp. When a transaction <em>T</em>1 wishes to commit, the system obtains a monotonic commit timestamp and verifies whether there is some other transaction <em>T</em>2 such that (1) <em>T</em>2 updates some item that <em>T</em>1 also updates, and (2) <em>T</em>2 has committed with a commit timestamp between <em>T</em>1’s start and commit timestamp. If so, then <em>T</em>1 is aborted; otherwise, <em>T</em>1 is committed and all its updates are applied instantaneously as of the time of <em>T</em>1’s commit timestamp.</p>
+<p>快照隔离[4]要求事务的行为与某个参考实现相同，即事务必须具有与参考实现相同的结果，并且操作必须返回相同的结果。 参考实现如下。 当事务开始时，它会被分配一个单调的开始时间戳。 当事务读取数据时，它从截至开始时间戳的系统快照中读取。 当事务 T1 希望提交时，系统获取单调提交时间戳并验证是否存在其他事务 T2，以便 (1) T2 更新 T1 也更新的某些项目，以及 (2) T2 已提交，且提交时间戳介于 T1 的开始和提交时间戳。 如果是，则 T1 中止； 否则，T1 将被提交，并且自 T1 的提交时间戳记起立即应用其所有更新。</p>
+<p>Interestingly, the next two properties are examples of reference equivalence where the reference is itself defined by another consistency property. This other property is in the serial equivalence subcategory in the first example, and it is in the reference equivalence subcategory in the second example.</p>
+<p>有趣的是，接下来的两个属性是引用等效的示例，其中引用本身是由另一个一致性属性定义的。 该其他属性在第一个示例中位于序列等效子类别中，在第二个示例中位于参考等效子类别中。</p>
+<p><em>One-copy serializability [5]</em> pertains to a replicated database system. The replicated system must behave like a reference system, which is a system that is not replicated and provides serializability.</p>
+<p>单副本可串行化[5]适用于复制数据库系统。 复制系统的行为必须类似于参考系统，参考系统是一个不复制并提供可串行性的系统。</p>
+<p><em>One-copy snapshot isolation [15]</em> also pertains to a replicated system. The requirement is that it must behave like a system that is not replicated and that provides snapshot isolation.</p>
+<p>单副本快照隔离[15]也适用于复制系统。 要求是它的行为必须像一个不复制且提供快照隔离的系统。</p>
+<h4 id="3-2-3-Read-write-centric-以读写为中心"><a href="#3-2-3-Read-write-centric-以读写为中心" class="headerlink" title="3.2.3 Read-write centric 以读写为中心"></a>3.2.3 Read-write centric 以读写为中心</h4><p>The above subcategories of operation consistency apply to systems with arbitrary operations. The read-write centric subcategory applies to systems with two very specific operations: read and write. These systems are important because they include many types of storage systems, such as block storage systems, key value storage systems, and processors accessing memory. By focusing on the two operations, this subcategory permits prop- erties that directly evoke the semantics of the operations. In particular, a write operation returns no information other than an acknowledgment or error status, which has no consistency implications. Thus, the consistency properties focus on the results of reads. Common to these properties is the notion of a read <em>seeing</em> the values of a set of writes, as we now explain. Each read is affected by some writes in the system; if every write covers the entire data item, then writes overwrite each other and the read returns the value written by one of them. But if the writes update just part of a data item, the read returns a combination of the written values in some appropriate order. In either case, the crucial consideration is the set of writes that <em>could</em> have potentially affected the read, irrespective of whether the writes are partial or not; we say that the read <em>sees</em> those writes. This notion is used to define several known consistency properties, as we now exemplify.</p>
+<p>上述操作一致性的子类别适用于具有任意操作的系统。 以读写为中心的子类别适用于具有两个非常具体的操作的系统：读和写。 这些系统很重要，因为它们包括许多类型的存储系统，例如块存储系统、键值存储系统和访问内存的处理器。 通过关注这两个操作，该子类别允许直接唤起操作语义的属性。 特别是，写操作除了确认或错误状态之外不返回任何信息，这没有一致性影响。 因此，一致性属性集中于读取的结果。 正如我们现在所解释的，这些属性的共同点是读取看到一组写入的值的概念。 每次读都会受到系统中一些写的影响； 如果每次写入都覆盖整个数据项，则写入会相互覆盖，并且读取会返回其中之一写入的值。 但是，如果写入仅更新数据项的一部分，则读取将按某种适当的顺序返回写入值的组合。 无论哪种情况，关键的考虑因素是可能影响读取的一组写入，无论写入是否部分； 我们说读可以看到那些写。 正如我们现在举例的那样，这个概念用于定义几个已知的一致性属性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/" title="The Many Faces of Consistency">http://heoric.github.io/2023/10/26/2-数据库/4-论文/The Many Faces of Consistency/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag"># 事务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/" rel="prev" title="Linearizability versus Serializability">
+                  <i class="fa fa-angle-left"></i> Linearizability versus Serializability
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6166a8ee364a7821fcdac938748dec1a"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

@@ -2611,7 +2611,7 @@ header.header {
   }
 }
 body {
-  background-image: url("/images/background.jpeg");
+  background-image: url("/images/background.webp");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;
