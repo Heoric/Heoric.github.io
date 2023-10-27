@@ -2738,7 +2738,7 @@
   <entry>
     <title>Isolation in CockroachDB</title>
     <url>/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/</url>
-    <content><![CDATA[<p>Serializable, lockless, distributed: Isolation in CockroachDB</p>
+    <content><![CDATA[<p>原文：<a href="https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/">https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/</a></p>
 <p><em><strong>Editor’s Note*</strong></em>: This post was originally authored when CockroachDB was pre-1.0. CockroachDB’s architecture has undergone many changes since then. One of the most significant, as it relates to this post which focuses on our previous “lockless” design, is that we now use more locking and lock-like structures to provide <code>SERIALIZABLE</code> isolation. For more current details about CockroachDB’s transaction model, read our <a href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer">transaction layer architecture documentation</a>.*</p>
 <p>编者注：这篇文章最初是在 CockroachDB 1.0 版本之前撰写的。 从那时起，CockroachDB 的架构经历了许多变化。 最重要的一个，因为它与这篇文章相关，重点关注我们之前的“无锁”设计，我们现在使用更多的锁定和类似锁的结构来提供可串行化的隔离。 有关 CockroachDB 事务模型的更多最新详细信息，请阅读我们的事务层架构文档。</p>
 <span id="more"></span>
