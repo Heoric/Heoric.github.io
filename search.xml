@@ -2215,18 +2215,55 @@
 
 
 
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    A--&gt;C;</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    D--&gt;E;</span><br><span class="line">    D--&gt;F;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h2 id="Fundamental-Concepts"><a href="#Fundamental-Concepts" class="headerlink" title="[Fundamental Concepts]"></a>[Fundamental Concepts]</h2><p>Jepsen analyses the safety properties of distributed systems–most notably, identifying violations of consistency models. But what are consistency models? What phenomena do they allow? What kind of consistency does a given program really need?</p>
+<p>​													<a href="https://jepsen.io/consistency/models/strict-serializable">Strict Serializability</a></p>
+<p><strong>Unavailable</strong></p>
+<p>Not available during some types of network failures. Some or all nodes must pause operations in order to ensure safety.</p>
+<p>在某些类型的网络故障期间不可用。 为了确保安全，部分或全部节点必须暂停操作。</p>
+<p><strong>Sticky Available</strong></p>
+<p>Available on every non-faulty node, so long as clients only talk to the same servers, instead of switching to new ones.</p>
+<p>只要客户端仅与相同的服务器通信，而不是切换到新的服务器，就可以在每个非故障节点上使用。</p>
+<p><strong>Total Available</strong> </p>
+<p>Available on every non-faulty node, even when the network is completely down.</p>
+<p>即使网络完全关闭，也可在每个无故障节点上使用。</p>
+<h2 id="Fundamental-Concepts"><a href="#Fundamental-Concepts" class="headerlink" title="Fundamental Concepts"></a>Fundamental Concepts</h2><p>Jepsen analyses the safety properties of distributed systems–most notably, identifying violations of consistency models. But what are consistency models? What phenomena do they allow? What kind of consistency does a given program really need?</p>
 <p>Jepsen 分析分布式系统的安全属性，最值得注意的是，识别一致性模型的违规行为。 但什么是一致性模型？ 它们允许哪些现象发生？ 给定的程序真正需要什么样的一致性？</p>
 <p>In this reference guide, we provide basic definitions, intuitive explanations, and theoretical underpinnings of various consistency models for engineers and academics alike.</p>
 <p>在本参考指南中，我们为工程师和学者提供各种一致性模型的基本定义、直观解释和理论基础。</p>
+<h3 id="Systems"><a href="#Systems" class="headerlink" title="Systems"></a>Systems</h3><p><em>Distributed</em> systems are a type of <em>concurrent</em> system, and much of the literature on concurrency control applies directly to distributed systems. Indeed, most of the concepts we’re going to discuss were originally formulated for single-node concurrent systems. There are, however, some important differences in <em>availability</em> and <em>performance</em>.</p>
+<p>分布式系统是一种并发系统，许多有关并发控制的文献直接适用于分布式系统。 事实上，我们要讨论的大多数概念最初都是为单节点并发系统制定的。 然而，在可用性和性能方面存在一些重要差异。</p>
+<p>Systems have a logical <em>state</em> which changes over time. For instance, a simple system could be a single integer variable, with states like <code>0</code>, <code>3</code>, and <code>42</code>. A mutex has only two states: locked or unlocked. The states of a key-value store might be maps of keys to values, for instance: <code>&#123;cat: 1, dog: 1&#125;</code>, or <code>&#123;cat: 4&#125;</code>.</p>
+<p>系统具有随时间变化的逻辑状态。 例如，一个简单的系统可以是一个整数变量，具有 0、3 和 42 等状态。互斥锁只有两种状态：锁定或解锁。 键值存储的状态可能是键到值的映射，例如：{cat：1，dog：1}或{cat：4}。</p>
+<h3 id="Processes"><a href="#Processes" class="headerlink" title="Processes"></a>Processes</h3><p>A <em>process</em><a href="https://jepsen.io/consistency#fn-1">1</a> is a logically single-threaded program which performs computation and runs operations. Processes are never asynchronous—we model asynchronous computation via independent processes. We say “logically single-threaded” to emphasize that while a process can only do one thing at a time, its implementation may be spread across multiple threads, operating system processes, or even physical nodes—just so long as those components provide the illusion of a coherent singlethreaded program.</p>
+<p>进程 是一个逻辑上的单线程程序，用于执行计算和运行操作。 进程从来都不是异步的——我们通过独立进程对异步计算进行建模。 我们说“逻辑上单线程”是为了强调，虽然一个进程一次只能做一件事，但它的实现可以分布在多个线程、操作系统进程、甚至物理节点上——只要这些组件提供了假象 一个连贯的单线程程序。</p>
+<h3 id="Operations"><a href="#Operations" class="headerlink" title="Operations"></a>Operations</h3><p>An operation is a transition from state to state. For instance, a single-variable system might have operations like <code>read</code> and <code>write</code>, which get and set the value of that variable, respectively. A counter might have operations like <em>increments</em>, <em>decrements</em>, and <em>reads</em>. An SQL store might have operations like <em>selects</em> and <em>updates</em>.</p>
+<p>操作是从状态到状态的转换。 例如，单变量系统可能具有读取和写入等操作，分别获取和设置该变量的值。 计数器可能具有递增、递减和读取等操作。 SQL 存储可能具有选择和更新等操作。</p>
+<h4 id="Functions-Arguments-amp-Return-Values"><a href="#Functions-Arguments-amp-Return-Values" class="headerlink" title="Functions, Arguments &amp; Return Values"></a>Functions, Arguments &amp; Return Values</h4><p>In theory, we could give every state transition a unique name. A lock has exactly two transition: <code>lock</code> and <code>unlock</code>. An integer register has an infinite number of reads and writes: <code>read-the-value-1</code>, <code>read-the-value-2</code>, …, and <code>write-1</code>, <code>write-2</code>, ….</p>
+<p>理论上，我们可以给每个状态转换一个唯一的名称。 锁只有两个转换：“lock”和“unlock”。 整数寄存器具有无限次数的读取和写入：“read-the-value-1”、“read-the-value-2”、…和“write-1”、“write-2”、…。</p>
+<p>To make this more tractable, we break up these transitions into <em>functions</em> like <code>read</code>, <code>write</code>, <code>cas</code>, <code>increment</code>, etc., and <em>values</em> that parameterize those functions. In a single register system, a write of 1 could be written:</p>
+<p>为了使这个过程更容易处理，我们将这些转换分解为“函数”，如“read”、“write”、“cas”、“increment”等，以及参数化这些函数的“值”。 在单寄存器系统中，可以写入 1：</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">&#123;<span class="symbol">:f</span> <span class="symbol">:write</span><span class="punctuation">,</span> <span class="symbol">:value</span> <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Given a key-value store, we might increment the value of key “a” by 3 like so:</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">&#123;<span class="symbol">:f</span> <span class="symbol">:increment</span><span class="punctuation">,</span> <span class="symbol">:value</span> [<span class="string">&quot;a&quot;</span> <span class="number">3</span>]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In a transactional store, the value could be a complex transaction. Here we read the current value of <code>a</code>, finding 2, and set <code>b</code> to <code>3</code>, in a single state transition:</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">&#123;<span class="symbol">:f</span> <span class="symbol">:txn</span><span class="punctuation">,</span> <span class="symbol">:value</span> [[<span class="symbol">:read</span> <span class="string">&quot;a&quot;</span> <span class="number">2</span>] [<span class="symbol">:write</span> <span class="string">&quot;b&quot;</span> <span class="number">3</span>]]&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Invocation-amp-Completion-Times"><a href="#Invocation-amp-Completion-Times" class="headerlink" title="Invocation &amp; Completion Times"></a>Invocation &amp; Completion Times</h4><p>Operations, in general, take time. In a multithreaded program, an operation might be a function call. In distributed systems, an operation might mean sending a request to a server, and receiving a response.</p>
+<p>一般来说，操作需要时间。 在多线程程序中，操作可能是函数调用。 在分布式系统中，操作可能意味着向服务器发送请求并接收响应。</p>
+<p>To model this, we say that each operation has an <em>invocation time</em> and, should it complete, a strictly greater <em>completion time</em>, both given by an imaginary<a href="https://jepsen.io/consistency#fn-2">2</a>, perfectly synchronized, globally accessible clock.<a href="https://jepsen.io/consistency#fn-3">3</a> We refer to these clocks as providing a <em>real-time</em> order, as opposed to clocks that only track causal ordering.<a href="https://jepsen.io/consistency#fn-4">4</a></p>
+<p>为了对此进行建模，我们说每个操作都有一个<em>调用时间</em>，并且如果完成，则有一个严格更大的<em>完成时间</em>，两者都由一个虚构的[2](<a href="https://jepsen.io/consistency#fn-">https://jepsen.io/consistency#fn-</a> 2)、完全同步、全局可访问的时钟。<a href="https://jepsen.io/consistency#fn-3">3</a> 我们将这些时钟称为提供<em>实时</em>顺序，而不是仅跟踪的时钟 因果排序。<a href="https://jepsen.io/consistency#fn-4">4</a></p>
+<h4 id="Concurrency"><a href="#Concurrency" class="headerlink" title="Concurrency"></a>Concurrency</h4><p>Since operations take time, two operations might overlap in time. For instance, given two operations A and B, A could begin, B could begin, A could complete, and then B could complete. We say that two operations A and B are <em>concurrent</em> if there is some time during which A and B are both executing.</p>
+<p>Processes are single-threaded, which implies that no two operations executed by the same process are ever concurrent.</p>
+<h4 id="Crashes"><a href="#Crashes" class="headerlink" title="Crashes"></a>Crashes</h4><p>If an operation does not complete for some reason (perhaps because it timed out or a critical component crashed) that operation <em>has no completion time</em>, and must, in general, be considered concurrent with every operation after its invocation. It may or may not execute.</p>
+<p>A process with an operation is in this state is effectively stuck, and can never invoke another operation again. If it <em>were</em> to invoke another operation, it would violate our single-threaded constraint: processes only do one thing at a time.</p>
+<h3 id="Histories"><a href="#Histories" class="headerlink" title="Histories"></a>Histories</h3><p>A <em>history</em> is a collection of operations, including their concurrent structure.</p>
+<p>Some papers represent this as a set of operations, where each operation includes two numbers, representing their invocation and completion time; concurrent structure is inferred by comparing the time windows between processes.</p>
+<p>Jepsen represents a history as an ordered list of invocation and completion operations, effectively splitting each operation in two. This representation is more convenient for algorithms which iterate over the history, keeping a representation of concurrent operations and possible states.</p>
+<h3 id="Consistency-Models"><a href="#Consistency-Models" class="headerlink" title="Consistency Models"></a>Consistency Models</h3><p>A <em>consistency model</em> is a set of histories. We use consistency models to define which histories are “good”, or “legal” in a system. When we say a history “violates serializability” or “is not serializable”, we mean that the history is not in the set of serializable histories.</p>
+<p>We say that consistency model A implies model B if A is a subset of B. For example, linearizability implies sequential consistency because every history which is linearizable is also sequentially consistent. This allows us to relate consistency models in a hierarchy.</p>
+<p>Speaking informally, we refer to smaller, more restrictive consistency models as “stronger”, and larger, more permissive consistency models as “weaker”.</p>
+<p>Not all consistency models are directly comparable. Often, two models allow different behavior, but neither contains the other.</p>
 ]]></content>
       <categories>
         <category>数据库</category>
@@ -2690,6 +2727,202 @@
 
 <p>Figure 2: A diagram of the isolation levels and their rela- tionships. It assume that the ANSI SQL isolation levels have been strengthened to match the recommendation of Remark 5 and Table 3. The edges are annotated with the phenomena that differentiate the isolation levels. Not shown is a potential multi-version hierarchy extending Snapshot Isolation to lower degrees of isolation by picking read timestamps on a per-statement basis. Nor does it show the original ANSI SQL isolation levels based on the strict interpretation of the phenomenon P1, P2, and P3.</p>
 <p>图 2：隔离级别及其关系图。 它假设 ANSI SQL 隔离级别已得到增强，以符合备注 5 和表 3 的建议。边缘用区分隔离级别的现象进行注释。 未显示的是潜在的多版本层次结构，通过在每个语句的基础上选择读取时间戳，将快照隔离扩展到较低的隔离程度。 它也没有显示基于对 P1、P2 和 P3 现象的严格解释的原始 ANSI SQL 隔离级别。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Isolation in CockroachDB</title>
+    <url>/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/</url>
+    <content><![CDATA[<p>Serializable, lockless, distributed: Isolation in CockroachDB</p>
+<p><em><strong>Editor’s Note*</strong></em>: This post was originally authored when CockroachDB was pre-1.0. CockroachDB’s architecture has undergone many changes since then. One of the most significant, as it relates to this post which focuses on our previous “lockless” design, is that we now use more locking and lock-like structures to provide <code>SERIALIZABLE</code> isolation. For more current details about CockroachDB’s transaction model, read our <a href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer">transaction layer architecture documentation</a>.*</p>
+<p>编者注：这篇文章最初是在 CockroachDB 1.0 版本之前撰写的。 从那时起，CockroachDB 的架构经历了许多变化。 最重要的一个，因为它与这篇文章相关，重点关注我们之前的“无锁”设计，我们现在使用更多的锁定和类似锁的结构来提供可串行化的隔离。 有关 CockroachDB 事务模型的更多最新详细信息，请阅读我们的事务层架构文档。</p>
+<span id="more"></span>
+
+<p>Several months ago, I discussed how CockroachDB’s <a href="https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/">distributed transactions</a> are executed atomically. However, that discussion was incomplete; it ignored the concept of <em>concurrency,</em> where multiple transactions are active on the same data set at the same time. CockroachDB, like all database systems, tries to allow as much concurrency as possible in order to maximize access to the data set.</p>
+<p>几个月前，我讨论了 CockroachDB 的分布式事务是如何原子执行的。 然而，这一讨论并不完整； 它忽略了并发的概念，即多个事务同时在同一数据集上处于活动状态。 与所有数据库系统一样，CockroachDB 尝试允许尽可能多的并发性，以便最大限度地访问数据集。</p>
+<p>Unfortunately, our atomicity guarantee is not sufficient to keep the database consistent in a world of concurrent transactions. Recall that guarantee:</p>
+<p>不幸的是，我们的原子性保证不足以在并发事务的世界中保持数据库的一致性。 回想一下这个保证：</p>
+<blockquote>
+<p> For a group of database operations, either all of the operations are applied or none of them are applied.</p>
+<p>对于一组数据库操作，要么应用所有操作，要么不应用任何操作。</p>
+</blockquote>
+<p>What this does not address is the way that concurrent transactions may <em>interleave.</em> The individual operations (reads and writes) in a transaction do not happen simultaneously; there is time in between the individual operations. In a concurrent system, one transaction may commit during the execution window of a second transaction; even if the first transaction (T1) commits atomically, this can still allow operations later in the second transaction (T2) to see the results of T1, even though earlier operations on T2 did <em>not</em> see the results of T1. This interleaving can create a <a href="https://blog.acolyer.org/2016/02/24/a-critique-of-ansi-sql-isolation-levels/">number of undesired anomalies</a>, ultimately breaking the consistency of the database.</p>
+<p>这没有解决并发事务可能交错的方式。 事务中的各个操作（读取和写入）不会同时发生； 各个操作之间有时间间隔。 在并发系统中，一个事务可能会在第二个事务的执行窗口期间提交； 即使第一个事务 (T1) 以原子方式提交，这仍然可以允许第二个事务 (T2) 中稍后的操作看到 T1 的结果，即使 T2 上的早期操作没有看到 T1 的结果。 这种交错可能会产生许多不需要的异常，最终破坏数据库的一致性。</p>
+<p>To protect against these anomalies, we require an <em>Isolation</em> guarantee:</p>
+<p>为了防止这些异常情况，我们需要隔离保证：</p>
+<blockquote>
+<p>For a group of atomic, concurrent transactions, the commit of one transaction may not interleave with the operations of another transaction.</p>
+<p>对于一组原子并发事务，一个事务的提交可能不会与另一个事务的操作交错。</p>
+</blockquote>
+<p>Perfect isolation can be trivially achieved through <em>serial execution:</em> executing all transactions on the system one at a time, with no concurrency. This has terrible performance implications; fortunately, it is also unnecessary to achieve perfect isolation. Many concurrent databases, including CockroachDB, instead offer <strong>serializable</strong> execution, which is <em>equivalent</em> to serial execution while allowing a considerable level of concurrent transactions.</p>
+<p>通过串行执行可以轻松实现完美的隔离：一次执行系统上的所有事务，无需并发。 这会对性能产生严重影响； 幸运的是，也没有必要实现完美的隔离。 许多并发数据库（包括 CockroachDB）都提供可序列化执行，这相当于串行执行，同时允许相当水平的并发事务。</p>
+<p>CockroachDB’s default isolation level is called <strong>Serializable Snapshot.</strong> It is an optimistic, multi-version, timestamp-ordered concurrency control system with the following properties:</p>
+<p>CockroachDB 的默认隔离级别称为可序列化快照。 它是一个乐观的、多版本的、时间戳有序的并发控制系统，具有以下特性：</p>
+<ul>
+<li><p><strong>Serializable:</strong> The resulting database state is equivalent to a serial execution of component transactions.</p>
+<p>生成的数据库状态相当于组件事务的串行执行。</p>
+</li>
+<li><p><strong>Recoverable:</strong> A set of database transactions is considered recoverable if aborted or abandoned transactions will have no effect on the database state. Our atomic commit system already guarantees that individual transactions are recoverable; our Isolation system uses strict scheduling to ensure that any combination of transactions is also recoverable.</p>
+<p>如果中止或放弃的事务对数据库状态没有影响，则认为一组数据库事务是可恢复的。 我们的原子提交系统已经保证单个事务是可恢复的； 我们的隔离系统使用严格的调度来确保任何事务组合也是可恢复的。</p>
+</li>
+<li><p><strong>Lockless:</strong> Operations execute without taking locks on resources. Correctness is enforced by aborting transactions which would violate either serializability or strict scheduling.</p>
+<p>操作的执行无需锁定资源。 通过中止会违反可串行性或严格调度的事务来强制执行正确性。</p>
+</li>
+<li><p><strong>Distributed:</strong> There is no central oracle, coordinator or service involved in this system.</p>
+<p>该系统不涉及中央预言机、协调器或服务。</p>
+</li>
+</ul>
+<h2 id="Providing-Serializable-Execution"><a href="#Providing-Serializable-Execution" class="headerlink" title="Providing Serializable Execution"></a>Providing Serializable Execution</h2><p>CockroachDB uses a multi-version timestamp ordering to guarantee that its complete transaction commit history is serializable. The basic technique has been <a href="http://research.microsoft.com/en-us/people/philbe/ccontrol.aspx">textbook material</a> for three decades, but we will briefly go over how it works:</p>
+<p>CockroachDB使用多版本时间戳排序来保证其完整的事务提交历史是可序列化的。 三十年来，这项基本技术一直是教科书材料，但我们将简要介绍一下它的工作原理：</p>
+<h3 id="Serializability-Graphs"><a href="#Serializability-Graphs" class="headerlink" title="Serializability Graphs"></a>Serializability Graphs</h3><p>To demonstrate the correctness of timestamp ordering, we look to <em>serializability theory</em>, and specifically one of its core concepts, the <em>serializability graph.</em> This graph is used to analyze a history of database transactions in terms of <em>operation conflicts</em>.</p>
+<p>为了证明时间戳排序的正确性，我们研究了可序列化理论，特别是其核心概念之一，可序列化图。 该图用于根据操作冲突来分析数据库事务的历史记录。</p>
+<p>In the theory, a <em>conflict</em> occurs when two different transactions perform an operation on the same piece of data (one after the other), where at least one of the operations is a write. The second operation is said to be <em>in conflict</em> with the first operation. There are three types of conflicts:</p>
+<p>理论上，当两个不同的事务对同一条数据（一个接一个）执行操作时，就会发生冲突，其中至少有一个操作是写入。 据说第二个操作与第一个操作冲突。 冲突分为三种类型：</p>
+<ul>
+<li><strong>Read-Write (RW)</strong> – Second operation <strong>overwrites</strong> a value that was <strong>read</strong> by the first operation.</li>
+<li><strong>Write-Read (WR)</strong> – Second operation <strong>reads</strong> a value that was <strong>written</strong> by the first operation.</li>
+<li><strong>Write-Write (WW)</strong> – Second operation <strong>overwrites</strong> a value that was <strong>written</strong> by first operation.</li>
+</ul>
+<p>For any given transaction history, these conflicts can be used to create a serializability graph, which is a directed graph linking all transactions.</p>
+<p>对于任何给定的事务历史记录，这些冲突可用于创建可序列化图，这是链接所有事务的有向图。</p>
+<ul>
+<li><p>Transactions are nodes in the graph.</p>
+<p>交易是图中的节点。</p>
+</li>
+<li><p>Whenever an operation conflicts with an operation from a different transaction, draw a directed edge from the conflicting operation to the conflicted operation.</p>
+<p>每当一个操作与来自不同事务的操作发生冲突时，就从冲突操作到冲突操作绘制一条有向边。</p>
+</li>
+</ul>
+<p><img src="/img/Isolation_in_CockroachDB/1.avif"> </p>
+<p>*Figure 1: Example of a serializability graph for a simple transaction history.*简单交易历史记录的可序列化图示例</p>
+<p>And we now arrive at a key statement of this theory: a history is guaranteed to be <em>serializable</em> if (and only if) its serializability graph is acyclic.  (<a href="https://web.archive.org/web/20160316224001/http://research.microsoft.com/en-us/people/philbe/chapter2.pdf">Proof</a>, for those interested).</p>
+<p>现在我们得出了该理论的一个关键陈述：当（且仅当）其可序列化图是非循环的时，历史才保证可序列化。 （证明，对于那些有兴趣的人）。</p>
+<p><img src="/img/Isolation_in_CockroachDB/2.avif"></p>
+<p><em>Figure 2: Example of a transaction history with a cyclic serializability graph. This history is not serializable.</em></p>
+<p>CockroachDB’s timestamp ordering <strong>guarantees an acyclic serializability graph</strong>, and this is straightforward to demonstrate:</p>
+<p>CockroachDB 的时间戳排序保证了非循环可序列化图，这很容易演示：</p>
+<ul>
+<li><p>Every transaction is assigned a timestamp (from the node on which it starts) when it begins. All operations in that transaction take place at this same timestamp, for the duration of the transaction.</p>
+<p>每个事务在开始时都会被分配一个时间戳（从它开始的节点开始）。 在该事务的持续时间内，该事务中的所有操作都在同一时间戳发生。</p>
+</li>
+<li><p>Individual operations can locally determine when they conflict with another operation, <em>and</em> what the transaction timestamp of the conflicted operation is.</p>
+<p>各个操作可以在本地确定它们何时与另一个操作发生冲突，以及冲突操作的事务时间戳是什么。</p>
+</li>
+<li><p>Operations are only allowed to conflict with earlier timestamps; a transaction is not allowed to commit if doing so would create a conflict with a later timestamp.</p>
+<p>操作只允许与较早的时间戳发生冲突； 如果提交事务会与较晚的时间戳产生冲突，则不允许提交该事务。</p>
+</li>
+</ul>
+<p>By disallowing any conflicts that flow against the timestamp-ordered direction, cyclic serializability graphs are impossible. However, let’s explore in detail how CockroachDB actually goes about detecting and disallowing these conflicts.</p>
+<p>通过禁止任何与时间戳排序方向相反的冲突，循环可串行化图是不可能的。 然而，让我们详细探讨一下 CockroachDB 实际上是如何检测和禁止这些冲突的。</p>
+<h4 id="Write-Read-Conflicts-–-MVCC-Database"><a href="#Write-Read-Conflicts-–-MVCC-Database" class="headerlink" title="Write-Read Conflicts – MVCC Database"></a><strong>Write-Read Conflicts</strong> – MVCC Database</h4><p>This is where the “multi-version” aspect of our control mechanism comes into play. CockroachDB keys do not store a single value, but rather store multiple timestamped versions of that value. New writes do not overwrite old values, but rather create a new version with a later timestamp.</p>
+<p>这就是我们控制机制的“多版本”发挥作用的地方。 CockroachDB 键不存储单个值，而是存储该值的多个带时间戳的版本。 新写入不会覆盖旧值，而是创建具有较晚时间戳的新版本。</p>
+<p><img src="/img/Isolation_in_CockroachDB/3.avif"></p>
+<p><em>Figure 3: Comparison of multi-versioned value store with a single-value store. Note that the multi-version store is sorted by timestamp.</em></p>
+<p>Read operations on a key return the most recent version with a lower timestamp than the operation:</p>
+<p>对键的读取操作返回时间戳低于操作的最新版本：</p>
+<p><img src="/img/Isolation_in_CockroachDB/4.avif"></p>
+<p>Thus, it is not possible in CockroachDB to form WR conflicts with later transactions; read operations will never read a value with a later timestamp.</p>
+<p>因此，CockroachDB中不可能与后面的事务形成WR冲突； 读取操作永远不会读取具有较晚时间戳的值。</p>
+<ul>
+<li><p>Note: This is the “Snapshot” in serializable snapshot; in-progress transactions essentially see a temporal snapshot of the database, ignoring anything committed later.</p>
+<p>注意：这是可序列化快照中的“快照”； 正在进行的事务本质上看到数据库的临时快照，忽略稍后提交的任何内容。</p>
+</li>
+</ul>
+<h4 id="Read-Write-Conflicts-–-Read-Timestamp-Cache"><a href="#Read-Write-Conflicts-–-Read-Timestamp-Cache" class="headerlink" title="Read-Write Conflicts – Read Timestamp Cache"></a><strong>Read-Write Conflicts</strong> – Read Timestamp Cache</h4><p>On any read operation, the timestamp of that read operation is recorded in a node-local <em>timestamp cache</em>. This cache will return the most recent timestamp at which the key was read.</p>
+<p>在任何读取操作中，该读取操作的时间戳都会记录在节点本地时间戳缓存中。 该缓存将返回读取密钥的最新时间戳。</p>
+<p>All write operations consult the timestamp cache for the key they are writing; if the returned timestamp is greater than the operation timestamp, this indicates a RW conflict with a later timestamp.  To disallow this, the operation (and its transaction) must be aborted and restarted with a later timestamp.</p>
+<p>所有写入操作都会查询时间戳缓存以获取它们正在写入的密钥； 如果返回的时间戳大于操作时间戳，则表明与较晚的时间戳发生 RW 冲突。 为了禁止这种情况，必须中止操作（及其事务）并使用稍后的时间戳重新启动。</p>
+<p>The timestamp cache is an interval cache, meaning that its keys are actually key ranges. If a read operation is actually a predicate operating over a range of keys (such as a scan), then the entire scanned key range is written to the timestamp cache. This prevents RW conflicts where the key being written was not present during the scan operation.</p>
+<p>时间戳缓存是一个区间缓存，这意味着它的键实际上是键范围。 如果读取操作实际上是对一系列键进行操作的谓词（例如扫描），则整个扫描的键范围将写入时间戳缓存。 这可以防止在扫描操作期间不存在正在写入的密钥时发生 RW 冲突。</p>
+<p>The timestamp cache is a size-limited, in-memory LRU (least recently used) data structure, with the oldest timestamps being evicted when the size limit is reached. To deal with keys not in the cache, we also maintain a “low water mark”, which is equivalent to the earliest read timestamp of any key that is present in the cache. If a write operation writes to a key not present in the cache, the “low water mark” is returned instead.</p>
+<p>时间戳缓存是一种大小有限的内存中 LRU（最近最少使用）数据结构，当达到大小限制时，最旧的时间戳将被逐出。 为了处理不在缓存中的键，我们还维护一个“低水位线”，这相当于缓存中存在的任何键的最早读取时间戳。 如果写入操作写入缓存中不存在的键，则会返回“低水位线”。</p>
+<h4 id="Write-Write-Conflicts-–-Can-only-write-the-most-recent-version-of-a-key"><a href="#Write-Write-Conflicts-–-Can-only-write-the-most-recent-version-of-a-key" class="headerlink" title="Write-Write Conflicts – Can only write the most recent version of a key"></a><strong>Write-Write Conflicts</strong> – Can only write the most recent version of a key</h4><p>If a write operation attempts to write to a key, but that key already has a version with a later timestamp than the operation itself, allowing the operation would create a WW conflict with the later transaction.  To ensure serializability, the operation (and its transaction) must be aborted and restarted with a later timestamp.</p>
+<p>如果写入操作尝试写入某个键，但该键已经具有比操作本身晚的时间戳的版本，则允许该操作将与后面的事务产生 WW 冲突。 为了确保可串行性，必须中止操作（及其事务）并使用稍后的时间戳重新启动。</p>
+<p>By choosing a timestamp-based ordering, and rejecting all conflicts which disagree with that ordering, CockroachDB’s Serializable Snapshot guarantees a serializable schedule.</p>
+<p>通过选择基于时间戳的排序，并拒绝所有与该排序不一致的冲突，CockroachDB 的可序列化快照保证了可序列化的计划。</p>
+<h2 id="Recoverable-with-Strict-Scheduling"><a href="#Recoverable-with-Strict-Scheduling" class="headerlink" title="Recoverable with Strict Scheduling"></a>Recoverable with Strict Scheduling</h2><p>While the previous conflict rules are sufficient to guarantee a serializable history, a different concern arises when two <em>uncommitted</em> transactions have a conflict: even if that conflict is allowed by our timestamp ordering rules, additional rules are required to ensure that the transaction schedule remains <em>recoverable</em>.</p>
+<p>虽然前面的冲突规则足以保证可序列化的历史记录，但当两个未提交的事务发生冲突时，就会出现不同的问题：即使我们的时间戳排序规则允许该冲突，也需要额外的规则来确保事务计划保持可恢复。</p>
+<p>The issue of can be explained with an example:</p>
+<p>这个问题可以用一个例子来解释：</p>
+<p><em>consider two transactions [T1, T2], where timestamp(T1) &lt; timestamp(T2). T1 writes to a key ‘A’. Later, T2 reads from key ‘A’, before T1 has committed.</em></p>
+<p>This conflict is allowed according to our timestamp ordering rules. However, what value should T2’s read retrieve from ‘A’?</p>
+<p>根据我们的时间戳排序规则，这种冲突是允许的。 然而，T2 的读取应该从“A”检索什么值？</p>
+<ul>
+<li><p>Assume it ignores the uncommitted value written by T1, and retrieves the previous value instead. If T1 and T2 both commit, this will create a WR conflict with T2 (T1 will have overwritten a value read by T2). This violates our timestamp ordering guarantee, and thus serializability.</p>
+<p>假设它忽略 T1 写入的未提交值，而是检索以前的值。 如果 T1 和 T2 都提交，这将与 T2 产生 WR 冲突（T1 将覆盖 T2 读取的值）。 这违反了我们的时间戳排序保证，从而违反了可序列化性。</p>
+</li>
+<li><p>Assume it retrieves the value written by T1. If T2 commits, but T1 later aborts, this will have violated the <em>atomicity</em> of T1: T1 still will have had an effect on the database state, even though it aborted.</p>
+<p>假设它检索 T1 写入的值。 如果 T2 提交，但 T1 后来中止，这将违反 T1 的原子性：T1 仍然会对数据库状态产生影响，即使它中止了。</p>
+</li>
+</ul>
+<p>Thus, neither possibility can allowed: in this situation, there is no way that T2 can be safely committed before T1 while maintaining a <em>recoverable</em> schedule.</p>
+<p>因此，这两种可能性都不允许：在这种情况下，无法在保持可恢复调度的同时在 T1 之前安全地提交 T2。</p>
+<p>CockroachDB uses <strong>strict scheduling</strong> to handle this situation: operations are only allowed to read or overwrite <em>committed</em> values; operations are never allowed to act on an uncommitted value.</p>
+<p>CockroachDB使用严格的调度来处理这种情况：操作只允许读取或覆盖提交的值； 永远不允许操作对未提交的值进行操作。</p>
+<h3 id="Enforcing-Strict-Scheduling-执行严格的调度"><a href="#Enforcing-Strict-Scheduling-执行严格的调度" class="headerlink" title="Enforcing Strict Scheduling 执行严格的调度"></a>Enforcing Strict Scheduling 执行严格的调度</h3><p>As established in our <a href="https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/">atomicity post</a>, uncommitted data is staged in <em>intents</em> on each key, for the purpose of atomic commits. In an MVCC data store, the intent on a key (if present) is stored in a special value which sorts immediately before the most recent committed value:</p>
+<p>正如我们在原子性帖子中所建立的，为了原子提交的目的，未提交的数据在每个键上的意图中暂存。 在 MVCC 数据存储中，键（如果存在）的意图存储在一个特殊值中，该值紧邻最近提交的值之前排序：</p>
+<p><img src="/img/Isolation_in_CockroachDB/5.avif"></p>
+<p>In our previous post on atomicity, we assumed that any intent encountered by a transaction was the result of an abandoned transaction; however, in a concurrent environment, the intent might instead be from a concurrent transaction which is still running.</p>
+<p>在我们之前关于原子性的文章中，我们假设事务遇到的任何意图都是被放弃的事务的结果； 但是，在并发环境中，意图可能来自仍在运行的并发事务。</p>
+<p>Strict scheduling actions are required in two situations: if a read operation encounters an intent with a lower timestamp, or if a write encounters <em>any</em> intent from another transaction (regardless of timestamp ordering). In these situations, there are two options available to CockroachDB:</p>
+<p>在两种情况下需要严格的调度操作：如果读取操作遇到具有较低时间戳的意图，或者如果写入遇到来自另一个事务的任何意图（无论时间戳顺序如何）。 在这些情况下，CockroachDB 有两种选择：</p>
+<ul>
+<li><p>If the second transaction has a higher timestamp, it can wait for the first transaction to commit or abort before completing the operation.</p>
+<p>如果第二个事务具有更高的时间戳，则它可以等待第一个事务提交或中止，然后再完成操作。</p>
+</li>
+<li><p>One of the two transactions can be aborted.</p>
+<p>两个事务之一可以被中止。</p>
+</li>
+</ul>
+<p>As an optimistic system (no waiting), CockroachDB <em>always</em> chooses to abort one of the transactions. The process of determining which transaction is as follows:</p>
+<p>作为一个乐观的系统（无需等待），CockroachDB 总是选择中止其中一个事务。 确定哪笔交易的过程如下：</p>
+<ul>
+<li><p>The second transaction (which is encountering an intent) looks up the first transaction’s transaction record, the location of which is present in the intent.</p>
+<p>第二个事务（遇到意图）查找第一个事务的事务记录，该记录的位置存在于意图中。</p>
+</li>
+<li><p>The transaction performs a “<strong>push</strong>” on the discovered transaction record. The push operation is as follows:</p>
+<p>交易对发现的交易记录执行“推送”。 推送操作如下：</p>
+<ul>
+<li><p>If the first transaction is already committed (the intent was not yet cleaned up), then the second transaction can clean up the intent and proceed as if the intent were a normal value.</p>
+<p>如果第一个事务已经提交（意图尚未清除），则第二个事务可以清除意图并继续执行，就好像意图是正常值一样。</p>
+</li>
+<li><p>Likewise, if the other transaction already aborted, the intent can be removed and the second transaction can proceed as if the intent were not present.</p>
+<p>同样，如果另一个事务已经中止，则可以删除意图，并且第二个事务可以继续进行，就好像意图不存在一样。</p>
+</li>
+<li><p>Otherwise, the surviving transaction is deterministic according to <strong>priority</strong>.</p>
+<p>否则，幸存的事务根据优先级是确定的。</p>
+<ul>
+<li><p>It is not optimal to always abort either the pusher or pushee; there are cases where both transactions will attempt to push the other, so “victory” must be deterministic between any transaction pair.</p>
+<p>始终中止推动者或被推动者并不是最佳选择； 在某些情况下，两个交易都会尝试推动另一个交易，因此任何交易对之间的“胜利”必须是确定性的。</p>
+</li>
+<li><p>Each transaction record is thus assigned a <strong>priority</strong>; priority is an integer number. In a push operation, the transaction with the lowest priority is always aborted (if priority is equal, the transaction with the higher timestamp is aborted. In the extremely rare case where both are equal, the pushing transaction is aborted).</p>
+<p>每条交易记录因此被分配一个优先级； 优先级是一个整数。 在推送操作中，优先级最低的事务总是被中止（如果优先级相同，则时间戳较高的事务将被中止。在极少数情况下，两者相等，推送事务将被中止）。</p>
+</li>
+<li><p>New transactions have a random priority. If a transaction is aborted by a push operation and is restarted, its new priority is <code>max(randomInt(), [priority of transaction that caused the restart] - 1]);</code> this has the effect of probabilistically ratcheting up a transaction’s priority if it is restarted multiple times.</p>
+<p>新交易具有随机优先级。 如果事务被推送操作中止并重新启动，则其新优先级为 max(randomInt(), [导致重新启动的事务的优先级] - 1])； 如果多次重新启动事务，这会在概率上提高事务的优先级。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>In this way, all conflicts between uncommitted transactions are immediately resolved by aborting one of the transactions, thus enforcing strict scheduling and guaranteeing that all transaction histories are recoverable.</p>
+<p>这样，未提交事务之间的所有冲突都可以通过中止其中一个事务来立即解决，从而执行严格的调度并保证所有事务历史都是可恢复的。</p>
+<h4 id="Note-on-Abandoned-Transactions"><a href="#Note-on-Abandoned-Transactions" class="headerlink" title="Note on Abandoned Transactions"></a>Note on Abandoned Transactions</h4><p>As mentioned earlier, in a concurrent environment we can no longer assume that unresolved write intents belong to abandoned transactions; we must deal with abandoned transactions in a different way. The <strong>priority</strong> system already aborts abandoned transactions probabilistically – transactions blocked by the abandoned transaction will eventually have a high enough priority to usurp it.</p>
+<p>如前所述，在并发环境中，我们不能再假设未解决的写意图属于已放弃的事务； 我们必须以不同的方式处理废弃的交易。 优先级系统已经有概率地中止被放弃的交易——被被放弃的交易阻止的交易最终将拥有足够高的优先级来篡夺它。</p>
+<p>However, we additionally add a <strong>heartbeat</strong> timestamp to every transaction. While in progress, an active transaction is responsible for periodically updating the heartbeat timestamp on its central transaction record; if a push operation encounters a transaction with an expired heartbeat timestamp, then it is considered abandoned and can be aborted regardless of priority.</p>
+<p>但是，我们还为每笔交易添加了心跳时间戳。 在进行过程中，活动事务负责定期更新其中央事务记录上的心跳时间戳； 如果推送操作遇到心跳时间戳过期的事务，则该操作将被视为放弃，并且无论优先级如何都可以中止。</p>
+<h2 id="Wrap-Up-包起来"><a href="#Wrap-Up-包起来" class="headerlink" title="Wrap Up 包起来"></a>Wrap Up 包起来</h2><p>We have now demonstrated how CockroachDB’s Isolation system is able to provide a serializable and recoverable transaction history in a completely distributed fashion. Combined with our atomic commit post, we have already described a fairly robust system for executing concurrent, distributed ACID transactions. That said, there are still many aspects to CockroachDB’s transaction system that we have not yet covered.</p>
+<p>我们现在已经演示了 CockroachDB 的隔离系统如何能够以完全分布式的方式提供可序列化和可恢复的事务历史记录。 结合我们的原子提交帖子，我们已经描述了一个用于执行并发、分布式 ACID 事务的相当健壮的系统。 也就是说，CockroachDB 的事务系统还有很多方面我们还没有涉及到。</p>
+<p>For example, CockroachDB offers another, more <em>relaxed</em> isolation level known as <strong>Snapshot</strong> (without the “serializable”)<em>.</em> Like relaxed isolation levels in other database systems, this mode increases concurrency performance by allowing transactions to interleave in certain cases; for some applications, this is an acceptable tradeoff.</p>
+<p>例如，CockroachDB 提供了另一种更宽松的隔离级别，称为快照（没有“可序列化”）。 与其他数据库系统中宽松的隔离级别一样，此模式通过允许事务在某些情况下交错来提高并发性能； 对于某些应用程序来说，这是一个可以接受的折衷方案。</p>
+<p>Another aspect is how CockroachDB provides <em>linearizable</em> access to its data. Linearizability is a property that can be difficult to provide in a distributed system. Spencer Kimball has already written <a href="https://www.cockroachlabs.com/blog/living-without-atomic-clocks/">this blog post</a> demonstrating how CockroachDB deals with this in some detail (contrasting it with the way a similar system, Google’s Spanner, does the same); however, we may eventually write an additional linearizability blog post focused more directly on our transaction system.</p>
+<p>另一个方面是 CockroachDB 如何提供对其数据的线性化访问。 线性化是分布式系统中很难提供的属性。 Spencer Kimball 已经撰写了这篇博客文章，详细演示了 CockroachDB 如何处理此问题（将其与类似系统 Google 的 Spanner 的处理方式进行对比）； 然而，我们最终可能会写一篇额外的线性化博客文章，更直接地关注我们的交易系统。</p>
 ]]></content>
       <categories>
         <category>数据库</category>
