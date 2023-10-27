@@ -18,26 +18,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="article">
-<meta property="og:title" content="从零写数据库系列-scanner">
-<meta property="og:url" content="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/index.html">
+    <meta name="description" content="原文链接：https:&#x2F;&#x2F;jepsen.io&#x2F;consistency This clickable map (adapted from Bailis, Davidson, Fekete et al and Viotti &amp; Vukolic) shows the relationships between common consistency models for concurrent sy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Consistency Models">
+<meta property="og:url" content="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="原文链接：https:&#x2F;&#x2F;jepsen.io&#x2F;consistency This clickable map (adapted from Bailis, Davidson, Fekete et al and Viotti &amp; Vukolic) shows the relationships between common consistency models for concurrent sy">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-02-01T02:44:57.000Z">
-<meta property="article:modified_time" content="2023-02-04T02:43:34.291Z">
+<meta property="article:published_time" content="2023-10-26T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-10-26T08:06:52.098Z">
 <meta property="article:author" content="Leoric">
-<meta property="article:tag" content="数据库 C++ go">
+<meta property="article:tag" content="事务">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/">
+<link rel="canonical" href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/","path":"2023/02/01/2-数据库/3-手写数据库/从零写数据库之02-scanner/","title":"从零写数据库系列-scanner"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/","path":"2023/10/26/2-数据库/1-cockroachdb/cockroach-blogs/Consistency Models/","title":"Consistency Models"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>从零写数据库系列-scanner | Leoirc's Blogs</title>
+<title>Consistency Models | Leoirc's Blogs</title>
   
 
 
@@ -96,7 +98,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -109,6 +111,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fundamental-Concepts"><span class="nav-number">1.</span> <span class="nav-text">[Fundamental Concepts]</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -166,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -179,12 +182,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="从零写数据库系列-scanner | Leoirc's Blogs">
+      <meta itemprop="name" content="Consistency Models | Leoirc's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          从零写数据库系列-scanner
+          Consistency Models
         </h1>
 
         <div class="post-meta-container">
@@ -194,15 +197,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-04 10:43:34" itemprop="dateModified" datetime="2023-02-04T10:43:34+08:00">2023-02-04</time>
+      <time title="创建时间：2023-10-26 14:44:57 / 修改时间：16:06:52" itemprop="dateCreated datePublished" datetime="2023-10-26T14:44:57+08:00">2023-10-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -230,10 +227,25 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><span id="more"></span>
+    <div class="post-body" itemprop="articleBody"><p>原文链接：<a target="_blank" rel="noopener" href="https://jepsen.io/consistency">https://jepsen.io/consistency</a></p>
+<p><em>This clickable map (adapted from</em> <a target="_blank" rel="noopener" href="http://www.vldb.org/pvldb/vol7/p181-bailis.pdf">Bailis, Davidson, Fekete et al</a> <em>and</em> <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1512.00168.pdf">Viotti &amp; Vukolic</a><em>) shows the relationships between common consistency models for concurrent systems. Arrows show the relationship between consistency models. For instance, strict serializable implies both serializability and linearizability, linearizability implies sequential consistency, and so on. Colors show how available each model is, for a distributed system on an asynchronous network.</em></p>
+<p>这个可点击的地图（改编自 Bailis、Davidson、Fekete 等人和 Viotti &amp; Vukolic）显示了并发系统的常见一致性模型之间的关系。 箭头显示一致性模型之间的关系。 例如，严格可串行化意味着可串行化和可线性化，可线性化意味着顺序一致性，等等。 颜色显示每个模型对于异步网络上的分布式系统的可用性。</p>
+<span id="more"></span>
 
 
 
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TD;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    A--&gt;C;</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    D--&gt;E;</span><br><span class="line">    D--&gt;F;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Fundamental-Concepts"><a href="#Fundamental-Concepts" class="headerlink" title="[Fundamental Concepts]"></a>[Fundamental Concepts]</h2><p>Jepsen analyses the safety properties of distributed systems–most notably, identifying violations of consistency models. But what are consistency models? What phenomena do they allow? What kind of consistency does a given program really need?</p>
+<p>Jepsen 分析分布式系统的安全属性，最值得注意的是，识别一致性模型的违规行为。 但什么是一致性模型？ 它们允许哪些现象发生？ 给定的程序真正需要什么样的一致性？</p>
+<p>In this reference guide, we provide basic definitions, intuitive explanations, and theoretical underpinnings of various consistency models for engineers and academics alike.</p>
+<p>在本参考指南中，我们为工程师和学者提供各种一致性模型的基本定义、直观解释和理论基础。</p>
 
     </div>
 
@@ -251,7 +263,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/" title="从零写数据库系列-scanner">http://heoric.github.io/2023/02/01/2-数据库/3-手写数据库/从零写数据库之02-scanner/</a>
+      <a href="http://heoric.github.io/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/" title="Consistency Models">http://heoric.github.io/2023/10/26/2-数据库/1-cockroachdb/cockroach-blogs/Consistency Models/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -259,18 +271,21 @@
 </ul>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag"># 事务</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/" rel="prev" title="从零写数据库系列-parser">
-                  <i class="fa fa-angle-left"></i> 从零写数据库系列-parser
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/" rel="prev" title="Linearizability versus Serializability">
+                  <i class="fa fa-angle-left"></i> Linearizability versus Serializability
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/" rel="next" title="c++ 模版元编程">
-                  c++ 模版元编程 <i class="fa fa-angle-right"></i>
+                <a href="/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/The%20Many%20Faces%20of%20Consistency/" rel="next" title="The Many Faces of Consistency">
+                  The Many Faces of Consistency <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -353,7 +368,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d38f23c23d2045fff33ca17d922f2093"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e375676e8955b66580c525dff9f50c3e"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

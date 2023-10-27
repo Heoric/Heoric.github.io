@@ -1326,6 +1326,62 @@
 <p>单副本快照隔离[15]也适用于复制系统。 要求是它的行为必须像一个不复制且提供快照隔离的系统。</p>
 <h4 id="3-2-3-Read-write-centric-以读写为中心"><a href="#3-2-3-Read-write-centric-以读写为中心" class="headerlink" title="3.2.3 Read-write centric 以读写为中心"></a>3.2.3 Read-write centric 以读写为中心</h4><p>The above subcategories of operation consistency apply to systems with arbitrary operations. The read-write centric subcategory applies to systems with two very specific operations: read and write. These systems are important because they include many types of storage systems, such as block storage systems, key value storage systems, and processors accessing memory. By focusing on the two operations, this subcategory permits prop- erties that directly evoke the semantics of the operations. In particular, a write operation returns no information other than an acknowledgment or error status, which has no consistency implications. Thus, the consistency properties focus on the results of reads. Common to these properties is the notion of a read <em>seeing</em> the values of a set of writes, as we now explain. Each read is affected by some writes in the system; if every write covers the entire data item, then writes overwrite each other and the read returns the value written by one of them. But if the writes update just part of a data item, the read returns a combination of the written values in some appropriate order. In either case, the crucial consideration is the set of writes that <em>could</em> have potentially affected the read, irrespective of whether the writes are partial or not; we say that the read <em>sees</em> those writes. This notion is used to define several known consistency properties, as we now exemplify.</p>
 <p>上述操作一致性的子类别适用于具有任意操作的系统。 以读写为中心的子类别适用于具有两个非常具体的操作的系统：读和写。 这些系统很重要，因为它们包括许多类型的存储系统，例如块存储系统、键值存储系统和访问内存的处理器。 通过关注这两个操作，该子类别允许直接唤起操作语义的属性。 特别是，写操作除了确认或错误状态之外不返回任何信息，这没有一致性影响。 因此，一致性属性集中于读取的结果。 正如我们现在所解释的，这些属性的共同点是读取看到一组写入的值的概念。 每次读都会受到系统中一些写的影响； 如果每次写入都覆盖整个数据项，则写入会相互覆盖，并且读取会返回其中之一写入的值。 但是，如果写入仅更新数据项的一部分，则读取将按某种适当的顺序返回写入值的组合。 无论哪种情况，关键的考虑因素是可能影响读取的一组写入，无论写入是否部分； 我们说读可以看到那些写。 正如我们现在举例的那样，这个概念用于定义几个已知的一致性属性。</p>
+<p><em>Read-my-writes [21]</em> requires that a read by a client sees at least all writes previously executed by the same client, in the order in which they were executed. This property is relevant when clients expect to observe their own writes, but can tolerate delays before observing the writes of others. Typically, read-my-writes is combined with another read-write consistency property, such as bounded staleness or operational eventual consistency, defined below. By combined we mean that the system must provide both read-my-writes and the other prop- erty. Read-my-writes was originally defined in the context of distributed systems [21], then used in computer architecture to define memory models [19].</p>
+<p>Read-my-writes [21] 要求客户端的读取至少可以看到同一客户端先前执行的所有写入（按执行顺序排列）。 当客户端期望观察自己的写入，但在观察其他人的写入之前可以容忍延迟时，此属性是相关的。 通常，read-my-writes 与另一个读写一致性属性相结合，例如下面定义的有限陈旧性或操作最终一致性。 通过组合，我们的意思是系统必须提供“读我的写”和其他属性。 Read-my-writes 最初是在分布式系统的上下文中定义的 [21]，然后在计算机体系结构中用于定义内存模型 [19]。</p>
+<p><em>Bounded staleness [1]</em>, intuitively, bounds the time it takes for writes to be seen by reads. More precisely, the property has a parameter δ, such that a read must see at least all writes that complete δ time before the read started. This property is relevant when inconsistencies are tolerable in the short term as defined by δ, or when time intervals smaller than δ are imperceptible by clients (e.g., δ is in the tens of milliseconds and clients are humans). Bounded staleness was originally defined in the context of database systems [1] and has been used more recently in the context of cloud distributed systems [20].</p>
+<p>直观上讲，有界陈旧性 [1] 限制了读取看到写入所需的时间。 更准确地说，该属性有一个参数 δ，这样读取必须至少看到在读取开始之前完成 δ 时间的所有写入。 当 δ 定义的短期内可以容忍不一致时，或者当客户无法察觉小于 δ 的时间间隔时（例如，δ 为数十毫秒且客户是人类），此属性是相关的。 有界过时性最初是在数据库系统 [1] 的上下文中定义的，最近已在云分布式系统 [20] 的上下文中使用。</p>
+<p><em>Operational eventual consistency</em> is a variant of eventual consistency (a form of state consistency) defined using operation consistency. The requirement is that each write be eventually seen by all reads, and if clients stop executing writes then eventually every read returns the same latest value [22].</p>
+<p>操作最终一致性是使用操作一致性定义的最终一致性（状态一致性的一种形式）的变体。 要求是每次写入最终都会被所有读取看到，并且如果客户端停止执行写入，则最终每次读取都会返回相同的最新值[22]。</p>
+<p><em>Cache coherence</em> originates from computer architecture to define the correct behavior of a memory cache. Intuitively, cache coherence requires that reads and writes to an individual data item (a memory location) satisfy some properties. The properties vary across the literature. One possibility [11] is to require that, for each data item: (1) a read by some client returns the value of the previous write by that client, unless another client has written in between, (2) a read returns the value of a write by another client if the write and read are sufficiently separated in time and if no other write occurred in between, and (3) writes are serialized.</p>
+<p>缓存一致性源自计算机体系结构，用于定义内存缓存的正确行为。 直观上，缓存一致性要求对单个数据项（内存位置）的读取和写入满足某些属性。 各个文献的特性各不相同。 一种可能性[11]是要求，对于每个数据项：（1）某个客户端的读取返回该客户端先前写入的值，除非另一个客户端在其间写入，（2）读取返回该值 如果写入和读取在时间上充分分离并且中间没有发生其他写入，则由另一个客户端进行写入，并且 (3) 写入被串行化。</p>
+<h3 id="3-3-Discussion"><a href="#3-3-Discussion" class="headerlink" title="3.3 Discussion"></a>3.3 Discussion</h3><p>We now compare state consistency and operation consistency in terms of their level of abstraction, complexity, power, and application dependence.</p>
+<p>现在，我们从抽象级别、复杂性、功能和应用程序依赖性方面比较状态一致性和操作一致性。</p>
+<h4 id="3-3-1-Level-of-abstraction"><a href="#3-3-1-Level-of-abstraction" class="headerlink" title="3.3.1 Level of abstraction"></a>3.3.1 Level of abstraction</h4><p>Operation consistency is an end-to-end property, because it deals with results that clients can observe directly. This is in contrast to state consistency, which deals with system state that clients observe indirectly by executing operations. In other words, operation consistency is at a higher level of abstraction than state consistency. As a result, a system might have significant state inconsistencies, but hide these inconsistencies externally to provide a strong form of operation consistency.</p>
+<p>操作一致性是一个端到端的属性，因为它处理的是客户端可以直接观察到的结果。 这与状态一致性相反，状态一致性处理客户端通过执行操作间接观察到的系统状态。 换句话说，操作一致性比状态一致性处于更高的抽象级别。 因此，系统可能存在严重的状态不一致，但将这些不一致隐藏在外部以提供强大的操作一致性形式。</p>
+<p>An interesting example is a storage system with three servers replicated using majority quorums [3], where (1) to write data, the system attaches a monotonic timestamp and stores the data at two (a majority of) servers, and (2) to read, the system fetches the data from two servers; if the servers return the same data, the system returns the data to the client; otherwise, the system picks the data with the highest timestamp, stores that data and its timestamp in another server (to ensure that two servers have the data), and returns the data to the client. This system violates mutual consistency, because when there are no outstanding operations, one of the servers deviates from the other two. However, this inconsistency is not observable in the results returned by reads, since a read filters out the inconsistent server by querying a majority. In fact, this storage system satisfies linearizability, one of the strongest forms of operation consistency.</p>
+<p>一个有趣的例子是一个具有使用多数仲裁[3]复制的三台服务器的存储系统，其中（1）写入数据，系统附加单调时间戳并将数据存储在两台（大多数）服务器上，以及（2） read，系统从两台服务器获取数据； 如果服务器端返回的数据相同，则系统将数据返回给客户端； 否则，系统选择具有最高时间戳的数据，将该数据及其时间戳存储在另一台服务器中（以确保两台服务器都有该数据），并将数据返回给客户端。 该系统违反了相互一致性，因为当没有未完成的操作时，其中一台服务器会偏离其他两台服务器。 然而，这种不一致在读取返回的结果中是观察不到的，因为读取通过查询多数来过滤掉不一致的服务器。 事实上，该存储系统满足线性化，这是操作一致性的最强形式之一。</p>
+<h4 id="3-3-2-Complexity"><a href="#3-3-2-Complexity" class="headerlink" title="3.3.2 Complexity"></a>3.3.2 Complexity</h4><p>Operation consistency is more complex than state consistency. With state consistency, developers gain a direct understanding of what states they can expect from the system. Each property concerns specific data items that do not depend on the execution. As a result, state consistency is intuitive and simple to express and under- stand. Moreover, state consistency can be checked by analyzing a snapshot of the system state, which facilitates debugging.</p>
+<p>操作一致性比状态一致性更复杂。 通过状态一致性，开发人员可以直接了解他们可以从系统中获得哪些状态。 每个属性都涉及不依赖于执行的特定数据项。 因此，状态一致性直观且易于表达和理解。 而且，可以通过分析系统状态快照来检查状态一致性，从而方便调试。</p>
+<p>By contrast, operation consistency properties establish relations between operations that are spread over time and possibly over many clients, which creates complexity. This complexity makes operation consistency less intuitive and harder to understand, as can be observed from the examples in Section 3.2. Moreover, checking operation consistency requires analyzing an execution log, which complicates debugging.</p>
+<p>相比之下，操作一致性属性在随时间分布并且可能分布在许多客户端的操作之间建立关系，这会产生复杂性。 这种复杂性使得操作一致性变得不那么直观并且更难以理解，从 3.2 节中的示例可以看出。 而且，检查操作一致性需要分析执行日志，这使得调试变得复杂。</p>
+<h4 id="3-3-3-Power"><a href="#3-3-3-Power" class="headerlink" title="3.3.3 Power"></a>3.3.3 Power</h4><p>Operation consistency and state consistency have different powers. Operation consistency can see all operations in the system, which permits constraining the ordering and results of operations. If the system is deterministic, operation consistency properties can reconstruct the state of the system from the operations, and thereby indi- rectly constrain the state much like state consistency. But doing so is not generally possible when the system is non-deterministic (e.g., due to concurrency, timing, or external events).</p>
+<p>操作一致性和状态一致性具有不同的权力。 操作一致性可以看到系统中的所有操作，这允许约束操作的顺序和结果。 如果系统是确定性的，操作一致性属性可以从操作中重建系统的状态，从而像状态一致性一样间接约束状态。 但当系统不确定时（例如，由于并发、计时或外部事件），这样做通常是不可能的。</p>
+<p>State consistency, on the other hand, can see the entire state of the system, which permits constraining operations that might break the state. If the system records all its operations in its state, then state consistency can indirectly constrain the results of operations much like operation consistency.1 However, it is often prohibitive to record all operations so this is only a theoretical capability.</p>
+<p>另一方面，状态一致性可以看到系统的整个状态，这允许限制可能破坏状态的操作。 如果系统在其状态中记录其所有操作，则状态一致性可以间接约束操作的结果，就像操作一致性一样。[^1] 但是，记录所有操作通常是禁止的，因此这只是一种理论上的能力。</p>
+<p>[^1]: It is even possible to constrain all operations of the entire execution, though enforcing such constraints would be hard. 甚至可以约束整个执行的所有操作，尽管强制执行此类约束会很困难。</p>
+<h4 id="3-3-4-Application-dependence"><a href="#3-3-4-Application-dependence" class="headerlink" title="3.3.4 Application dependence"></a>3.3.4 Application dependence</h4><p>State consistency tends to be application dependent, because the properties concern state, and the correct state of a system varies significantly from application to application. As a result, developers need to figure out the right properties for each system, which takes time and effort. Moreover, in some cases there are no general mechanisms to enforce state consistency and developers must write application code that is closely tied to each property. There are two noteworthy exceptions: mutual consistency and eventual consistency. These properties apply broadly to any replicated system, by referring to the replicated state irrespective of the application, and there are general replication mechanisms to enforce such properties.</p>
+<p>状态一致性往往依赖于应用程序，因为属性涉及状态，并且系统的正确状态因应用程序而异。 因此，开发人员需要为每个系统找出正确的属性，这需要时间和精力。 此外，在某些情况下，没有通用机制来强制状态一致性，开发人员必须编写与每个属性紧密相关的应用程序代码。 有两个值得注意的例外：相互一致性和最终一致性。 这些属性通过引用复制状态而广泛适用于任何复制系统，而与应用程序无关，并且存在通用复制机制来强制执行这些属性。</p>
+<p>Operation consistency is often application independent. It achieves application independence in two ways. First, some properties factor out the application-specific behavior, by reducing the behavior of the system under concurrent operations to behavior under sequential operations (as in the sequential equivalence subcategory), or behavior under a reference (as in the reference equivalence subcategory). Second, some properties focus on specific operations, such as read and write, that apply to many systems (as in the read-write centric subcategory). Theoretically, operation consistency <em>can</em> be highly application dependent, but this is not common. An example might be an email system accessible by many devices, where each operation (read, delete, move) might have different constraints on their response according to their semantics and the expectations of users.</p>
+<p>操作一致性通常与应用程序无关。 它通过两种方式实现应用程序独立性。 首先，一些属性通过将并发操作下的系统行为减少为顺序操作下的行为（如顺序等效子类别中的行为）或引用下的行为（如引用等效子类别中的行为）来分解特定于应用程序的行为。 其次，某些属性专注于适用于许多系统的特定操作，例如读取和写入（如在以读写为中心的子类别中）。 理论上，操作一致性可能高度依赖于应用程序，但这并不常见。 一个示例可能是可由许多设备访问的电子邮件系统，其中每个操作（读取、删除、移动）可能根据其语义和用户的期望对其响应有不同的限制。</p>
+<h4 id="3-3-5-Which-type-to-use"><a href="#3-3-5-Which-type-to-use" class="headerlink" title="3.3.5 Which type to use?"></a>3.3.5 Which type to use?</h4><p>To decide what type of consistency to use, we suggest taking a few things into consideration. First, think about the negation of consistency: what are the inconsistencies that must be avoided? If the answer is most easily described by an undesirable state (e.g., two replicas diverge), then use state consistency. If the answer is most easily described by an incorrect result to an operation (e.g., a read returns stale data), then use operation consistency.</p>
+<p>要决定使用哪种类型的一致性，我们建议考虑一些事项。 首先，思考一致性的否定：哪些是必须避免的不一致？ 如果答案最容易通过不良状态来描述（例如，两个副本存在分歧），则使用状态一致性。 如果答案最容易通过操作的错误结果来描述（例如，读取返回过时的数据），则使用操作一致性。</p>
+<p>A second important consideration is application dependency. Many operation consistency and some state consistency properties are application independent (e.g., serializability, linearizability, mutual consistency, even- tual consistency). We recommend trying to use such properties, before defining an application-specific one, because the mechanisms to enforce them are well understood. If the system requires an application specific property, and state and operation consistency are both natural choices, then we recommend using state consis- tency due to its simplicity.</p>
+<p>第二个重要的考虑因素是应用程序依赖性。 许多操作一致性和一些状态一致性属性是独立于应用程序的（例如，可串行性、可线性性、相互一致性、最终一致性）。 我们建议在定义特定于应用程序的属性之前尝试使用此类属性，因为强制执行它们的机制很容易理解。 如果系统需要应用程序特定的属性，并且状态和操作一致性都是自然的选择，那么我们建议使用状态一致性，因为它很简单。</p>
+<h2 id="4-Consistency-in-different-disciplines"><a href="#4-Consistency-in-different-disciplines" class="headerlink" title="4 Consistency in different disciplines"></a>4 Consistency in different disciplines</h2><p>不同学科的一致性</p>
+<p>We now discuss what consistency means in each discipline, why it is relevant in that discipline, and how it relates to the two types of consistency in Section 3. We also point out concepts that are considered to be consistency in one discipline but not in another.</p>
+<p>我们现在讨论一致性在每个学科中的含义，为什么它与该学科相关，以及它与第 3 节中的两种类型的一致性有何关系。我们还指出了在一个学科中被认为是一致性但在另一个学科中则不然的概念 。</p>
+<h3 id="4-1-Distributed-systems"><a href="#4-1-Distributed-systems" class="headerlink" title="4.1 Distributed systems"></a>4.1 Distributed systems</h3><p>In distributed systems, consistency refers to either state or operation consistency. Early replication protocols focused on providing mutual consistency while many cloud distributed systems provide eventual consistency. These are examples of state consistency. Some systems aim at providing linearizability or various flavors of read-write centric consistency. These are examples of operation consistency.</p>
+<p>在分布式系统中，一致性指的是状态一致性或操作一致性。 早期的复制协议侧重于提供相互一致性，而许多云分布式系统提供最终一致性。 这些是状态一致性的例子。 一些系统旨在提供线性化或各种以读写为中心的一致性。 这些都是操作一致性的例子。</p>
+<p>Consistency is an important consideration in distributed systems because such systems face many concerns that preclude or hinder consistency: clients separated by a slow network, machines that fail, clients that discon- nect from each other, scalability of the system to a large number of clients, and high availability. These concerns can make it hard to provide strong levels of consistency, because consistency requires client coordination that may not be possible. As a result, distributed systems may adopt weaker levels of consistency, chosen according to the needs of applications.</p>
+<p>一致性是分布式系统中的一个重要考虑因素，因为此类系统面临许多阻碍或阻碍一致性的问题：客户端被慢速网络分隔、机器发生故障、客户端彼此断开连接、系统对大量客户端的可扩展性 和高可用性。 这些问题可能会使提供强级别的一致性变得困难，因为一致性需要客户端协调，而这可能是不可能的。 因此，分布式系统可能会采用根据应用程序的需要选择的较弱的一致性级别。</p>
+<p>Cloud systems, an interesting type of distributed system, face all of the above concerns with intensity: the systems are geo-distributed (distributed around the globe) with significant latency separating data centers; ma- chines fail often because there are many of them; clients disconnect from remote data centers due to problems or congestion in wide-area links; many clients are active and the system must serve all of them well; and the system must be available whenever possible since businesses lose money during downtime. Because of these challenges, cloud systems often resort to weak levels of consistency.</p>
+<p>云系统是一种有趣的分布式系统，它面临着上述所有严重问题：系统是地理分布式的（分布在全球各地），数据中心之间存在显着的延迟； 机器经常出故障，因为数量太多； 由于广域链路出现问题或拥塞，客户端与远程数据中心断开连接； 许多客户都是活跃的，系统必须为所有客户提供良好的服务； 并且系统必须尽可能可用，因为企业在停机期间会损失资金。 由于这些挑战，云系统通常采用弱一致性级别。</p>
+<h3 id="4-2-Database-systems"><a href="#4-2-Database-systems" class="headerlink" title="4.2 Database systems"></a>4.2 Database systems</h3><p>In database systems, consistency refers to state consistency. For example, consider the ACID acronym that de- scribes the guarantees of transactions. The “C” stands for consistency, which in this case means that the database is always in a state that developers consider valid: the system must preserve invariants such as uniqueness con- straints, referential integrity, and application-specific properties (e.g., x is a friend of y iff y is a friend of x). These are flavors of state consistency.</p>
+<p>在数据库系统中，一致性是指状态一致性。 例如，考虑描述事务保证的 ACID 缩写。 “C”代表一致性，在这种情况下意味着数据库始终处于开发人员认为有效的状态：系统必须保留诸如唯一性约束、引用完整性和特定于应用程序的属性（例如，x 是 y 的朋友当且仅当 y 是 x 的朋友）。 这些都是状态一致性的体现。</p>
+<p>The “A” stands for atomicity and the “I” stands for isolation. Interestingly, atomicity and isolation are examples of operation consistency. Atomicity requires that a transaction either executes in its entirety or does not execute at all, while isolation requires that transactions appear to execute by themselves without much interference. There are many different levels of isolation (serializability, snapshot isolation, read committed, repeatable reads, etc), but they all constrain the behavior of operations.</p>
+<p>“A”代表原子性，“I”代表隔离。 有趣的是，原子性和隔离性是操作一致性的例子。 原子性要求事务要么完整执行，要么根本不执行，而隔离性则要求事务看起来自己执行而没有太多干扰。 有许多不同级别的隔离（可串行性、快照隔离、已提交读、可重复读等），但它们都限制了操作的行为。</p>
+<p>Although the database systems community separates transaction isolation from consistency and atomicity, in the distributed systems community, transaction isolation is seen as a form of consistency, while in the computer architecture community, a concept analogous to isolation is called atomicity. We do not know exactly why these terms have acquired different meanings across communities. But we suspect that a reason is that there are intertwined ideas across these concepts, which is something we try to identify and clarify in this article.</p>
+<p>尽管数据库系统社区将事务隔离与一致性和原子性分开，但在分布式系统社区中，事务隔离被视为一致性的一种形式，而在计算机体系结构社区中，类似于隔离的概念称为原子性。 我们并不确切知道为什么这些术语在不同社区中具有不同的含义。 但我们怀疑其中一个原因是这些概念之间存在相互交织的想法，这是我们在本文中试图识别和澄清的内容。</p>
+<p>Consistency is important in database systems because data is of primary concern; in fact, data could be even more important than the result of operations in such systems (e.g., operations can fail as long as data is not destroyed). Different types of consistency arise because of the different classes of invariants that exist in the database, each with its own enforcement mechanism. For example, uniqueness constraints are enforced by an index and checks in the execution engine; application-specific constraints are enforced by the application logic; and mutual consistency is enforced by the replication manager.</p>
+<p>一致性在数据库系统中很重要，因为数据是首要关注的； 事实上，在此类系统中，数据可能比操作结果更重要（例如，只要数据不被破坏，操作就可能失败）。 不同类型的一致性是由于数据库中存在不同类别的不变量而产生的，每个不变量都有自己的执行机制。 例如，唯一性约束由执行引擎中的索引和检查强制执行； 应用程序特定的约束由应用程序逻辑强制执行； 相互一致性由复制管理器强制执行。</p>
+<h3 id="4-3-Computer-architecture"><a href="#4-3-Computer-architecture" class="headerlink" title="4.3 Computer architecture"></a>4.3 Computer architecture</h3><p>In computer architecture, consistency refers to operation consistency. A similar concept called coherence is also a form of operation consistency. Consistency and coherence have a subtle difference. Consistency concerns the entire memory system; it constrains the behavior of reads and writes—called loads and stores—across all the memory locations; an example is the sequential consistency property. Coherence concerns the cache subsystem; it can be seen as consistency of the operation of the various caches responsible for a given memory location. Thus, coherence constrains the behavior of loads and stores to an individual memory location.</p>
+<p>在计算机体系结构中，一致性是指操作的一致性。 称为一致性的类似概念也是操作一致性的一种形式。 一致性和连贯性有细微的差别。 一致性涉及整个内存系统； 它限制所有内存位置的读取和写入行为（称为加载和存储）； 一个例子是顺序一致性属性。 一致性涉及缓存子系统； 它可以被视为负责给定内存位置的各种高速缓存的操作的一致性。 因此，一致性将加载和存储的行为限制在单个内存位置。</p>
+<p>Coherence and consistency are separated to permit a modular architecture of the system: a cache coherence protocol ensures the correct behavior of the caching subsystem, while the rest of the system ensures consistency across memory accesses without worrying about the cache subsystem.</p>
+<p>一致性和一致性是分开的，以允许系统的模块化架构：缓存一致性协议确保缓存子系统的正确行为，而系统的其余部分确保内存访问之间的一致性，而无需担心缓存子系统。</p>
+<p>Consistency and coherence arise as issues in computer architecture because increasingly computer systems have many cores or processors sharing access to a common memory: in such systems, there are concurrent operations on memory locations and data replication across many caches, which lead to problems of data sharing.</p>
+<p>一致性和连贯性成为计算机体系结构中的问题，因为越来越多的计算机系统有许多核心或处理器共享对公共内存的访问：在这样的系统中，内存位置上存在并发操作，并且跨多个缓存进行数据复制，这会导致数据共享问题 。</p>
+<h2 id="5-Conclusion"><a href="#5-Conclusion" class="headerlink" title="5 Conclusion"></a>5 Conclusion</h2><p>Consistency is a concern that spans many disciplines, as we briefly described here. This concern stems from the rise of concurrency and replication across these disciplines, a trend that we expect to continue. Unfortunately, consistency is subtle and hard to grasp, and to make matters worse, it has different names and meanings across communities. We hope to have shed some light on this subject by identifying two broad and very different types of consistency—state consistency and operation consistency—that can be seen across the disciplines.</p>
+<p>正如我们在这里简要描述的那样，一致性是一个跨越许多学科的问题。 这种担忧源于这些学科的并发和复制的兴起，我们预计这一趋势将持续下去。 不幸的是，一致性是微妙且难以掌握的，更糟糕的是，它在不同的社区中有不同的名称和含义。 我们希望通过确定跨学科可以看到的两种广泛且截然不同的一致性类型（状态一致性和操作一致性）来阐明这个主题。</p>
 ]]></content>
       <categories>
         <category>数据库</category>
@@ -2141,6 +2197,499 @@
 <p>据我所知，CockroachDB 提供了高水平的“一致性”，在分布式数据库中仅次于 Spanner（但 CockroachDB 是一个更灵活、更容易迁移到的数据库——想想 ORM 支持——所以我会用它来取代 Spanner） 天）。 我们提供了一个相对容易理解的编程模型，尽管文献没有给我们一个好名字。 它比可序列化性更强，但比严格的可序列化性稍弱（并且比线性化更弱，尽管在事务系统的上下文中使用该术语是对该语言的滥用）。 通过理解它所允许的异常——“因果逆转”——以及它可能发生的有限情况，来限定它可能是最简单的。 在大多数情况下，人们可能想知道 CockroachDB 中读写的语义，“无陈旧读取”这一口号应该可以解决大多数讨论。</p>
 <p>Although I think the definition of the Serializable isolation level would have benefitted from introducing some notion of different clients. As phrased by the SQL standard, I believe it technically allows empty results to be produced for any read-only transaction with the justification that those transactions are simply ordered before any other transaction. Implementing that would be egregious, though.[^2]: We’re thinking of ways to make CRDB resilient to more arbitrarily unsynchronized clocks.[^3]: As discussed in the “A note on clocks” section, figuring out what “afterwards” means is not always trivial when the clients involved are not on the same machine. But still, sometimes (in the cases that matter most), a transaction is known to happen after another one, usually through a causal relationship between the two. </p>
 <p>尽管我认为可串行化隔离级别的定义会受益于引入不同客户端的一些概念。 正如 SQL 标准所述，我相信它在技术上允许为任何只读事务生成空结果，理由是这些事务只是在任何其他事务之前排序。 然而，实现这一点将是令人震惊的。[^2]：我们正在考虑如何使 CRDB 能够适应更多任意不同步的时钟。[^3]：正如“时钟注释”部分中所讨论的，弄清楚“ 当涉及的客户端不在同一台机器上时，“之后”的意思并不总是微不足道的。 但有时（在最重要的情况下），一笔交易会在另一笔交易之后发生，通常是通过两者之间的因果关系。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Consistency Models</title>
+    <url>/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/</url>
+    <content><![CDATA[<p>原文链接：<a href="https://jepsen.io/consistency">https://jepsen.io/consistency</a></p>
+<p><em>This clickable map (adapted from</em> <a href="http://www.vldb.org/pvldb/vol7/p181-bailis.pdf">Bailis, Davidson, Fekete et al</a> <em>and</em> <a href="https://arxiv.org/pdf/1512.00168.pdf">Viotti &amp; Vukolic</a><em>) shows the relationships between common consistency models for concurrent systems. Arrows show the relationship between consistency models. For instance, strict serializable implies both serializability and linearizability, linearizability implies sequential consistency, and so on. Colors show how available each model is, for a distributed system on an asynchronous network.</em></p>
+<p>这个可点击的地图（改编自 Bailis、Davidson、Fekete 等人和 Viotti &amp; Vukolic）显示了并发系统的常见一致性模型之间的关系。 箭头显示一致性模型之间的关系。 例如，严格可串行化意味着可串行化和可线性化，可线性化意味着顺序一致性，等等。 颜色显示每个模型对于异步网络上的分布式系统的可用性。</p>
+<span id="more"></span>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD;</span><br><span class="line">    A--&gt;B;</span><br><span class="line">    A--&gt;C;</span><br><span class="line">    B--&gt;D;</span><br><span class="line">    D--&gt;E;</span><br><span class="line">    D--&gt;F;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Fundamental-Concepts"><a href="#Fundamental-Concepts" class="headerlink" title="[Fundamental Concepts]"></a>[Fundamental Concepts]</h2><p>Jepsen analyses the safety properties of distributed systems–most notably, identifying violations of consistency models. But what are consistency models? What phenomena do they allow? What kind of consistency does a given program really need?</p>
+<p>Jepsen 分析分布式系统的安全属性，最值得注意的是，识别一致性模型的违规行为。 但什么是一致性模型？ 它们允许哪些现象发生？ 给定的程序真正需要什么样的一致性？</p>
+<p>In this reference guide, we provide basic definitions, intuitive explanations, and theoretical underpinnings of various consistency models for engineers and academics alike.</p>
+<p>在本参考指南中，我们为工程师和学者提供各种一致性模型的基本定义、直观解释和理论基础。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>A Critique of ANSI SQL Isolation Levels</title>
+    <url>/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/A%20Critique%20of%20ANSI%20SQL%20Isolation%20Levels/</url>
+    <content><![CDATA[<p>Abstract: ANSI SQL-92 [MS, ANSI] defines Isolation Levels in terms of phenomena: Dirty Reads, Non-Re- peatable Reads, and Phantoms. This paper shows that these phenomena and the ANSI SQL definitions fail to characterize several popular isolation levels, including the standard locking implementations of the levels. Investigating the ambiguities of the phenomena leads to clearer definitions; in addition new phenomena that better characterize isolation types are introduced. An important multiversion isolation type, Snapshot Isolation, is defined.</p>
+<p>摘要：ANSI SQL-92 [MS, ANSI] 根据现象定义了隔离级别：脏读、不可重复读和幻像。 本文表明，这些现象和 ANSI SQL 定义无法表征几种流行的隔离级别，包括这些级别的标准锁定实现。 研究现象的模糊性可以得出更清晰的定义； 此外，还引入了更好地表征隔离类型的新现象。 定义了一种重要的多版本隔离类型：快照隔离。</p>
+<span id="more"></span>
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Running concurrent transactions at different isolation lev- els allows application designers to trade throughput for correctness. Lower isolation levels increase transaction concurrency but risk showing transactions a fuzzy or incorrect database. Surprisingly, some transactions can execute at the highest isolation level (perfect serializability) while concurrent transactions running at a lower isolation level can access states that are not yet committed or that postdate states the transaction read earlier [GLPT]. Of course, transactions running at lower isolation levels may produce invalid data. Application designers must prevent later transactions running at higher isolation levels from accessing this invalid data and propa- gating errors.</p>
+<p>在不同的隔离级别运行并发事务允许应用程序设计者以吞吐量换取正确性。 较低的隔离级别会增加事务并发性，但存在将事务显示为模糊或不正确的数据库的风险。 令人惊讶的是，某些事务可以在最高隔离级别（完美的可串行性）执行，而在较低隔离级别运行的并发事务可以访问尚未提交的状态或事务较早读取的后期状态[GLPT]。 当然，在较低隔离级别运行的事务可能会产生无效数据。 应用程序设计者必须防止以后在更高隔离级别运行的事务访问这些无效数据并传播错误。</p>
+<p>The ANSI&#x2F;ISO SQL-92 specifications [MS, ANSI] define four isolation levels: (1) READ UNCOMMITTED, (2) READ COMMITTED, (3) REPEATABLE READ, (4) SERIALIZABLE. These levels are defined with the classi- cal serializability definition, plus three prohibited action subsequences, called phenomena: Dirty Read, Non-re- peatable Read, and Phantom. The concept of a phe- nomenon is not explicitly defined in the ANSI specifica- tions, but the specifications suggest that phenomena are action subsequences that may lead to anomalous (perhaps non-serializable) behavior. We refer to anomalies in what follows when suggesting additions to the set of ANSI phenomena. As shown later, there is a technical distinction between anomalies and phenomena, but this distinction is not crucial for a general understanding.</p>
+<p>ANSI&#x2F;ISO SQL-92 规范 [MS、ANSI] 定义了四种隔离级别：(1) READ UNCOMMITTED、(2) READ COMMITTED、(3) REPEATABLE READ、(4) SERIALIZABLE。 这些级别是用经典的可串行性定义以及三个禁止的操作子序列（称为现象）来定义的：脏读、不可重复读和幻像。 ANSI 规范中没有明确定义现象的概念，但规范表明现象是可能导致异常（可能不可序列化）行为的动作子序列。 当建议添加 ANSI 现象集时，我们在下文中提到了异常。 如稍后所示，异常和现象之间存在技术区别，但这种区别对于一般理解并不重要。</p>
+<p>The ANSI isolation levels are related to the behavior of lock schedulers. Some lock schedulers allow transactions to vary the scope and duration of their lock requests, thus departing from pure two-phase locking. This idea was in- troduced by [GLPT], which defined Degrees of Consistency in three ways: locking, data-flow graphs, and anomalies. Defining isolation levels by phenomena (anomalies) was intended to allow non-lock-based implementations of the SQL standard.</p>
+<p>ANSI 隔离级别与锁调度程序的行为有关。 一些锁调度程序允许事务改变其锁请求的范围和持续时间，从而偏离纯粹的两阶段锁定。 这个想法是由 [GLPT] 引入的，它以三种方式定义了一致性程度：锁定、数据流图和异常。 按现象（异常）定义隔离级别的目的是允许 SQL 标准的非基于锁的实现。</p>
+<p>This paper shows a number of weaknesses in the anomaly approach to defining isolation levels. The three ANSI phe- nomena are ambiguous. Even their broadest interpreta- tions do not exclude anomalous behavior. This leads to some counter-intuitive results. In particular, lock-based isolation levels have different characteristics than their ANSI equivalents. This is disconcerting because commercial database systems typically use locking. Additionally, the ANSI phenomena do not distinguish among several isolation levels popular in commercial systems.</p>
+<p>本文展示了定义隔离级别的异常方法的许多弱点。 这三种 ANSI 现象是不明确的。 即使他们最广泛的解释也不排除异常行为。 这会导致一些反直觉的结果。 特别是，基于锁的隔离级别与其 ANSI 等效级别具有不同的特征。 这是令人不安的，因为商业数据库系统通常使用锁定。 此外，ANSI 现象不区分商业系统中流行的几种隔离级别。</p>
+<p>Section 2 introduces basic isolation level terminology. It defines the ANSI SQL and locking isolation levels. Section 3 examines some drawbacks of the ANSI isolation levels and proposes a new phenomenon. Other popular isolation levels are also defined. The various definitions map between ANSI SQL isolation levels and the degrees of con- sistency defined in 1977 in [GLPT]. They also encompass Date’s definitions of Cursor Stability and Repeatable Read [DAT]. Discussing the isolation levels in a uniform frame- work reduces confusion.</p>
+<p>第 2 节介绍基本隔离级别术语。 它定义了 ANSI SQL 和锁定隔离级别。 第 3 节研究了 ANSI 隔离级别的一些缺点并提出了一种新现象。 还定义了其他流行的隔离级别。 ANSI SQL 隔离级别和 1977 年 [GLPT] 中定义的一致性程度之间存在各种定义映射。 它们还包含 Date 的游标稳定性和可重复读取 [DAT] 的定义。 在统一框架中讨论隔离级别可以减少混乱。</p>
+<p>Section 4 introduces a multiversion concurrency control mechanism, called Snapshot Isolation, that avoids the ANSI SQL phenomena, but is not serializable. Snapshot Isolation is interesting in its own right, since it provides a reduced-isolation level approach that lies between READ COMMITTED and REPEATABLE READ. A new formalism (available in the longer version of this paper [OOBBGM]) connects reduced isolation levels for multiversioned data to the classical single-version locking serializability theory.</p>
+<p>第4节介绍了一种多版本并发控制机制，称为快照隔离，它避免了ANSI SQL现象，但不可序列化。 快照隔离本身就很有趣，因为它提供了一种介于 READ COMMITTED 和 REPEATABLE READ 之间的降低隔离级别的方法。 一种新的形式主义（在本文的较长版本 [OOBBGM] 中提供）将多版本数据的降低隔离级别与经典的单版本锁定可串行性理论连接起来。</p>
+<p>Section 5 explores some new anomalies to differentiate the isolation levels introduced in Sections 3 and 4. The ex- tended ANSI SQL phenomena proposed here lack the power to characterize Snapshot isolation and Cursor Stability. Section 6 presents a Summary and Conclusions.</p>
+<p>第 5 节探讨了一些新的异常现象，以区分第 3 节和第 4 节中引入的隔离级别。这里提出的扩展 ANSI SQL 现象缺乏描述快照隔离和游标稳定性的能力。 第 6 节介绍了总结和结论。</p>
+<h2 id="Isolation-Definitions"><a href="#Isolation-Definitions" class="headerlink" title="Isolation Definitions"></a>Isolation Definitions</h2><h3 id="Serializability-Concepts"><a href="#Serializability-Concepts" class="headerlink" title="Serializability Concepts"></a>Serializability Concepts</h3><p>Transactional and locking concepts are well documented in the literature [BHG, PAP, PON, GR]. The next few paragraphs review the terminology used here.</p>
+<p>事务和锁定概念在文献 [BHG、PAP、PON、GR] 中有详细记录。 接下来的几段回顾了这里使用的术语。</p>
+<p>A transaction groups a set of actions that transform the database from one consistent state to another. A history models the interleaved execution of a set of transactions as a linear ordering of their actions, such as Reads and Writes (i.e., inserts, updates, and deletes) of specific data items. Two actions in a history are said to conflict if they are performed by distinct transactions on the same data item and at least one of is a Write action. Following [EGLT], this definition takes a broad interpretation of “data item”: it could be a table row, a page, an entire table, or a message on a queue. Conflicting actions can also occur on a set of data items, covered by a predicate lock, as well as on a single data item.</p>
+<p>事务将一组操作分组，这些操作将数据库从一种一致状态转换为另一种一致状态。 历史记录将一组事务的交错执行建模为其操作的线性顺序，例如特定数据项的读取和写入（即插入、更新和删除）。 如果历史记录中的两个操作是由不同事务对同一数据项执行的，并且其中至少一个是写入操作，则称这两个操作发生冲突。 遵循 [EGLT]，此定义对“数据项”进行广义解释：它可以是表行、页面、整个表或队列上的消息。 冲突的操作也可能发生在由谓词锁覆盖的一组数据项上以及单个数据项上。</p>
+<p>A particular history gives rise to a dependency graph defining the temporal data flow among transactions. The actions of committed transactions in the history are repre- sented as graph nodes. If action op1 of transaction T1 conflicts with and precedes action op2 of transaction T2 in the history, then the pair &lt;op1, op2&gt; becomes an edge in the dependency graph. Two histories are equivalent if they have the same committed transactions and the same depen- dency graph. A history is serializable if it is equivalent to a serial history — that is, if it has the same dependency graph (inter-transaction temporal data flow) as some history that executes transactions one at a time in se- quence.</p>
+<p>特定的历史记录会产生定义事务之间的时间数据流的依赖图。 历史记录中已提交事务的操作被表示为图节点。 如果事务 T1 的操作 op1 在历史中与事务 T2 的操作 op2 冲突且先于事务 T2 的操作 op2，则对 &lt;op1, op2&gt; 成为依赖图中的边。 如果两个历史具有相同的已提交事务和相同的依赖关系图，则它们是等效的。 如果一个历史记录相当于一个串行历史记录，那么它就是可序列化的——也就是说，如果它与某个按顺序一次执行一个事务的历史记录具有相同的依赖图（事务间时间数据流）。</p>
+<h3 id="ANSI-SQL-Isolation-Levels"><a href="#ANSI-SQL-Isolation-Levels" class="headerlink" title="ANSI SQL Isolation Levels"></a>ANSI SQL Isolation Levels</h3><p>ANSI SQL Isolation designers sought a definition that would admit many different implementations, not just locking. They defined isolation with the following three phenomena:</p>
+<p>ANSI SQL 隔离设计者寻求一种允许多种不同实现的定义，而不仅仅是锁定。 他们用以下三种现象来定义隔离：</p>
+<p>P1 (Dirty Read): Transaction T1 modifies a data item. Another transaction T2 then reads that data item before T1 performs a COMMIT or ROLLBACK. If T1 then performs a ROLLBACK, T2 has read a data item that was never committed and so never really existed.</p>
+<p>P1（脏读）：事务T1修改了数据项。 然后，另一个事务 T2 在 T1 执行 COMMIT 或 ROLLBACK 之前读取该数据项。 如果 T1 随后执行 ROLLBACK，则 T2 已读取从未提交的数据项，因此从未真正存在过。</p>
+<p>P2 (Non-repeatable or Fuzzy Read): Transaction T1 reads a data item. Another transaction T2 then modifies or deletes that data item and commits. If T1 then attempts to reread the data item, it receives a modified value or discovers that the data item has been deleted.</p>
+<p>P2（不可重复或模糊读取）：事务T1读取数据项。 然后另一个事务 T2 修改或删除该数据项并提交。 如果 T1 随后尝试重新读取该数据项，它会收到修改后的值或发现该数据项已被删除。</p>
+<p>P3 (Phantom): Transaction T1 reads a set of data items satisfying some <search condition>. Transaction T2 then creates data items that satisfy T1’s <search condi- tion> and commits. If T1 then repeats its read with the same <search condition>, it gets a set of data items different from the first read.</p>
+<p>P3（幻影）：事务 T1 读取满足某些&lt;搜索条件&gt;的一组数据项。 然后，事务 T2 创建满足 T1 的&lt;搜索条件&gt;的数据项并提交。 如果 T1 然后使用相同的&lt;搜索条件&gt;重复读取，它会得到一组与第一次读取不同的数据项。</p>
+<p>None of these phenomena could occur in a serial history. Therefore by the Serializability Theorem they cannot occur in a serializable history [EGLT, BHG Theorem 3.6, GR Section 7.5.8.2, PON Theorem 9.4.2].</p>
+<p>这些现象都不可能在连续的历史中发生。 因此，根据可串行性定理，它们不能出现在可串行化的历史中 [EGLT、BHG 定理 3.6、GR 第 7.5.8.2 节、PON 定理 9.4.2]。</p>
+<p>Histories consisting of reads, writes, commits, and aborts can be written in a shorthand notation: “w1[x]” means a write by transaction 1 on data item x (which is how a data item is “modified’), and “r2[x]” represents a read of x by transaction 2. Transaction 1 reading and writing a set of records satisfying predicate P is denoted by r1[P] and w1[P] respectively. Transaction 1’s commit and abort (ROLLBACK) are written “c1” and “a1”, respectively.</p>
+<p>由读取、写入、提交和中止组成的历史记录可以用速记符号来编写：“w1[x]”表示事务 1 对数据项 x 的写入（这就是“修改”数据项的方式），并且“ r2[x]”表示事务 2 对 x 的读取。事务 1 读取和写入满足谓词 P 的一组记录分别由 r1[P] 和 w1[P] 表示。 事务 1 的提交和中止（ROLLBACK）分别写为“c1”和“a1”。</p>
+<p>Phenomenon P1 might be restated as disallowing the fol- lowing scenario:</p>
+<p>现象 P1 可以重述为不允许出现以下情况：</p>
+<p>(2.1) w1[x] . . . r2[x] . . . (a1 and c2 in either order)</p>
+<p>The English statement of P1 is ambiguous. It does not ac- tually insist that T1 abort; it simply states that if this hap- pens something unfortunate might occur. Some people reading P1 interpret it to mean:</p>
+<p>P1的英文表述有歧义。 它实际上并不坚持 T1 中止；而是要求 T1 中止。 它只是指出，如果发生这种情况，可能会发生一些不幸的事情。 一些阅读 P1 的人将其解释为：</p>
+<p>(2.2) w1[x]…r2[x]…((c1 or a1) and (c2 or a2) in any order)</p>
+<p>Forbidding the (2.2) variant of P1 disallows any history where T1 modifies a data item x, then T2 reads the data item before T1 commits or aborts. It does not insist that T1 aborts or that T2 commits.</p>
+<p>禁止 P1 的 (2.2) 变体不允许 T1 修改数据项 x，然后 T2 在 T1 提交或中止之前读取该数据项的任何历史记录。 它并不坚持 T1 中止或 T2 提交。</p>
+<p>Definition (2.2) is a much broader interpretation of P1 than (2.1), since it prohibits all four possible commit-abort pairs by transactions T1 and T2, while (2.1) only prohibits two of the four. Interpreting (2.2) as the meaning of P1 prohibits an execution sequence if something anomalous might in the future. We call (2.2) the broad interpretation of P1, and (2.1) the strict interpretation of P1. Interpretation (2.2) specifies a phenomenon that might lead to an anomaly, while (2.1) specifies an actual anomaly. Denote them as P1 and A1 respectively. Thus:</p>
+<p>定义（2.2）是比（2.1）更广泛的对 P1 的解释，因为它禁止事务 T1 和 T2 的所有四个可能的提交-中止对，而（2.1）仅禁止四个中的两个。 将 (2.2) 解释为 P1 的含义会禁止执行序列（如果将来可能出现异常情况）。 我们称（2.2）P1 为广义解释，（2.1）P1 为严格解释。 解释（2.2）指定了可能导致异常的现象，而（2.1）指定了实际的异常。 分别将它们表示为P1和A1。 因此：</p>
+<p>P1: w1[x]…r2[x]…((c1 or a1) and (c2 or a2) in any order) </p>
+<p>A1: w1[x]…r2[x]…(a1 and c2 in any order)</p>
+<p>Similarly, the English language phenomena P2 and P3 have strict and broad interpretations, and are denoted P2 and P3 for broad, and A2 and A3 for strict:</p>
+<p>同样，英语语言现象 P2 和 P3 也有严格解释和广义解释，广义的用 P2 和 P3 表示，严格的用 A2 和 A3 表示：</p>
+<p>P2: r1[x]…w2[x]…((c1 or a1) and (c2 or a2) in any order)</p>
+<p>A2: r1[x]…w2[x]…c2…r1[x]…c1</p>
+<p>P3: r1[P]…w2[y in P]…((c1 or a1) and (c2 or a2) any order) </p>
+<p>A3: r1[P]…w2[y in P]…c2…r1[P]…c1</p>
+<p>Section 3 analyzes these alternative interpretations after more conceptual machinery has been developed. It argues that the broad interpretation of the phenomena is required. Note that the English statement of ANSI SQL P3 just prohibits inserts to a predicate, but P3 above intentionally prohibits any write (insert, update, delete) affecting a tuple satisfying the predicate once the predicate has been read.</p>
+<p>在更多的概念机制被开发出来后，第 3 节分析了这些替代解释。 它认为需要对这些现象进行广泛的解释。 请注意，ANSI SQL P3 的英文语句只是禁止对谓词进行插入，但上面的 P3 有意禁止在读取谓词后影响满足谓词的元组的任何写入（插入、更新、删除）。</p>
+<p>This paper later deals with the concept of a multi-valued history (MV-history for short — see [BHG], Chapter 5). Without going into details now, multiple versions of a data item may exist at one time in a multi-version system. Any read must be explicit about which version is being read. There have been attempts to relate ANSI Isolation defini- tions to multi-version systems as well as more common single-version systems of a standard locking scheduler. The English language statements of the phenomena P1, P2, and P3 imply single-version histories. This is how we interpret them in the next section.</p>
+<p>本文稍后讨论多值历史的概念（简称 MV 历史 — 参见 [BHG]，第 5 章）。 现在不详述，在多版本系统中，一个数据项可能同时存在多个版本。 任何读取都必须明确正在读取哪个版本。 人们曾尝试将 ANSI 隔离定义与多版本系统以及标准锁定调度程序的更常见的单版本系统相关联。 现象 P1、P2 和 P3 的英语陈述意味着单一版本的历史。 这就是我们在下一节中解释它们的方式。</p>
+<p>ANSI SQL defines four levels of isolation by the matrix of Table 1. Each isolation level is characterized by the phe- nomena that a transaction is forbidden to experience (broad or strict interpretations). However, the ANSI SQL specifications do not define the SERIALIZABLE isolation level solely in terms of these phenomena. Subclause 4.28, “SQL-transactions”, in [ANSI] notes that the SERIALIZABLE isolation level must provide what is “commonly known as fully serializable execution.” The prominence of the table compared to this extra proviso leads to a common misconception that disallowing the three phenomena implies serializability. Table 1 calls histories that disallow the three phenomena ANOMALY SERIALIZABLE.</p>
+<p>ANSI SQL 通过表 1 的矩阵定义了四个隔离级别。每个隔离级别的特征都是禁止事务经历的现象（广义或严格解释）。 然而，ANSI SQL 规范并没有仅仅根据这些现象来定义 SERIALIZABLE 隔离级别。 [ANSI] 中的第 4.28 节“SQL 事务”指出，SERIALIZABLE 隔离级别必须提供“通常称为完全可序列化执行”的内容。 与这个额外的附加条件相比，该表的重要性导致了一种常见的误解，即不允许这三种现象意味着可串行化。 表 1 调用了不允许三种现象异常可串行化的历史记录。</p>
+<p>The isolation levels are defined by the phenomena they are forbidden to experience. Picking a broad interpretation of a phenomenon excludes a larger set of histories than the strict interpretation. This means we are arguing for more restrictive isolation levels (more histories will be disal- lowed). Section 3 shows that even taking the broad interpretations of P1, P2, and P3, forbidding these phenomena does not guarantee true serializability. It would have been simpler in [ANSI] to drop P3 and just use Subclause 4.28 to define ANSI SERIALIZABLE. Note that Table 1 is not a final result; Table 3 will superseded it.</p>
+<p>隔离级别是根据他们被禁止经历的现象来定义的。 对一种现象选择广义的解释比严格的解释排除了更多的历史。 这意味着我们主张更严格的隔离级别（将不允许更多历史记录）。 第 3 节表明，即使采用 P1、P2 和 P3 的广义解释，禁止这些现象也不能保证真正的可串行性。 在 [ANSI] 中删除 P3 并仅使用子条款 4.28 来定义 ANSI SERIALIZABLE 会更简单。 请注意，表 1 不是最终结果； 表 3 将取代它。</p>
+<p><strong>Table 1. ANSI SQL Isolation Levels Defined in terms of the Three Original Phenomena</strong></p>
+<table>
+<thead>
+<tr>
+<th>Isolation Level</th>
+<th>P1 (or A1) Dirty Read</th>
+<th>P2 (or A2) Fuzzy Read</th>
+<th>P3 (or A3) Phantom</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ANSI READ UNCOMMITTED</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>ANSI READ COMMITTED</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>ANSI REPEATABLE READ</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>ANOMALY SERIALIZABLE</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+</tr>
+</tbody></table>
+<h3 id="Locking"><a href="#Locking" class="headerlink" title="Locking"></a>Locking</h3><p>Most SQL products use lock-based isolation. Consequently, it is useful to characterize the ANSI SQL isolation levels in terms of locking, although certain problems arise.</p>
+<p>大多数 SQL 产品都使用基于锁的隔离。 因此，尽管会出现某些问题，但根据锁定来表征 ANSI SQL 隔离级别还是很有用的。</p>
+<p>Transactions executing under a locking scheduler request Read (Share) and Write (Exclusive) locks on data items or sets of data items they read and write. Two locks by differ- ent transactions on the same item conflict if at least one of them is a Write lock.</p>
+<p>在锁定调度程序下执行的事务请求对其读取和写入的数据项或数据项集进行读取（共享）和写入（独占）锁定。 如果不同事务对同一项目的两个锁中至少有一个是写锁，则它们会发生冲突。</p>
+<p>A Read (resp. Write) predicate lock on a given <search condition> is effectively a lock on all data items satisfying the <search condition>. This may be an infinite set. It includes data present in the database and also any phantom data items not currently in the database but that would satisfy the predicate if they were inserted or if current data items were updated to satisfy the <search condition>. In SQL terms, a predicate lock covers all tuples that satisfy the predicate and any that an INSERT, UPDATE, or DELETE statement would cause to satisfy the predicate. Two predicate locks by different transactions conflict if one is a Write lock and if there is a (possibly phantom) data item covered by both locks. An item lock (record lock) is a predicate lock where the predicate names the specific record.</p>
+<p>给定&lt;搜索条件&gt;上的读（或写）谓词锁实际上是满足&lt;搜索条件&gt;的所有数据项上的锁。 这可能是一个无限集。 它包括数据库中存在的数据以及当前不在数据库中但如果插入它们或更新当前数据项以满足&lt;搜索条件&gt;则将满足谓词的任何虚拟数据项。 在 SQL 术语中，谓词锁涵盖满足谓词的所有元组以及 INSERT、UPDATE 或 DELETE 语句将导致满足谓词的任何元组。 如果一个是写锁并且两个锁都覆盖了一个（可能是幻影）数据项，则不同事务的两个谓词锁会发生冲突。 项锁（记录锁）是谓词锁，其中谓词命名特定记录。</p>
+<p>A transaction has well-formed writes (reads) if it requests a Write (Read) lock on each data item or predicate before writing (reading) that data item, or set of data items defined by a predicate. The transaction is well-formed if it has well-formed writes and reads. A transaction has two- phase writes (reads) if it does not set a new Write (Read) lock on a data item after releasing a Write (Read) lock. A transaction exhibits two-phase locking if it does not request any new locks after releasing some lock.</p>
+<p>如果事务在写入（读取）每个数据项或谓词定义的数据项集之前请求对每个数据项或谓词进行写入（读取）锁定，则该事务具有格式正确的写入（读取）。 如果事务具有格式良好的写入和读取，则该事务是格式良好的。 如果事务在释放写（读）锁后没有对数据项设置新的写（读）锁，则该事务具有两阶段写（读）。 如果事务在释放某些锁后不再请求任何新锁，则该事务表现出两阶段锁定。</p>
+<p>The locks requested by a transaction are of long duration if they are held until after the transaction commits or aborts. Otherwise, they are of short duration. Typically, short locks are released immediately after the action completes.</p>
+<p>如果事务请求的锁一直保持到事务提交或中止之后，则它们的持续时间很长。 否则，它们的持续时间很短。 通常，短锁会在操作完成后立即释放。</p>
+<p>If a transaction holds a lock, and another transaction re- quests a conflicting lock, then the new lock request is not granted until the former transaction’s conflicting lock has been released.</p>
+<p>如果一个事务持有锁，而另一个事务请求冲突锁，则在前一个事务的冲突锁被释放之前，新的锁请求不会被授予。</p>
+<p>The fundamental serialization theorem is that well-formed two-phase locking guarantees serializability — each his- tory arising under two-phase locking is equivalent to some serial history. Conversely, if a transaction is not well- formed or two-phased then, except in degenerate cases, non-serializable execution histories are possible [EGLT].</p>
+<p>基本的序列化定理是，格式良好的两阶段锁定保证了可序列化性——两阶段锁定下产生的每个历史都相当于一些串行历史。 相反，如果事务不是格式良好的或两阶段的，那么除了退化情况之外，不可序列化的执行历史是可能的[EGLT]。</p>
+<p>The [GLPT] paper defined four degrees of consistency, at- tempting to show the equivalence of locking, dependency, and anomaly-based characterizations. The anomaly defini- tions (see Definition 1) were too vague. The authors con- tinue to get criticism for that aspect of the definitions [GR]. Only the more mathematical definitions in terms of histories and dependency graphs or locking have stood the test of time.</p>
+<p>[GLPT]论文定义了四个一致性程度，试图证明锁定、依赖和基于异常的特征的等效性。 异常定义（参见定义 1）过于模糊。 作者继续因定义的这方面而受到批评[GR]。 只有历史和依赖图或锁定方面更数学的定义才能经受住时间的考验。</p>
+<p>Table 2 defines a number of isolation types in terms of lock scopes (items or predicates), modes (read or write), and their durations (short or long). We believe the isolation levels called Locking READ UNCOMMITTED, Locking READ COMMITTED, Locking REPEATABLE READ, and Locking SERIALIZABLE are the locking definitions in- tended by ANSI SQL Isolation levels — but as shown next they are quite different from those of Table 1. Consequently, it is necessary to differentiate isolation lev- els defined in terms of locks from the ANSI SQL phenom- ena-based isolation levels. To make this distinction, the levels in Table 2 are labeled with the “Locking” prefix, as opposed to the “ANSI” prefix of Table 1.</p>
+<p>表 2 根据锁范围（项或谓词）、模式（读或写）及其持续时间（短或长）定义了许多隔离类型。 我们相信称为“Locking READ UNCOMMITTED”、“Locking READ COMMITTED”、“Locking REPEATABLE READ”和“Locking SERIALIZABLE”的隔离级别是 ANSI SQL 隔离级别预期的锁定定义，但如下所示，它们与表 1 中的隔离级别有很大不同。因此， 有必要区分以锁定义的隔离级别和基于 ANSI SQL 现象的隔离级别。 为了进行这种区分，表 2 中的级别标有“Locking”前缀，而不是表 1 中的“ANSI”前缀。</p>
+<p><strong>Table 2. Degrees of Consistency and Locking Isolation Levels defined in terms of locks.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Consistency<br/> Level &#x3D; Locking Isolation Level</th>
+<th>Read Locks on<br/> Data Items and Predicates (the same unless noted)</th>
+<th>Write Locks on<br/> Data Items and Predicates (always the same)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Degree 0</td>
+<td>none required</td>
+<td>Well-formed Writes</td>
+</tr>
+<tr>
+<td>Degree 1 &#x3D; Locking READ UNCOMMITTED</td>
+<td>none required</td>
+<td>Well-formed Writes<br/> Long duration Write locks</td>
+</tr>
+<tr>
+<td>Degree 2 &#x3D; Locking READ COMMITTED</td>
+<td>Well-formed Reads<br/> Short duration Read locks (both)</td>
+<td>Well-formed Writes,<br/> Long duration Write locks</td>
+</tr>
+<tr>
+<td>Cursor Stability(see Section 4.1)</td>
+<td>Well-formed Reads<br/> Read locks held on current of cursor Short duration Read Predicate locks</td>
+<td>Well-formed Writes,<br/> Long duration Write locks</td>
+</tr>
+<tr>
+<td>Locking REPEATABLE READ</td>
+<td>Well-formed Reads<br/> Long duration data-item Read locks Short duration Read Predicate locks</td>
+<td>Well-formed Writes, Long duration Write locks</td>
+</tr>
+<tr>
+<td>Degree 3 &#x3D; Locking SERIALIZABLE</td>
+<td>Well-formed Reads<br/> Long duration Read locks (both)</td>
+<td>Well-formed Writes, Long duration Write locks</td>
+</tr>
+</tbody></table>
+<p>[GLPT] defined Degree 0 consistency to allow both dirty reads and writes: it only required action atomicity.Degrees 1, 2, and 3 correspond to Locking READ UNCOMMITTED, READ COMMITTED, and SERIALIZABLE,respectively. No isolation degree matches the Locking REPEATABLE READ isolation level.</p>
+<p>[GLPT]定义了Degree 0 一致性以允许脏读和脏写：它只需要操作原子性。Degree 1,2和3分别对应于锁定READ UNCOMMITTED、READ COMMITTED和SERIALIZABLE。 没有隔离级别与 Locking REPEATABLE READ 隔离级别匹配。</p>
+<p>Date and IBM originally used the name “Repeatable Reads” [DAT, DB2] to mean serializable or Locking SERIALIZABLE. This seemed like a more comprehensible name than the [GLPT] term “Degree 3 isolation.” The ANSI SQL meaning of REPEATABLE READ is different from Date’s original definition, and we feel the ter- minology is unfortunate. Since anomaly P3 is specifically not ruled out by the ANSI SQL REPEATABLE READ isolation level, it is clear from the definition of P3 that reads are NOT repeatable! We repeat this misuse of the term with Locking REPEATABLE READ in Table 2, in order to parallel the ANSI definition. Similarly, Date coined the term Cursor Stability as a more comprehensible name for Degree 2 isolation augmented with protection from lost cursor updates as explained in Section 4.1 below.</p>
+<p>Date 和 IBM 最初使用名称“可重复读取”[DAT、DB2] 来表示可序列化或锁定可串行化。 这似乎是一个比 [GLPT] 术语“Degree 3 隔离”更容易理解的名称。REPEATABLE READ 的 ANSI SQL 含义与 Date 的原始定义不同，我们觉得这个术语很不幸。由于异常 P3 没有被明确规定 由于 ANSI SQL REPEATABLE READ 隔离级别的限制，从 P3 的定义可以清楚地看出读取是不可重复的！我们在表 2 中使用 Locking REPEATABLE READ 重复这个术语的误用，以便与 ANSI 定义并行。同样，Date 创造了术语“游标稳定性”，作为 Degree 2隔离的更容易理解的名称，并增强了对丢失游标更新的保护，如下面第 4.1 节所述。</p>
+<p>Definition. Isolation level L1 is weaker than isolation level L2 (or L2 is stronger than L1), denoted L1 « L2, if all nonserializable histories that obey the criteria of L2 also satisfy L1 and there is at least one non-serializable history that can occur at level L1 but not at level L2. Two isolation levels L1 and L2 are equivalent, denoted L1 &#x3D;&#x3D; L2, if the sets of non-serializable histories satisfying L1 and L2 are identical. L1 is no stronger than L2, denoted L1 « L2 if either L1 « L2 or L1 &#x3D;&#x3D; L2. Two isolation levels are incom- parable, denoted L1 »« L2, when each isolation level allows a non-serializable history that is disallowed by the other.</p>
+<p>定义。 隔离级别 L1 弱于隔离级别 L2（或 L2 强于 L1），表示为 L1 &lt; L2，如果遵守 L2 标准的所有不可序列化历史也满足 L1，并且至少有一个不可序列化历史可以发生在 级别 L1，但不级别 L2。 如果满足 L1 和 L2 的不可串行化历史集相同，则两个隔离级别 L1 和 L2 是等效的，表示为 L1 &#x3D;&#x3D; L2。 L1 不强于 L2，如果 L1 &lt; L2 或 L1 &#x3D;&#x3D; L2，则表示为 L1 &lt; L2。 当每个隔离级别都允许另一个隔离级别不允许的不可序列化历史记录时，两个隔离级别是不可比较的，表示为 L1 »L2。</p>
+<p>In comparing isolation levels we differentiate them only in terms of the non-serializable histories that can occur in one but not the other. Two isolation levels can also differ in terms of the serializable histories they permit, but we say Locking SERIALIZABLE &#x3D;&#x3D; Serializable even though it is well known that a locking scheduler does not admit all possible Serializable histories. It is possible for an isolation level to be impractical because of disallowing too many serializable histories, but we do not deal with this here.</p>
+<p>在比较隔离级别时，我们仅根据可能发生在一个而不是另一个中的不可序列化历史来区分它们。 两个隔离级别在它们允许的可序列化历史方面也可能有所不同，但我们说锁定可序列化&#x3D;&#x3D;可序列化，即使众所周知锁定调度程序不承认所有可能的可序列化历史。 由于不允许太多可序列化的历史记录，隔离级别可能不切实际，但我们在这里不处理这个问题。</p>
+<p>These definitions yield the following remark. 这些定义产生以下评论。</p>
+<p>Remark 1: Locking READ UNCOMMITTED </p>
+<p>​					« Locking READ COMMITTED</p>
+<p>​						« Locking REPEATABLE READ </p>
+<p>​							« Locking SERIALIZABLE</p>
+<p>In the following section, we’ll focus on comparing the ANSI and Locking definitions.</p>
+<p>在下一节中，我们将重点比较 ANSI 和锁定定义。</p>
+<h2 id="Analyzing-ANSI-SQL-Isolation-Levels"><a href="#Analyzing-ANSI-SQL-Isolation-Levels" class="headerlink" title="Analyzing ANSI SQL Isolation Levels"></a>Analyzing ANSI SQL Isolation Levels</h2><p>To start on a positive note, the locking isolation levels comply with the ANSI SQL requirements.</p>
+<p>从积极的方面来说，锁定隔离级别符合 ANSI SQL 要求。</p>
+<p>Remark 2. The locking protocols of Table 2 define lock- ing isolation levels that are at least as strong as the corre- sponding phenomena-based isolation levels of Table 1. See [OOBBGM] for proof.</p>
+<p>备注 2. 表 2 的锁定协议定义的锁定隔离级别至少与表 1 相应的基于现象的隔离级别一样强。有关证明，请参阅 [OOBBGM]。</p>
+<p>Hence, locking isolation levels are at least as isolated as the same-named ANSI levels. Are they more isolated? The answer is yes, even at the lowest level. Locking READ UNCOMMITTED provides long duration write locking to avoid a phenomenon called “Dirty Writes,” but ANSI SQL does not exclude this anomalous behavior other than ANSI SERIALIZABLE. Dirty writes are defined as follows:</p>
+<p>因此，锁定隔离级别至少与同名的 ANSI 级别一样隔离。 他们更孤立吗？ 答案是肯定的，即使是在最低级别。 锁定 READ UNCOMMITTED 提供长时间写锁定以避免称为“脏写”的现象，但 ANSI SQL 不排除除 ANSI SERIALIZABLE 之外的这种异常行为。 脏写定义如下：</p>
+<p>P0 (Dirty Write): Transaction T1 modifies a data item. Another transaction T2 then further modifies that data item before T1 performs a COMMIT or ROLLBACK. If T1 or T2 then performs a ROLLBACK, it is unclear what the correct data value should be. The broad interpretation of this is:</p>
+<p>P0（脏写）：事务T1修改数据项。 然后，另一个事务 T2 在 T1 执行 COMMIT 或 ROLLBACK 之前进一步修改该数据项。 如果T1或T2随后执行ROLLBACK，则不清楚正确的数据值应该是什么。 对此的广义解释是：</p>
+<p>P0: w1[x]…w2[x]…((c1 or a1) and (c2 or a2) in any order)</p>
+<p>One reason why Dirty Writes are bad is that they can vio- late database consistency. Assume there is a constraint be- tween x and y (e.g., x &#x3D; y), and T1 and T2 each maintain the consistency of the constraint if run alone. However, the constraint can easily be violated if the two transactions write x and y in different orders, which can only happen if there are Dirty writes. For example consider the history w1[x] w2[x] w2[y] c2 w1[y] c1. T1’s changes to y and T2’s to x both “survive”. If T1 writes 1 in both x and y while T2 writes 2, the result will be x&#x3D;2, y &#x3D;1 violating x &#x3D; y.</p>
+<p>脏写不好的原因之一是它们会破坏数据库的一致性。 假设 x 和 y 之间存在约束（例如，x &#x3D; y），并且如果单独运行，T1 和 T2 都保持约束的一致性。 然而，如果两个事务以不同的顺序写入 x 和 y，则很容易违反该约束，而这种情况只有在存在脏写入时才会发生。 例如，考虑历史 w1[x] w2[x] w2[y] c2 w1[y] c1。 T1 对 y 的更改和 T2 对 x 的更改都“幸存”。 如果 T1 在 x 和 y 中都写入 1，而 T2 写入 2，则结果将是 x&#x3D;2，y &#x3D;1，违反 x &#x3D; y。</p>
+<p>As discussed in [GLPT, BHG] and elsewhere, automatic transaction rollback is another pressing reason why P0 is important. Without protection from P0, the system can’t undo updates by restoring before images. Consider the his- tory: w1[x] w2[x] a1. You don’t want to undo w1[x] by restoring its before-image of x, because that would wipe outw2’supdate. Butifyoudon’trestoreitsbefore-image, and transaction T2 later aborts, you can’t undo w2[x] by restoring its before-image either! Even the weakest locking systems hold long duration write locks. Otherwise, their recovery systems would fail. So we conclude Remark 3: Remark 3: ANSI SQL isolation should be modified to re- quire P0 for all isolation levels.</p>
+<p>正如 [GLPT、BHG] 和其他地方所讨论的，自动事务回滚是 P0 重要的另一个紧迫原因。 如果没有 P0 的保护，系统无法通过恢复之前的映像来撤消更新。 考虑历史：w1[x] w2[x] a1。 你不想通过恢复 x 的前映像来撤消 w1[x]，因为这会擦除 w2 的更新。 但如果你不恢复它的前像，并且事务 T2 后来中止，你也不能通过恢复它的前像来撤消 w2[x]！ 即使是最弱的锁定系统也会持有长时间的写锁。 否则，他们的恢复系统就会失败。 因此，我们总结备注 3： 备注 3：ANSI SQL 隔离应修改为所有隔离级别都要求 P0。</p>
+<p>We now argue that a broad interpretation of the three ANSI phenomena is required. Recall the strict interpreta- tions are:</p>
+<p>我们现在认为需要对这三种 ANSI 现象进行广泛的解释。 回想一下严格的解释是：</p>
+<p>A1: w1[x]…r2[x]…(a1 and c2 in either order)    (Dirty Read)</p>
+<p>A2:  r1[x]…w2[x]…c2…r1[x]…c1   (Fuzzy or Non-Repeatable Read)</p>
+<p>A3:  r1[P]…w2[y in P]…c2….r1[P]…c1    (Phantom)</p>
+<p>By Table 1, histories under READ COMMITTED isolation forbid anomaly A1, REPEATABLE READ isolation for- bids anomalies A1 and A2, and SERIALIZABLE isolation forbids anomalies A1, A2, and A3. Consider history H1, involving a $40 transfer between bank balance rows x and y:</p>
+<p>根据表 1，READ COMMITTED 隔离下的历史禁止异常 A1，REPEATABLE READ 隔离禁止异常 A1 和 A2，SERIALIZABLE 隔离禁止异常 A1、A2 和 A3。 考虑历史 H1，涉及银行余额行 x 和 y 之间的 40 美元转账：</p>
+<p>H1: r1[x&#x3D;50]w1[x&#x3D;10]r2[x&#x3D;10]r2[y&#x3D;50]c2 r1[y&#x3D;50]w1[y&#x3D;90]c1</p>
+<p>H1 is non-serializable, the classical inconsistent analysis problem where transaction T1 is transferring a quantity 40 from x to y, maintaining a total balance of 100, but T2 reads an inconsistent state where the total balance is 60. The history H1 does not violate any of the anomalies A1, A2, or A3. In the case of A1, one of the two transactions would have to abort; for A2, a data item would have to be read by the same transaction for a second time; A3 re- quires a phantom value. None of these things happen in H1. Consider instead taking the broad interpretation of A1, the phenomenon P1:</p>
+<p>H1 是不可序列化的，这是经典的不一致分析问题，其中事务 T1 将数量 40 从 x 转移到 y，保持总余额为 100，但 T2 读取总余额为 60 的不一致状态。历史记录 H1 不违反 任何异常 A1、A2 或 A3。 在 A1 的情况下，两个事务之一必须中止； 对于A2，数据项必须由同一事务第二次读取； A3 需要一个幻像值。 这些事情在上半年都没有发生。 考虑对 A1（即现象 P1）进行广义解释：</p>
+<p>P1: w1[x]…r2[x]…((c1 or a1) and (c2 or a2) in any order)</p>
+<p>H1 indeed violates P1. Thus, we should take the interpre- tation P1 for what was intended by ANSI rather than A1. The Broad interpretation is the correct one.</p>
+<p>H1确实违反了P1。 因此，我们应该采用 P1 来解释 ANSI 的意图，而不是 A1。 广义的解释是正确的。</p>
+<p>Similar arguments show that P2 should be taken as the ANSI intention rather than A2. A history that discrimi- nates these two interpretations is:</p>
+<p>类似的论点表明P2应该被视为ANSI意图而不是A2。 区分这两种解释的历史是：</p>
+<p>H2: r1[x&#x3D;50]r2[x&#x3D;50]w2[x&#x3D;10]r2[y&#x3D;50]w2[y&#x3D;90]c2r1[y&#x3D;90]c1</p>
+<p>H2 is non-serializable — it is another inconsistent analy- sis, where T1 sees a total balance of 140. This time nei- ther transaction reads dirty (i.e. uncommitted) data. Thus P1 is satisfied. Once again, no data item is read twice nor is any relevant predicate evaluation changed. The problem with H2 is that by the time T1 reads y, the value for x is out of date. If T2 were to read x again, it would have been changed; but since T2 doesn’t do that, A2 doesn’t apply. Replacing A2 with P2, the broader interpretation, solves this problem.</p>
+<p>H2 是不可序列化的——这是另一个不一致的分析，其中 T1 看到的总余额为 140。这次两个事务都不会读取脏（即未提交）数据。 这样P1就满足了。 再一次，没有数据项被读取两次，也没有任何相关的谓词评估被改变。 H2 的问题是，当 T1 读取 y 时，x 的值已经过时。 如果T2再次读取x，它就会被改变； 但由于 T2 不这样做，因此 A2 不适用。 用更广泛的解释 P2 代替 A2 解决了这个问题。</p>
+<p>P2: r1[x]…w2[x]…((c1 or a1) and (c2 or a2) any order)</p>
+<p>H2 would now be disqualified when w2[x&#x3D;20] occurs to overwrite r1[x&#x3D;50]. Finally, consider A3 and history H3:</p>
+<p>当 w2[x&#x3D;20] 覆盖 r1[x&#x3D;50] 时，H2 现在将被取消资格。 最后，考虑 A3 和历史 H3：</p>
+<p>A3: r1[P]…w2[y in P]…c2…r1[P]…c1 (Phantom)</p>
+<p>H3: r1[P] w2[insert y to P] r2[z] w2[z] c2 r1[z] c1</p>
+<p>Here T1 performs a <search condition> to find the list of active employees. Then T2 performs an insert of a new active employee and then updates z, the count of em- ployees in the company. Following this, T1 reads the count of active employees as a check and sees a discrep- ancy. This history is clearly not serializable, but is allowed by A3 since no predicate is evaluated twice. Again, the Broad interpretation solves the problem.</p>
+<p>这里，T1 执行&lt;搜索条件&gt;来查找在职员工列表。 然后 T2 插入一个新的在职员工，然后更新 z，即公司中的员工数量。 随后，T1 读取在职员工的计数作为检查，并发现差异。 这个历史显然是不可序列化的，但 A3 允许，因为没有谓词被评估两次。 广义解释再次解决了这个问题。</p>
+<p>P3: r1[P]…w2[y in P]…((c1 or a1) and (c2 or a2) any order)</p>
+<p>If P3 is forbidden, history H3 is invalid. This is clearly what ANSI intended. The foregoing discussion demon- strates the following results.</p>
+<p>如果P3被禁止，则历史H3无效。 这显然正是 ANSI 的意图。 上述讨论证明了以下结果。</p>
+<p>Remark 4. Strict interpretations A1, A2, and A3 have unintended weaknesses. The correct interpretations are the Broad ones. We assume in what follows that ANSI meant to define P1, P2, and P3.</p>
+<p>备注 4. 严格解释 A1、A2 和 A3 有意想不到的弱点。 正确的解释是广义的解释。 下面我们假设 ANSI 打算定义 P1、P2 和 P3。</p>
+<p>Remark 5. ANSI SQL isolation phenomena are incom- plete. There are a number of anomalies that still can arise. New phenomena must be defined to complete the definition of locking. Also, P3 must be restated. In the following definitions, we drop references to (c2 or a2) that do not restrict histories.</p>
+<p>备注 5. ANSI SQL 隔离现象是不完整的。 仍然可能出现许多异常情况。 必须定义新的现象来完成锁定的定义。 此外，P3 必须重述。 在以下定义中，我们删除对不限制历史的（c2 或 a2）的引用。</p>
+<p>P0:  w1[x]…w2[x]…(c1 or a1)    (Dirty Write) </p>
+<p>P1:  w1[x]…r2[x]…(c1 or a1)     (Dirty Read)</p>
+<p>P2:  r1[x]…w2[x]…(c1 or a1)     (Fuzzy or Non-Repeatable Read)</p>
+<p>P3:  r1[P]…w2[y in P]…(c1 or a1)    (Phantom)</p>
+<p>One important note is that ANSI SQL P3 only prohibits inserts (and updates, according to some interpretations) to a predicate whereas the definition of P3 above prohibits any write satisfying the predicate once the predicate has been read — the write could be an insert, update, or delete.</p>
+<p>一个重要的注意事项是，ANSI SQL P3 仅禁止对谓词进行插入（和更新，根据某些解释），而上面 P3 的定义一旦读取了谓词，就禁止任何满足谓词的写入 — 写入可以是插入、更新 ，或删除。</p>
+<p>The definition of proposed ANSI isolation levels in terms of these phenomena is given in Table 3.</p>
+<p>表 3 给出了针对这些现象提出的 ANSI 隔离级别的定义。</p>
+<p>For single version histories, it turns out that the P0, P1, P2, P3 phenomena are disguised versions of locking. For example, prohibiting P0 precludes a second transaction writing an item after the first transaction has written it, equivalent to saying that long-term Write locks are held on data items (and predicates). Thus Dirty Writes are im- possible at all levels. Similarly, prohibiting P1 is equiv- alent to having well-formed reads on data items. Prohibiting P2 means long-term Read locks on data items. Finally, Prohibiting P3 means long-term Read predicate locks. Thus the isolation levels of Table 3 defined by these phenomena provide the same behavior as the Locking isolation levels of Table 2.</p>
+<p>对于单一版本历史，事实证明，P0、P1、P2、P3 现象是变相版本的锁定。 例如，禁止 P0 会阻止第二个事务在第一个事务写入项目后写入该项目，相当于对数据项（和谓词）持有长期写入锁。 因此脏写在所有级别都是不可能的。 类似地，禁止 P1 相当于对数据项进行格式良好的读取。 禁止P2意味着对数据项进行长期的Read锁定。 最后，禁止 P3 意味着长期的 Read 谓词锁。 因此，由这些现象定义的表 3 的隔离级别提供与表 2 的锁定隔离级别相同的行为。</p>
+<p>Remark 6. The locking isolation levels of Table 2 and the phenomenological definitions of Table 3 are equivalent. Put another way, P0, P1, P2, and P3 are disguised redefini- tion’soflockingbehavior.</p>
+<p>备注 6. 表 2 的锁定隔离级别和表 3 的现象学定义是等效的。 换句话说，P0、P1、P2 和 P3 是变相重定义的锁定行为。</p>
+<p>In what follows, we will refer to the isolation levels listed in Table 3 by the names in Table 3, equivalent to the Locking versions of these isolation levels of Table 2. When we refer to ANSI READ UNCOMMITTED, ANSI READ COMMITTED, ANSI REPEATABLE READ, and ANOMALY SERIALIZABLE, we are referring to the ANSI definition of Table 1 (inadequate, since it did not include P0).</p>
+<p>接下来，我们将通过表 3 中的名称来引用表 3 中列出的隔离级别，相当于表 2 中这些隔离级别的 Locking 版本。当我们引用 ANSI READ UNCOMMITTED、ANSI READ COMMITTED、ANSI REPEATABLE READ 时 和 ANOMALY SERIALIZABLE，我们指的是表 1 的 ANSI 定义（不充分，因为它不包括 P0）。</p>
+<p>The next section shows that a number of commercially available isolation implementations provide isolation levels that fall between READ COMMITTED and REPEATABLE READ. To achieve meaningful isolation levels that distin- guish these implementations, we will assume P0 and P1 as a basis and then add distinguishing new phenomena.</p>
+<p>下一节将展示许多商用隔离实现提供介于 READ COMMITTED 和 REPEATABLE READ 之间的隔离级别。 为了实现区分这些实现的有意义的隔离级别，我们将假设 P0 和 P1 作为基础，然后添加有区别的新现象。</p>
+<p><strong>Table 3. ANSI SQL Isolation Levels Defined in terms of the four phenomena</strong></p>
+<table>
+<thead>
+<tr>
+<th>Isolation Level</th>
+<th>P0 Dirty Write</th>
+<th>P1 Dirty Read</th>
+<th>P2  Fuzzy Read</th>
+<th>P3 Phantom</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>READ UNCOMMITTED</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>READ COMMITTED</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+</tr>
+</tbody></table>
+<h2 id="Other-Isolation-Types"><a href="#Other-Isolation-Types" class="headerlink" title="Other Isolation Types"></a>Other Isolation Types</h2><h3 id="Cursor-Stability"><a href="#Cursor-Stability" class="headerlink" title="Cursor Stability"></a>Cursor Stability</h3><p>Cursor Stability is designed to prevent the lost update phenomenon.</p>
+<p>光标稳定性旨在防止丢失更新现象。</p>
+<p>P4 (Lost Update): The lost update anomaly occurs when transaction T1 reads a data item and then T2 updates the data item (possibly based on a previous read), then T1 (based on its earlier read value) updates the data item and commits. In terms of histories, this is:</p>
+<p>P4（丢失更新）：当事务T1读取一个数据项，然后T2更新该数据项（可能基于之前的读取），然后T1（基于其之前读取的值）更新该数据项并提交时，就会发生丢失更新异常 。 从历史来看，是这样的：</p>
+<p>P4: r1[x]…w2[x]…w1[x]…c1  (lost update)</p>
+<p>The problem, as illustrated in history H4, is that even if T2 commits, T2’s update will be lost.</p>
+<p>正如历史记录 H4 所示，问题在于即使 T2 提交，T2 的更新也会丢失。</p>
+<p>H4: r1[x&#x3D;100] r2[x&#x3D;100] w2[x&#x3D;120] c2 w1[x&#x3D;130] c1</p>
+<p>The final value of x contains only the increment of 30 added by T1. P4 is possible at the READ COMMITTED isolation level, since H4 is allowed when forbidding P0 (a commit of the transaction performing the first write action precedes the second write) or P1 (which would require a read after a write). However, forbidding P2 also precludes P4, since w2[x] comes after r1[x] and before T1 commits or aborts. Therefore the anomaly P4 is useful in distinguishing isolation levels intermediate in strength be- tween READ COMMITTED and REPEATABLE READ.</p>
+<p>x的最终值仅包含T1加上的增量30。 P4 在 READ COMMITTED 隔离级别上是可能的，因为在禁止 P0（执行第一个写入操作的事务提交在第二个写入之前）或 P1（需要在写入之后进行读取）时允许 H4。 然而，禁止 P2 也会排除 P4，因为 w2[x] 出现在 r1[x] 之后且 T1 提交或中止之前。 因此，异常 P4 在区分已提交读和可重复读之间强度中等的隔离级别时非常有用。</p>
+<p>The Cursor Stability isolation level extends READ COMMITTED locking behavior for SQL cursors by adding a new read action for FETCH from a cursor and requiring that a lock be held on the current item of the cursor. The lock is held until the cursor moves or is closed, possibly by a commit. Naturally, the Fetching transaction can update the row, and in that case a write lock will be held on the row until the transaction commits, even after the cursor moves on with a subsequent Fetch. The notation is extended to include, rc, meaning read cursor, and wc, meaning write the current record of the cursor. A rc1[x] and a later wc1[x] precludes an intervening w2[x]. Phenomenon P4, renamed P4C, is prevented in this case.</p>
+<p>游标稳定性隔离级别通过为游标的 FETCH 添加新的读取操作并要求在游标的当前项上保持锁定，扩展了 SQL 游标的 READ COMMITTED 锁定行为。 锁定将一直保持到游标移动或关闭（可能是通过提交）。 当然，Fetching 事务可以更新该行，在这种情况下，即使在游标继续进行后续的 Fetch 操作之后，写入锁定也会一直保留在该行上，直到事务提交为止。 该符号被扩展为包括，rc，表示读取游标，wc，表示写入游标的当前记录。 rc1[x] 和稍后的 wc1[x] 排除了介入的 w2[x]。 在这种情况下，可以防止现象 P4（更名为 P4C）。</p>
+<p>P4C: rc1[x]…w2[x]…w1[x]…c1 (Lost Update)</p>
+<p>Remark 7:</p>
+<p>READ COMMITTED « Cursor Stability « REPEATABLE READ</p>
+<p>Cursor Stability is widely implemented by SQL systems to prevent lost updates for rows read via a cursor. READ COMMITTED, in some systems, is actually the stronger Cursor Stability. The ANSI standard allows this.</p>
+<p>SQL 系统广泛实现游标稳定性，以防止通过游标读取的行丢失更新。 READ COMMITTED，在某些系统中，实际上是更强的游标稳定性。 ANSI 标准允许这样做。</p>
+<p>The technique of putting a cursor on an item to hold its value stable can be used for multiple items, at the cost of using multiple cursors. Thus the programmer can parlay Cursor Stability to effective Locking REPEATABLE READ isolation for any transaction accessing a small, fixed num- ber of data items. However this method is inconvenient and not at all general. Thus there are always histories fitting the P4 (and of course the more general P2) phenomenon that are not precluded by Cursor Stability.</p>
+<p>将光标放在某个项目上以保持其值稳定的技术可用于多个项目，但代价是使用多个光标。 因此，对于访问少量固定数量数据项的任何事务，程序员可以利用游标稳定性来有效锁定可重复读隔离。 但这种方法不方便且不通用。 因此，总是存在符合 P4（当然还有更一般的 P2）现象的历史，这些历史不会被游标稳定性所排除。</p>
+<h3 id="Snapshot-Isolation"><a href="#Snapshot-Isolation" class="headerlink" title="Snapshot Isolation"></a>Snapshot Isolation</h3><p>These discussions naturally suggest an isolation level, called Snapshot Isolation, in which each transaction reads reads data from a snapshot of the (committed) data as of the time the transaction started, called its Start-Timestamp. This time may be any time before the transaction’s first Read. A transaction running in Snapshot Isolation is never blocked attempting a read as long as the snapshot data from its Start-Timestamp can be maintained. The transaction’s writes (updates, inserts, and deletes) will also be reflected in this snapshot, to be read again if the transaction accesses (i.e., reads or updates) the data a second time. Updates by other transactions active after the transaction Start-Timestamp are invisible to the transaction.</p>
+<p>这些讨论自然地提出了一种隔离级别，称为快照隔离，其中每个事务从事务启动时（称为其开始时间戳）的（已提交）数据的快照中读取数据。 该时间可以是事务第一次读取之前的任何时间。 只要可以维护其开始时间戳中的快照数据，在快照隔离中运行的事务就不会阻止尝试读取。 事务的写入（更新、插入和删除）也将反映在该快照中，如果事务第二次访问（即读取或更新）数据，则可以再次读取。 在事务开始时间戳之后活动的其他事务的更新对该事务来说是不可见的。</p>
+<p>Snapshot Isolation is a type of multiversion concurrency control. It extends the Multiversion Mixed Method de- scribed in [BHG], which allowed snapshot reads by read- only transactions.</p>
+<p>快照隔离是一种多版本并发控制。 它扩展了[BHG]中描述的多版本混合方法，该方法允许只读事务进行快照读取。</p>
+<p>When the transaction T1 is ready to commit, it gets a Commit-Timestamp, which is larger than any existing Start-Timestamp or Commit-Timestamp. The transaction successfully commits only if no other transaction T2 with a Commit-Timestamp in T1’s execution interval [Start- Timestamp, Commit-Timestamp] wrote data that T1 also wrote. Otherwise, T1 will abort. This feature, called First- committer-wins prevents lost updates (phenomenon P4). When T1 commits, its changes become visible to all transactions whose Start-Timestamps are larger than T1‘s Commit-Timestamp.</p>
+<p>当事务 T1 准备好提交时，它会获得一个 Commit-Timestamp，该时间戳大于任何现有的 Start-Timestamp 或 Commit-Timestamp。 仅当在 T1 的执行间隔 [Start-Timestamp, Commit-Timestamp] 内没有其他具有 Commit-Timestamp 的事务 T2 写入 T1 也写入的数据时，事务才会成功提交。 否则，T1将中止。 这个称为“Firstcommitter-wins”的功能可以防止更新丢失（现象 P4）。 当 T1 提交时，其更改对于所有开始时间戳大于 T1 的提交时间戳的事务都可见。</p>
+<p>Snapshot Isolation is a multi-version (MV) method, so sin- gle-valued (SV) histories do not properly reflect the tempo- ral action sequences. At any time, each data item might have multiple versions, created by active and committed transactions. Reads by a transaction must choose the appropriate version. Consider history H1 at the beginning of Section 3, which shows the need for P1 in a single valued execution. Under Snapshot Isolation, the same sequence of actions would lead to the multi-valued history:</p>
+<p>快照隔离是一种多版本（MV）方法，因此单值（SV）历史不能正确反映时间动作序列。 在任何时候，每个数据项都可能有多个版本，由活动和已提交的事务创建。 事务读取必须选择合适的版本。 考虑第 3 节开头的历史 H1，它显示了在单值执行中需要 P1。 在快照隔离下，相同的操作序列将导致多值历史记录：</p>
+<p>H1.SI: r1[x0&#x3D;50] w1[x1&#x3D;10] r2[x0&#x3D;50] r2[y0&#x3D;50] c2 </p>
+<p>​           r1[y0&#x3D;50] w1[y1&#x3D;90] c1</p>
+<p>H1.SI has the dataflows of a serializable execution. In [OOBBGM], we show that all Snapshot Isolation histories can be mapped to single-valued histories while preserving dataflow dependencies (the MV histories are said to be View Equivalent with the SV histories, an approach covered in [BHG], Chapter 5). For example the MV his- tory H1.SI would map to the serializable SV history:</p>
+<p>H1.SI 具有可串行执行的数据流。 在 [OOBBGM] 中，我们表明所有快照隔离历史都可以映射到单值历史，同时保留数据流依赖性（MV 历史被称为与 SV 历史等效的视图，[BHG] 第 5 章中介绍了这种方法） 。 例如，MV 历史记录 H1.SI 将映射到可序列化的 SV 历史记录：</p>
+<p>H1.SI.SV: r1[x&#x3D;50] r1[y&#x3D;50] r2[x&#x3D;50] r2[y&#x3D;50] c2 </p>
+<p>​				w1[x&#x3D;10] w1[y&#x3D;90] c1</p>
+<p>Mapping of MV histories to SV histories is the only rigor- ous touchstone needed to place Snapshot Isolation in the Isolation Hierarchy.</p>
+<p>MV 历史到 SV 历史的映射是将快照隔离放入隔离层次结构所需的唯一严格的试金石。</p>
+<p>Snapshot Isolation is non-serializable because a transac- tion’s Reads come at one instant and the Writes at another. For example, consider the single-value history:</p>
+<p>快照隔离是不可串行化的，因为事务的读取在某一时刻发生，而写入在另一时刻发生。 例如，考虑单值历史记录：</p>
+<p>H5: r1[x&#x3D;50] r1[y&#x3D;50] r2[x&#x3D;50] r2[y&#x3D;50] w1[y&#x3D;-40] </p>
+<p>​      w2[x&#x3D;-40] c1 c2</p>
+<p>H5 is non-serializable and has the same inter-transactional dataflows as could occur under Snapshot Isolation (there is no choice of versions read by the transactions). Here we assume that each transaction that writes a new value for x and y is expected to maintain the constraint that x + y should be positive, and while T1 and T2 both act properly in isolation, the constraint fails to hold in H5.</p>
+<p>H5 是不可序列化的，并且具有与快照隔离下可能发生的相同的事务间数据流（无法选择事务读取的版本）。 在这里，我们假设每个为 x 和 y 写入新值的事务都期望维持 x + y 应该为正的约束，并且虽然 T1 和 T2 都独立正常运行，但该约束在 H5 中不成立。</p>
+<p>Constraint violation is a generic and important type of concurrency anomaly. Individual databases satisfy con- straints over multiple data items (e.g., uniqueness of keys, referential integrity, replication of rows in two tables, etc.). Together they form the database invariant constraint predi- cate, C(DB). The invariant is TRUE if the database state DB is consistent with the constraints and is FALSE otherwise. Transactions must preserve the constraint predicate to maintain consistency: if the database is consistent when the transaction starts, the database will be consistent when the transaction commits. If a transaction reads a database state that violates the constraint predicate, then the transaction suffers from a constraint violation concurrency anomaly. Such constraint violations are called inconsistent analysis in [DAT].</p>
+<p>约束违反是一种常见且重要的并发异常类型。 各个数据库满足多个数据项的约束（例如，键的唯一性、引用完整性、两个表中行的复制等）。 它们一起形成数据库不变约束谓词 C(DB)。 如果数据库状态 DB 与约束一致，则不变量为 TRUE，否则为 FALSE。 事务必须保留约束谓词以保持一致性：如果事务启动时数据库是一致的，那么事务提交时数据库也会一致。 如果事务读取违反约束谓词的数据库状态，则该事务将遭受约束违反并发异常。 这种约束违反在 [DAT] 中称为不一致分析。</p>
+<p>A5 (Data Item Constraint Violation). Suppose C() is a database constraint between two data items x and y in the database. Here are two anomalies arising from constraint violation.</p>
+<p>A5（数据项约束违规）。 假设C()是数据库中两个数据项x和y之间的数据库约束。 这是由于违反约束而产生的两个异常。</p>
+<p>A5A Read Skew Suppose transaction T1 reads x, and then a second transaction T2 updates x and y to new values and commits. If now T1 reads y, it may see an inconsistent state, and therefore produce an inconsistent state as output. In terms of histories, we have the anomaly:</p>
+<p>A5A 读取偏差 假设事务 T1 读取 x，然后第二个事务 T2 将 x 和 y 更新为新值并提交。 如果现在 T1 读取 y，它可能会看到不一致的状态，因此会产生不一致的状态作为输出。 就历史而言，我们有一个异常现象：</p>
+<p>A5A: r1[x]…w2[x]…w2[y]…c2…r1[y]…(c1 or a1)     (Read Skew)</p>
+<p>A5B Write Skew Suppose T1 reads x and y, which are consistent with C(), and then a T2 reads x and y, writes x, and commits. Then T1 writes y. If there were a constraint between x and y, it might be violated. In terms of histo- ries:</p>
+<p>A5B Write Skew 假设T1读取x和y，与C()一致，然后T2读取x和y，写入x并提交。 然后T1写入y。 如果 x 和 y 之间存在约束，则可能会被违反。 就历史而言：</p>
+<p>A5B: r1[x]…r2[y]…w1[y]…w2[x]…(c1 and c2 occur)  (Write Skew)</p>
+<p>Fuzzy Reads (P2) is a degenerate form of Read Skew where x&#x3D;y. More typically, a transaction reads two dif- ferent but related items (e.g., referential integrity). Write Skew (A5B) could arise from a constraint at a bank, where account balances are allowed to go negative as long as the sum of commonly held balances remains non-negative, with an anomaly arising as in history H5.</p>
+<p>模糊读取 (P2) 是读取倾斜的退化形式，其中 x&#x3D;y。 更典型的是，一个事务读取两个不同但相关的项目（例如，引用完整性）。 写入偏差 (A5B) 可能是由银行的限制引起的，只要共同持有余额的总和保持非负值，就允许账户余额变为负值，就像历史 H5 中那样出现异常。</p>
+<p>Clearly neither A5A nor A5B could arise in histories where P2 is precluded, since both A5A and A5B have T2 write a data item that has been previously read by an un- committed T1. Thus, phenomena A5A and A5B are only useful for distinguishing isolation levels that are below REPEATABLE READ in strength.</p>
+<p>显然，A5A 和 A5B 都不会出现在 P2 被排除的历史中，因为 A5A 和 A5B 都让 T2 写入了先前已被未提交的 T1 读取的数据项。 因此，现象 A5A 和 A5B 仅适用于区分强度低于 REPEATABLE READ 的隔离级别。</p>
+<p>The ANSI SQL definition of REPEATABLE READ, in its strict interpretation, captures a degenerate form of row constraints, but misses the general concept. To be specific, Locking REPEATABLE READ of Table 2 provides protection from Row Constraint Violations but the ANSI SQL definition of Table 1, forbidding anomalies A1 and A2, does not.</p>
+<p>REPEATABLE READ 的 ANSI SQL 定义在其严格解释中捕获了行约束的简并形式，但忽略了一般概念。 具体来说，表 2 的锁定可重复读取提供了针对行约束违规的保护，但表 1 的 ANSI SQL 定义（禁止异常 A1 和 A2）却没有提供保护。</p>
+<p>Returning now to Snapshot Isolation, it is surprisingly strong, even stronger than READ COMMITTED.</p>
+<p>现在回到快照隔离，它非常强大，甚至比 READ COMMITTED 还要强大。</p>
+<p>Remark 8. READ COMMITTED « Snapshot Isolation</p>
+<p>Proof. In Snapshot Isolation, first-committer-wins pre- cludes P0 (dirty writes), and the timestamp mechanism prevents P1 (dirty reads), so Snapshot Isolation is no weaker than READ COMMITTED. In addition, A5A is possible under READ COMMITTED, but not under the Snapshot Isolation timestamp mechanism. Therefore READ COMMITTED « Snapshot Isolation.</p>
+<p>证明。 在Snapshot Isolation中，first-committer-wins排除了P0（脏写），并且时间戳机制阻止了P1（脏读），因此Snapshot Isolation并不比READ COMMITTED弱。 另外，A5A在READ COMMITTED下是可以的，但在Snapshot Isolation时间戳机制下是不行的。 因此，READ COMMITTED « 快照隔离。</p>
+<p>Note that it is difficult to picture how Snapshot Isolation histories can disobey phenomenon P2 in the single-valued interpretation. Anomaly A2 cannot occur, since a transac- tion under Snapshot Isolation will read the same value of a data item even after a temporally intervening update by an- other transaction. However, Write Skew (A5B) obviously can occur in a Snapshot Isolation history (e.g., H5), and in the Single Valued history interpretation we’ve been reason- ing about, forbidding P2 also precludes A5B. Therefore Snapshot Isolation admits history anomalies that REPEATABLE READ does not.</p>
+<p>请注意，很难想象快照隔离历史如何违背单值解释中的现象 P2。 异常 A2 不会发生，因为即使在另一个事务临时干预更新之后，快照隔离下的事务也会读取数据项的相同值。 然而，写倾斜（A5B）显然可能发生在快照隔离历史（例如，H5）中，并且在我们一直在推理的单值历史解释中，禁止 P2 也排除了 A5B。 因此，快照隔离允许历史异常，而可重复读取则不允许。</p>
+<p>Snapshot Isolation cannot experience the A3 anomaly. A transaction rereading a predicate after an update by another will always see the same old set of data items. But the REPEATABLE READ isolation level can experience A3 anomalies. Snapshot Isolation histories prohibit histories with anomaly A3, but allow A5B, while REPEATABLE READ does the opposite. Therefore:</p>
+<p>快照隔离无法遇到A3异常。 在另一个事务更新后重新读取谓词的事务将始终看到相同的旧数据项集。 但 REPEATABLE READ 隔离级别可能会出现 A3 异常。 快照隔离历史禁止异常 A3 的历史，但允许 A5B，而 REPEATABLE READ 则相反。 所以：</p>
+<p>Remark 9. REPEATABLE READ »« Snapshot Isolation.</p>
+<p>However, Snapshot Isolation does not preclude P3. Consider a constraint that says a set of job tasks deter- mined by a predicate cannot have a sum of hours greater than 8. T1 reads this predicate, determines the sum is only 7 hours and adds a new task of 1 hour duration, while a concurrent transaction T2 does the same thing. Since the two transactions are inserting different data items (and different index entries as well, if any), this scenario is not precluded by First-Committer-Wins and can occur in Snapshot Isolation. But in any equivalent serial history, the phenomenon P3 would arise under this scenario.</p>
+<p>然而，快照隔离并不排除P3。 考虑一个约束，该约束表示由谓词确定的一组作业任务的小时总和不能大于 8。T1 读取该谓词，确定总时间仅为 7 小时，并添加一个持续时间为 1 小时的新任务，而 并发事务T2做同样的事情。 由于两个事务插入不同的数据项（以及不同的索引条目，如果有），因此 First-Committer-Wins 不会排除这种情况，并且可能会在快照隔离中发生。 但在任何同等的连续历史中，P3现象都会在这种情况下出现。</p>
+<p>Perhaps most remarkable of all, Snapshot Isolation has no phantoms (in the strict sense of the ANSI definitions A3). Each transaction never sees the updates of concurrent transactions. So, one can state the following surprising re- sult (recall that section Table 1 defined ANOMALY SE- RIALIZABLE as ANSI SQL definition of SERIALIZABLE) without the extra restriction in Subclause 4.28 in [ANSI]:</p>
+<p>也许最引人注目的是，快照隔离没有幻像（严格意义上的 ANSI 定义 A3）。 每个事务永远不会看到并发事务的更新。 因此，我们可以得出以下令人惊讶的结果（回想一下表 1 将 ANOMALY SERIALIZABLE 定义为 ANSI SQL SERIALIZABLE 定义），而没有 [ANSI] 中第 4.28 款中的额外限制：</p>
+<p>Remark 10. Snapshot Isolation histories preclude anomalies A1, A2 and A3. Therefore, in the anomaly in- terpretation of ANOMALY SERIALIZABLE of Table 1:</p>
+<p>备注 10. 快照隔离历史排除异常 A1、A2 和 A3。 因此，在表1的ANOMALY SERIALIZABLE异常解释中：</p>
+<p>ANOMALY SERIALIZABLE « SNAPSHOT ISOLATION.</p>
+<p>Snapshot Isolation gives the freedom to run transactions with very old timestamps, thereby allowing them to do time travel — taking a historical perspective of the database — while never blocking or being blocked by writes. Of course, update transactions with very old timestamps would abort if they tried to update any data item that had been updated by more recent transactions.</p>
+<p>快照隔离提供了使用非常旧的时间戳运行事务的自由，从而允许它们进行时间旅行（从数据库的历史角度来看），同时不会阻塞或被写入阻塞。 当然，如果具有非常旧的时间戳的更新事务尝试更新已由较新的事务更新的任何数据项，则它们将中止。</p>
+<p>Snapshot Isolation admits a simple implementation mod- eled on the work of Reed [REE]. There are several com- mercial implementations of such multi-version databases. Borland’s InterBase 4 [THA] and the engine underlying Microsoft’s Exchange System both provide Snapshot Isolation with the First-committer-wins feature. First- committer-wins requires the system to remember all up- dates (write locks) belonging to any transaction that commits after the Start-Timestamp of each active transac- tion. It aborts the transaction if its updates conflict with remembered updates by others.</p>
+<p>快照隔离允许以 Reed [REE] 的工作为模型的简单实现。 这种多版本数据库有多种商业实现。 Borland 的 InterBase 4 [THA] 和 Microsoft Exchange 系统底层的引擎都提供具有“先提交者获胜”功能的快照隔离。 首先提交者获胜要求系统记住属于在每个活动事务的开始时间戳之后提交的任何事务的所有更新（写锁）。 如果它的更新与其他人记住的更新冲突，它会中止事务。</p>
+<p>Snapshot Isolation’s “optimistic” approach to concurrency control has a clear concurrency advantage for read-only transactions, but its benefits for update transactions is still debated. It probably isn’t good for long-running update transactions competing with high-contention short transac- tions, since the long-running transactions are unlikely to be the first writer of everything they write, and so will probably be aborted. (Note that this scenario would cause a real problem in locking implementations as well, and if the solution is to not allow long-running update transactions that would hold up short transaction locks, Snapshot Isolation would also be acceptable.) Certainly in cases where short update transactions conflict minimally and long-running transactions are likely to be read only, Snapshot Isolation should give good results. In regimes where there is high contention among transactions of comparable length, Snapshot Isolation offers a classical optimistic approach, and there are differences of opinion as to the value of this.</p>
+<p>快照隔离的“乐观”并发控制方法对于只读事务具有明显的并发优势，但其对于更新事务的好处仍然存在争议。 对于长时间运行的更新事务与高争用的短事务竞争来说，这可能并不好，因为长时间运行的事务不太可能是它们所写入的所有内容的第一个写入者，因此可能会被中止。 （请注意，这种情况也会导致锁定实现中出现真正的问题，如果解决方案是不允许长时间运行的更新事务会持有短事务锁，那么快照隔离也是可以接受的。） 更新事务冲突最少，并且长时间运行的事务可能是只读的，快照隔离应该会产生良好的结果。 在相当长度的交易之间存在高度争用的制度中，快照隔离提供了一种经典的乐观方法，并且对其价值存在不同意见。</p>
+<h3 id="Other-Multi-Version-Systems"><a href="#Other-Multi-Version-Systems" class="headerlink" title="Other Multi-Version Systems"></a>Other Multi-Version Systems</h3><p>There are other models of multi-versio99ning. Some com- mercial products maintain versions of objects but restrict Snapshot Isolation to read-only transactions (e.g., SQL-92, Rdb,and SET TRANSACTION READ ONLYinsomeother databases [MS, HOB, ORA]; Postgres and Illustra [STO, ILL] maintain such versions long-term and provide time- travel queries). Others allow update transactions but do not provide first-committer-wins protection (e.g., Oracle Read Consistency isolation [ORA]).</p>
+<p>还有其他型号的多版本。 一些商业产品维护对象的版本，但将快照隔离限制为只读事务（例如，SQL-92、Rdb 和其他数据库中的 SET TRANSACTION READ ONLY [MS、HOB、ORA]；Postgres 和 Illustra [STO、ILL] 维护 此类版本是长期的并提供时间旅行查询）。 其他允许更新事务，但不提供先提交者获胜保护（例如，Oracle 读一致性隔离 [ORA]）。</p>
+<p>Oracle Read Consistency isolation gives each SQL state- ment the most recent committed database value at the time the statement began. It is as if the start-timestamp of the transaction is advanced at each SQL statement. The members of a cursor set are as of the time of the Open Cursor. The underlying mechanism recomputes the ap- propriate version of the row as of the statement timestamp. Row inserts, updates, and deletes are covered by Write locks to give a first-writer-wins rather than a first- committer-wins policy. Read Consistency is stronger than READ COMMITTED (it disallows cursor lost updates (P4C)) but allows non-repeatable reads (P3), general lost updates (P4), and read skew (A5A). Snapshot Isolation does not permit P4 or A5A.</p>
+<p>Oracle 读一致性隔离为每个 SQL 语句提供该语句开始时最新提交的数据库值。 就好像事务的开始时间戳在每个 SQL 语句中都会提前。 游标集的成员是从打开游标时开始的。 底层机制重新计算截至语句时间戳的行的适当版本。 行插入、更新和删除由写锁覆盖，以提供先写者胜而不是先提交者胜的策略。 读一致性比 READ COMMITTED 更强（它不允许游标丢失更新 (P4C)），但允许不可重复读取 (P3)、一般丢失更新 (P4) 和读取倾斜 (A5A)。 快照隔离不允许 P4 或 A5A。</p>
+<p>If one looks carefully at the SQL standard, it defines each statement as atomic. It has a serializable sub-transaction (or timestamp) at the start of each statement. One can imagine a hierarchy of isolation levels defined by assign- ing timestamps to statements in interesting ways (e.g., in Oracle, a cursor fetch has the timestamp of the cursor open).</p>
+<p>如果仔细查看 SQL 标准，它会将每个语句定义为原子语句。 它在每个语句的开头都有一个可序列化的子事务（或时间戳）。 人们可以想象通过以有趣的方式为语句分配时间戳来定义的隔离级别层次结构（例如，在 Oracle 中，游标获取具有打开游标的时间戳）。</p>
+<h2 id="Summary-and-Conclusions"><a href="#Summary-and-Conclusions" class="headerlink" title="Summary and Conclusions"></a>Summary and Conclusions</h2><p>In summary, there are serious problems with the original ANSI SQL definition of isolation levels (as explained in Section 3). The English language definitions are ambiguous and incomplete. Dirty Writes (P0) are not precluded. Remark 5 is our recommendation for cleaning up the ANSI Isolation levels to equate to the locking isolation levels of [GLPT].</p>
+<p>总之，最初的 ANSI SQL 隔离级别定义存在严重问题（如第 3 节所述）。 英语语言定义不明确且不完整。 不排除脏写（P0）。 备注 5 是我们建议清理 ANSI 隔离级别以使其等同于 [GLPT] 的锁定隔离级别。</p>
+<p>ANSI SQL intended to define REPEATABLE READ isolation to exclude all anomalies except Phantom. The anomaly definition of Table 1 does not achieve this goal, but the locking definition of Table 2 does. ANSI’s choice of the term Repeatable Read is doubly unfortunate: (1) repeatable reads do not give repeatable results, and (2) the industry had already used the term to mean exactly that: repeatable reads mean serializable in several products. We recommend that another term be found for this.</p>
+<p>ANSI SQL 旨在定义 REPEATABLE READ 隔离以排除除 Phantom 之外的所有异常。 表 1 的异常定义没有实现此目标，但表 2 的锁定定义可以。 ANSI 选择“可重复读取”一词是双重不幸的：(1) 可重复读取不会给出可重复的结果，(2) 业界已经使用该术语来准确表示：可重复读取意味着在多种产品中可序列化。 我们建议为此找到另一个术语。</p>
+<p>A number of commercially-popular isolation levels, falling between the REPEATABLE READ and SERIALIZABLE levels of Table 3 in strength, have been characterized with some new phenomena and anomalies in Section 4. All the isolation levels named here have been characterized as shown in Figure 2 and Table 4. Isolation levels at higher levels in Figure 2 are higher in strength (see the Definition at the beginning of Section 4.1) and the connecting lines are labeled with the phenomena and anomalies that differentiate them.</p>
+<p>许多商业上流行的隔离级别的强度介于表 3 的 REPEATABLE READ 和 SERIALIZABLE 级别之间，在第 4 节中已通过一些新现象和异常进行了表征。此处命名的所有隔离级别均已进行表征，如图 2 所示 和表 4。图 2 中较高级别的隔离级别强度较高（请参阅第 4.1 节开头的定义），并且连接线标有区分它们的现象和异常。</p>
+<p>On a positive note, reduced isolation levels for multi-ver- sion systems have never been characterized before — de- spite being implemented in several products. Many appli- cations avoid lock contention by using Cursor Stability or Oracle’s Read Consistency isolation. Such applications will find Snapshot Isolation better behaved than either: it avoids the lost update anomaly, some phantom anomalies (e.g., the one defined by ANSI SQL), it never blocks read- only transactions, and readers do not block updates.</p>
+<p>从积极的方面来看，尽管在多个产品中实现了多版本系统的降低隔离级别，但以前从未有过这种特征。 许多应用程序通过使用游标稳定性或 Oracle 的读一致性隔离来避免锁争用。 此类应用程序会发现快照隔离比任何一种都表现得更好：它避免了丢失更新异常、一些幻像异常（例如 ANSI SQL 定义的异常）、它从不阻止只读事务，并且读取器不会阻止更新。</p>
+<p><strong>Table 4. Isolation Types Characterized by Possible Anomalies Allowed.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Isolation level</th>
+<th>P0 Dirty Write</th>
+<th>P1 Dirty Read</th>
+<th>P4C Cursor Lost Update</th>
+<th>P4  Lost Update</th>
+<th>P2 Fuzzy Read</th>
+<th>P3 Phantom</th>
+<th>A5A</th>
+<th>A5b</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>READ UNCOMMITTED &#x3D;&#x3D; Degree 1</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>READ COMMITTED &#x3D;&#x3D; Degree 2</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>Cursor Stability</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Sometimes Possible</td>
+<td>Sometimes Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Sometimes Possible</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+</tr>
+<tr>
+<td>Snapshot</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Sometimes Possible</td>
+<td>Not Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>ANSI SQL SERIALIZABLE  &#x3D;&#x3D; Degree 3  &#x3D;&#x3D; Repeatable Read   <br>Date, IBM, Tandem, …</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+<td>Not Possible</td>
+</tr>
+</tbody></table>
+<p><strong>Figure 2:</strong></p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Serializable == Degree 3 == &#123;Date, DB2&#125; Repeatable Read</span><br><span class="line">                   |              \</span><br><span class="line">                   | P3             \  A5B</span><br><span class="line">                   |            A5B   \</span><br><span class="line">              Repeatable Read  _ _ _ _  Snapshot Isolation</span><br><span class="line">       P2   /      |          \ _ _ _ _ /        /</span><br><span class="line">          /        | P2           A3           /</span><br><span class="line">  Oracle           |                         /</span><br><span class="line">  Consistent   Cursor Stability            /  A3, A5A, P4</span><br><span class="line">  Read             |                     /</span><br><span class="line">       \  P4C      | P4C               /</span><br><span class="line">         \          |                /</span><br><span class="line">           Read Committed == Degreee 2</span><br><span class="line">                   |</span><br><span class="line">                   | p1</span><br><span class="line">                   |</span><br><span class="line">           Read Uncommitted == Degree 1</span><br><span class="line">                   |</span><br><span class="line">                   |  P0</span><br><span class="line">                   |</span><br><span class="line">                 Degree 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Figure 2: A diagram of the isolation levels and their rela- tionships. It assume that the ANSI SQL isolation levels have been strengthened to match the recommendation of Remark 5 and Table 3. The edges are annotated with the phenomena that differentiate the isolation levels. Not shown is a potential multi-version hierarchy extending Snapshot Isolation to lower degrees of isolation by picking read timestamps on a per-statement basis. Nor does it show the original ANSI SQL isolation levels based on the strict interpretation of the phenomenon P1, P2, and P3.</p>
+<p>图 2：隔离级别及其关系图。 它假设 ANSI SQL 隔离级别已得到增强，以符合备注 5 和表 3 的建议。边缘用区分隔离级别的现象进行注释。 未显示的是潜在的多版本层次结构，通过在每个语句的基础上选择读取时间戳，将快照隔离扩展到较低的隔离程度。 它也没有显示基于对 P1、P2 和 P3 现象的严格解释的原始 ANSI SQL 隔离级别。</p>
 ]]></content>
       <categories>
         <category>数据库</category>
