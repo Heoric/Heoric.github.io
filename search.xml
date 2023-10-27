@@ -2237,7 +2237,7 @@
   </entry>
   <entry>
     <title>A Critique of ANSI SQL Isolation Levels</title>
-    <url>/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/A%20Critique%20of%20ANSI%20SQL%20Isolation%20Levels/</url>
+    <url>/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/A%20Critique%20of%20ANSI%20SQL%20Isolation%20Levels/</url>
     <content><![CDATA[<p>Abstract: ANSI SQL-92 [MS, ANSI] defines Isolation Levels in terms of phenomena: Dirty Reads, Non-Re- peatable Reads, and Phantoms. This paper shows that these phenomena and the ANSI SQL definitions fail to characterize several popular isolation levels, including the standard locking implementations of the levels. Investigating the ambiguities of the phenomena leads to clearer definitions; in addition new phenomena that better characterize isolation types are introduced. An important multiversion isolation type, Snapshot Isolation, is defined.</p>
 <p>摘要：ANSI SQL-92 [MS, ANSI] 根据现象定义了隔离级别：脏读、不可重复读和幻像。 本文表明，这些现象和 ANSI SQL 定义无法表征几种流行的隔离级别，包括这些级别的标准锁定实现。 研究现象的模糊性可以得出更清晰的定义； 此外，还引入了更好地表征隔离类型的新现象。 定义了一种重要的多版本隔离类型：快照隔离。</p>
 <span id="more"></span>
