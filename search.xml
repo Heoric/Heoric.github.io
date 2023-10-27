@@ -2268,7 +2268,7 @@
 <p>P1（脏读）：事务T1修改了数据项。 然后，另一个事务 T2 在 T1 执行 COMMIT 或 ROLLBACK 之前读取该数据项。 如果 T1 随后执行 ROLLBACK，则 T2 已读取从未提交的数据项，因此从未真正存在过。</p>
 <p>P2 (Non-repeatable or Fuzzy Read): Transaction T1 reads a data item. Another transaction T2 then modifies or deletes that data item and commits. If T1 then attempts to reread the data item, it receives a modified value or discovers that the data item has been deleted.</p>
 <p>P2（不可重复或模糊读取）：事务T1读取数据项。 然后另一个事务 T2 修改或删除该数据项并提交。 如果 T1 随后尝试重新读取该数据项，它会收到修改后的值或发现该数据项已被删除。</p>
-<p>P3 (Phantom): Transaction T1 reads a set of data items satisfying some <search condition>. Transaction T2 then creates data items that satisfy T1’s <search condi- tion> and commits. If T1 then repeats its read with the same <search condition>, it gets a set of data items different from the first read.</p>
+<p>P3 (Phantom): Transaction T1 reads a set of data items satisfying some [search condition]. Transaction T2 then creates data items that satisfy T1’s [search condition] and commits. If T1 then repeats its read with the same [search condition], it gets a set of data items different from the first read.</p>
 <p>P3（幻影）：事务 T1 读取满足某些&lt;搜索条件&gt;的一组数据项。 然后，事务 T2 创建满足 T1 的&lt;搜索条件&gt;的数据项并提交。 如果 T1 然后使用相同的&lt;搜索条件&gt;重复读取，它会得到一组与第一次读取不同的数据项。</p>
 <p>None of these phenomena could occur in a serial history. Therefore by the Serializability Theorem they cannot occur in a serializable history [EGLT, BHG Theorem 3.6, GR Section 7.5.8.2, PON Theorem 9.4.2].</p>
 <p>这些现象都不可能在连续的历史中发生。 因此，根据可串行性定理，它们不能出现在可串行化的历史中 [EGLT、BHG 定理 3.6、GR 第 7.5.8.2 节、PON 定理 9.4.2]。</p>
@@ -2338,8 +2338,8 @@
 <h3 id="Locking"><a href="#Locking" class="headerlink" title="Locking"></a>Locking</h3><p>Most SQL products use lock-based isolation. Consequently, it is useful to characterize the ANSI SQL isolation levels in terms of locking, although certain problems arise.</p>
 <p>大多数 SQL 产品都使用基于锁的隔离。 因此，尽管会出现某些问题，但根据锁定来表征 ANSI SQL 隔离级别还是很有用的。</p>
 <p>Transactions executing under a locking scheduler request Read (Share) and Write (Exclusive) locks on data items or sets of data items they read and write. Two locks by differ- ent transactions on the same item conflict if at least one of them is a Write lock.</p>
-<p>在锁定调度程序下执行的事务请求对其读取和写入的数据项或数据项集进行读取（共享）和写入（独占）锁定。 如果不同事务对同一项目的两个锁中至少有一个是写锁，则它们会发生冲突。</p>
-<p>A Read (resp. Write) predicate lock on a given <search condition> is effectively a lock on all data items satisfying the <search condition>. This may be an infinite set. It includes data present in the database and also any phantom data items not currently in the database but that would satisfy the predicate if they were inserted or if current data items were updated to satisfy the <search condition>. In SQL terms, a predicate lock covers all tuples that satisfy the predicate and any that an INSERT, UPDATE, or DELETE statement would cause to satisfy the predicate. Two predicate locks by different transactions conflict if one is a Write lock and if there is a (possibly phantom) data item covered by both locks. An item lock (record lock) is a predicate lock where the predicate names the specific record.</p>
+<p>在带锁调度程序下执行的事务，对读取和写入的数据或数据集进行读取（共享）和写入（独占）锁定。 如果不同事务对同一项目的两个锁中至少有一个是写锁，则它们会发生冲突。</p>
+<p>A Read (resp. Write) predicate lock on a given [search condition] is effectively a lock on all data items satisfying the [search condition]. This may be an infinite set. It includes data present in the database and also any phantom data items not currently in the database but that would satisfy the predicate if they were inserted or if current data items were updated to satisfy the [search condition]. In SQL terms, a predicate lock covers all tuples that satisfy the predicate and any that an INSERT, UPDATE, or DELETE statement would cause to satisfy the predicate. Two predicate locks by different transactions conflict if one is a Write lock and if there is a (possibly phantom) data item covered by both locks. An item lock (record lock) is a predicate lock where the predicate names the specific record.</p>
 <p>给定&lt;搜索条件&gt;上的读（或写）谓词锁实际上是满足&lt;搜索条件&gt;的所有数据项上的锁。 这可能是一个无限集。 它包括数据库中存在的数据以及当前不在数据库中但如果插入它们或更新当前数据项以满足&lt;搜索条件&gt;则将满足谓词的任何虚拟数据项。 在 SQL 术语中，谓词锁涵盖满足谓词的所有元组以及 INSERT、UPDATE 或 DELETE 语句将导致满足谓词的任何元组。 如果一个是写锁并且两个锁都覆盖了一个（可能是幻影）数据项，则不同事务的两个谓词锁会发生冲突。 项锁（记录锁）是谓词锁，其中谓词命名特定记录。</p>
 <p>A transaction has well-formed writes (reads) if it requests a Write (Read) lock on each data item or predicate before writing (reading) that data item, or set of data items defined by a predicate. The transaction is well-formed if it has well-formed writes and reads. A transaction has two- phase writes (reads) if it does not set a new Write (Read) lock on a data item after releasing a Write (Read) lock. A transaction exhibits two-phase locking if it does not request any new locks after releasing some lock.</p>
 <p>如果事务在写入（读取）每个数据项或谓词定义的数据项集之前请求对每个数据项或谓词进行写入（读取）锁定，则该事务具有格式正确的写入（读取）。 如果事务具有格式良好的写入和读取，则该事务是格式良好的。 如果事务在释放写（读）锁后没有对数据项设置新的写（读）锁，则该事务具有两阶段写（读）。 如果事务在释放某些锁后不再请求任何新锁，则该事务表现出两阶段锁定。</p>
@@ -2352,7 +2352,7 @@
 <p>The [GLPT] paper defined four degrees of consistency, at- tempting to show the equivalence of locking, dependency, and anomaly-based characterizations. The anomaly defini- tions (see Definition 1) were too vague. The authors con- tinue to get criticism for that aspect of the definitions [GR]. Only the more mathematical definitions in terms of histories and dependency graphs or locking have stood the test of time.</p>
 <p>[GLPT]论文定义了四个一致性程度，试图证明锁定、依赖和基于异常的特征的等效性。 异常定义（参见定义 1）过于模糊。 作者继续因定义的这方面而受到批评[GR]。 只有历史和依赖图或锁定方面更数学的定义才能经受住时间的考验。</p>
 <p>Table 2 defines a number of isolation types in terms of lock scopes (items or predicates), modes (read or write), and their durations (short or long). We believe the isolation levels called Locking READ UNCOMMITTED, Locking READ COMMITTED, Locking REPEATABLE READ, and Locking SERIALIZABLE are the locking definitions in- tended by ANSI SQL Isolation levels — but as shown next they are quite different from those of Table 1. Consequently, it is necessary to differentiate isolation lev- els defined in terms of locks from the ANSI SQL phenom- ena-based isolation levels. To make this distinction, the levels in Table 2 are labeled with the “Locking” prefix, as opposed to the “ANSI” prefix of Table 1.</p>
-<p>表 2 根据锁范围（项或谓词）、模式（读或写）及其持续时间（短或长）定义了许多隔离类型。 我们相信称为“Locking READ UNCOMMITTED”、“Locking READ COMMITTED”、“Locking REPEATABLE READ”和“Locking SERIALIZABLE”的隔离级别是 ANSI SQL 隔离级别预期的锁定定义，但如下所示，它们与表 1 中的隔离级别有很大不同。因此， 有必要区分以锁定义的隔离级别和基于 ANSI SQL 现象的隔离级别。 为了进行这种区分，表 2 中的级别标有“Locking”前缀，而不是表 1 中的“ANSI”前缀。</p>
+<p><font color="red">表 2 根据锁范围（项或谓词）、模式（读或写）及其持续时间（短或长）定义了许多隔离类型。</font> 我们相信称为“Locking READ UNCOMMITTED”、“Locking READ COMMITTED”、“Locking REPEATABLE READ”和“Locking SERIALIZABLE”的隔离级别是 ANSI SQL 隔离级别预期的锁定定义，但如下所示，它们与表 1 中的隔离级别有很大不同。因此， 有必要区分以锁定义的隔离级别和基于 ANSI SQL 现象的隔离级别。 为了进行这种区分，表 2 中的级别标有“Locking”前缀，而不是表 1 中的“ANSI”前缀。</p>
 <p><strong>Table 2. Degrees of Consistency and Locking Isolation Levels defined in terms of locks.</strong></p>
 <table>
 <thead>
@@ -2368,27 +2368,27 @@
 <td>Well-formed Writes</td>
 </tr>
 <tr>
-<td>Degree 1 &#x3D; Locking READ UNCOMMITTED</td>
+<td>Degree 1 &#x3D; Locking<br>READ UNCOMMITTED</td>
 <td>none required</td>
 <td>Well-formed Writes<br/> Long duration Write locks</td>
 </tr>
 <tr>
-<td>Degree 2 &#x3D; Locking READ COMMITTED</td>
+<td>Degree 2 &#x3D; Locking<br>READ COMMITTED</td>
 <td>Well-formed Reads<br/> Short duration Read locks (both)</td>
 <td>Well-formed Writes,<br/> Long duration Write locks</td>
 </tr>
 <tr>
-<td>Cursor Stability(see Section 4.1)</td>
+<td>Cursor Stability<br>(see Section 4.1)</td>
 <td>Well-formed Reads<br/> Read locks held on current of cursor Short duration Read Predicate locks</td>
 <td>Well-formed Writes,<br/> Long duration Write locks</td>
 </tr>
 <tr>
-<td>Locking REPEATABLE READ</td>
+<td>Locking<br>REPEATABLE READ</td>
 <td>Well-formed Reads<br/> Long duration data-item Read locks Short duration Read Predicate locks</td>
 <td>Well-formed Writes, Long duration Write locks</td>
 </tr>
 <tr>
-<td>Degree 3 &#x3D; Locking SERIALIZABLE</td>
+<td>Degree 3 &#x3D; Locking<br>SERIALIZABLE</td>
 <td>Well-formed Reads<br/> Long duration Read locks (both)</td>
 <td>Well-formed Writes, Long duration Write locks</td>
 </tr>
@@ -2396,9 +2396,9 @@
 <p>[GLPT] defined Degree 0 consistency to allow both dirty reads and writes: it only required action atomicity.Degrees 1, 2, and 3 correspond to Locking READ UNCOMMITTED, READ COMMITTED, and SERIALIZABLE,respectively. No isolation degree matches the Locking REPEATABLE READ isolation level.</p>
 <p>[GLPT]定义了Degree 0 一致性以允许脏读和脏写：它只需要操作原子性。Degree 1,2和3分别对应于锁定READ UNCOMMITTED、READ COMMITTED和SERIALIZABLE。 没有隔离级别与 Locking REPEATABLE READ 隔离级别匹配。</p>
 <p>Date and IBM originally used the name “Repeatable Reads” [DAT, DB2] to mean serializable or Locking SERIALIZABLE. This seemed like a more comprehensible name than the [GLPT] term “Degree 3 isolation.” The ANSI SQL meaning of REPEATABLE READ is different from Date’s original definition, and we feel the ter- minology is unfortunate. Since anomaly P3 is specifically not ruled out by the ANSI SQL REPEATABLE READ isolation level, it is clear from the definition of P3 that reads are NOT repeatable! We repeat this misuse of the term with Locking REPEATABLE READ in Table 2, in order to parallel the ANSI definition. Similarly, Date coined the term Cursor Stability as a more comprehensible name for Degree 2 isolation augmented with protection from lost cursor updates as explained in Section 4.1 below.</p>
-<p>Date 和 IBM 最初使用名称“可重复读取”[DAT、DB2] 来表示可序列化或锁定可串行化。 这似乎是一个比 [GLPT] 术语“Degree 3 隔离”更容易理解的名称。REPEATABLE READ 的 ANSI SQL 含义与 Date 的原始定义不同，我们觉得这个术语很不幸。由于异常 P3 没有被明确规定 由于 ANSI SQL REPEATABLE READ 隔离级别的限制，从 P3 的定义可以清楚地看出读取是不可重复的！我们在表 2 中使用 Locking REPEATABLE READ 重复这个术语的误用，以便与 ANSI 定义并行。同样，Date 创造了术语“游标稳定性”，作为 Degree 2隔离的更容易理解的名称，并增强了对丢失游标更新的保护，如下面第 4.1 节所述。</p>
-<p>Definition. Isolation level L1 is weaker than isolation level L2 (or L2 is stronger than L1), denoted L1 « L2, if all nonserializable histories that obey the criteria of L2 also satisfy L1 and there is at least one non-serializable history that can occur at level L1 but not at level L2. Two isolation levels L1 and L2 are equivalent, denoted L1 &#x3D;&#x3D; L2, if the sets of non-serializable histories satisfying L1 and L2 are identical. L1 is no stronger than L2, denoted L1 « L2 if either L1 « L2 or L1 &#x3D;&#x3D; L2. Two isolation levels are incom- parable, denoted L1 »« L2, when each isolation level allows a non-serializable history that is disallowed by the other.</p>
-<p>定义。 隔离级别 L1 弱于隔离级别 L2（或 L2 强于 L1），表示为 L1 &lt; L2，如果遵守 L2 标准的所有不可序列化历史也满足 L1，并且至少有一个不可序列化历史可以发生在 级别 L1，但不级别 L2。 如果满足 L1 和 L2 的不可串行化历史集相同，则两个隔离级别 L1 和 L2 是等效的，表示为 L1 &#x3D;&#x3D; L2。 L1 不强于 L2，如果 L1 &lt; L2 或 L1 &#x3D;&#x3D; L2，则表示为 L1 &lt; L2。 当每个隔离级别都允许另一个隔离级别不允许的不可序列化历史记录时，两个隔离级别是不可比较的，表示为 L1 »L2。</p>
+<p>Date 和 IBM 最初使用名称“可重复读取”[DAT、DB2] 来表示可序列化或锁定可串行化。 这似乎是一个比 [GLPT] 术语“Degree 3 隔离”更容易理解的名称。REPEATABLE READ 的 ANSI SQL 含义与 Date 的原始定义不同，我们觉得这个术语很不幸。由于异常 P3 没有被明确规定 由于 ANSI SQL REPEATABLE READ 隔离级别的限制，从 P3 的定义可以清楚地看出读取是不可重复的！我们在表 2 中使用 Locking REPEATABLE READ 重复这个术语的误用，以便与 ANSI 定义并行。同样，<font color="red">Date 创造了术语“游标稳定性”，作为 Degree 2隔离的更容易理解的名称，并增强了对丢失游标更新的保护</font>，如下面第 4.1 节所述。</p>
+<p>Definition. Isolation level L1 is weaker than isolation level L2 (or L2 is stronger than L1), denoted L1 « L2, if all nonserializable histories that obey the criteria of L2 also satisfy L1 and there is at least one non-serializable history that can occur at level L1 but not at level L2. Two isolation levels L1 and L2 are equivalent, denoted L1 &#x3D;&#x3D; L2, if the sets of non-serializable histories satisfying L1 and L2 are identical. L1 is no stronger than L2, denoted L1 «&#x3D; L2 if either L1 « L2 or L1 &#x3D;&#x3D; L2. Two isolation levels are incom- parable, denoted L1 »« L2, when each isolation level allows a non-serializable history that is disallowed by the other.</p>
+<p>定义。 隔离级别 L1 弱于隔离级别 L2（或 L2 强于 L1），表示为 L1 «  L2，如果遵守 L2 标准的所有不可序列化历史也满足 L1，并且至少有一个不可序列化历史可以发生在 级别 L1，但不级别 L2。 如果满足 L1 和 L2 的不可串行化历史集相同，则两个隔离级别 L1 和 L2 是等效的，表示为 L1 &#x3D;&#x3D; L2。 L1 不强于 L2，如果 L1 « L2 或 L1 &#x3D;&#x3D; L2，则表示为 L1 « &#x3D; L2。 当每个隔离级别都允许另一个隔离级别不允许的不可序列化历史记录时，两个隔离级别是不可比较的，表示为 L1 »«L2。</p>
 <p>In comparing isolation levels we differentiate them only in terms of the non-serializable histories that can occur in one but not the other. Two isolation levels can also differ in terms of the serializable histories they permit, but we say Locking SERIALIZABLE &#x3D;&#x3D; Serializable even though it is well known that a locking scheduler does not admit all possible Serializable histories. It is possible for an isolation level to be impractical because of disallowing too many serializable histories, but we do not deal with this here.</p>
 <p>在比较隔离级别时，我们仅根据可能发生在一个而不是另一个中的不可序列化历史来区分它们。 两个隔离级别在它们允许的可序列化历史方面也可能有所不同，但我们说锁定可序列化&#x3D;&#x3D;可序列化，即使众所周知锁定调度程序不承认所有可能的可序列化历史。 由于不允许太多可序列化的历史记录，隔离级别可能不切实际，但我们在这里不处理这个问题。</p>
 <p>These definitions yield the following remark. 这些定义产生以下评论。</p>
@@ -2444,7 +2444,7 @@
 <p>当 w2[x&#x3D;20] 覆盖 r1[x&#x3D;50] 时，H2 现在将被取消资格。 最后，考虑 A3 和历史 H3：</p>
 <p>A3: r1[P]…w2[y in P]…c2…r1[P]…c1 (Phantom)</p>
 <p>H3: r1[P] w2[insert y to P] r2[z] w2[z] c2 r1[z] c1</p>
-<p>Here T1 performs a <search condition> to find the list of active employees. Then T2 performs an insert of a new active employee and then updates z, the count of em- ployees in the company. Following this, T1 reads the count of active employees as a check and sees a discrep- ancy. This history is clearly not serializable, but is allowed by A3 since no predicate is evaluated twice. Again, the Broad interpretation solves the problem.</p>
+<p>Here T1 performs a [search condition] to find the list of active employees. Then T2 performs an insert of a new active employee and then updates z, the count of em- ployees in the company. Following this, T1 reads the count of active employees as a check and sees a discrep- ancy. This history is clearly not serializable, but is allowed by A3 since no predicate is evaluated twice. Again, the Broad interpretation solves the problem.</p>
 <p>这里，T1 执行&lt;搜索条件&gt;来查找在职员工列表。 然后 T2 插入一个新的在职员工，然后更新 z，即公司中的员工数量。 随后，T1 读取在职员工的计数作为检查，并发现差异。 这个历史显然是不可序列化的，但 A3 允许，因为没有谓词被评估两次。 广义解释再次解决了这个问题。</p>
 <p>P3: r1[P]…w2[y in P]…((c1 or a1) and (c2 or a2) any order)</p>
 <p>If P3 is forbidden, history H3 is invalid. This is clearly what ANSI intended. The foregoing discussion demon- strates the following results.</p>
@@ -2686,7 +2686,7 @@
 </tr>
 </tbody></table>
 <p><strong>Figure 2:</strong></p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Serializable == Degree 3 == &#123;Date, DB2&#125; Repeatable Read</span><br><span class="line">                   |              \</span><br><span class="line">                   | P3             \  A5B</span><br><span class="line">                   |            A5B   \</span><br><span class="line">              Repeatable Read  _ _ _ _  Snapshot Isolation</span><br><span class="line">       P2   /      |          \ _ _ _ _ /        /</span><br><span class="line">          /        | P2           A3           /</span><br><span class="line">  Oracle           |                         /</span><br><span class="line">  Consistent   Cursor Stability            /  A3, A5A, P4</span><br><span class="line">  Read             |                     /</span><br><span class="line">       \  P4C      | P4C               /</span><br><span class="line">         \          |                /</span><br><span class="line">           Read Committed == Degreee 2</span><br><span class="line">                   |</span><br><span class="line">                   | p1</span><br><span class="line">                   |</span><br><span class="line">           Read Uncommitted == Degree 1</span><br><span class="line">                   |</span><br><span class="line">                   |  P0</span><br><span class="line">                   |</span><br><span class="line">                 Degree 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Serializable == Degree 3 == &#123;Date, DB2&#125; Repeatable Read</span><br><span class="line">                   |              \</span><br><span class="line">                   | P3             \  A5B</span><br><span class="line">                   |            A5B   \</span><br><span class="line">              Repeatable Read  _ _ _ _  Snapshot Isolation</span><br><span class="line">       P2   /      |          \ _ _ _ _ /        /</span><br><span class="line">          /        | P2           A3           /</span><br><span class="line">  Oracle           |                         /</span><br><span class="line">  Consistent   Cursor Stability            /  A3, A5A, P4</span><br><span class="line">  Read             |                     /</span><br><span class="line">       \  P4C      | P4C               /</span><br><span class="line">         \         |                 /</span><br><span class="line">           Read Committed == Degreee 2</span><br><span class="line">                   |</span><br><span class="line">                   | p1</span><br><span class="line">                   |</span><br><span class="line">           Read Uncommitted == Degree 1</span><br><span class="line">                   |</span><br><span class="line">                   |  P0</span><br><span class="line">                   |</span><br><span class="line">                 Degree 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>Figure 2: A diagram of the isolation levels and their rela- tionships. It assume that the ANSI SQL isolation levels have been strengthened to match the recommendation of Remark 5 and Table 3. The edges are annotated with the phenomena that differentiate the isolation levels. Not shown is a potential multi-version hierarchy extending Snapshot Isolation to lower degrees of isolation by picking read timestamps on a per-statement basis. Nor does it show the original ANSI SQL isolation levels based on the strict interpretation of the phenomenon P1, P2, and P3.</p>
 <p>图 2：隔离级别及其关系图。 它假设 ANSI SQL 隔离级别已得到增强，以符合备注 5 和表 3 的建议。边缘用区分隔离级别的现象进行注释。 未显示的是潜在的多版本层次结构，通过在每个语句的基础上选择读取时间戳，将快照隔离扩展到较低的隔离程度。 它也没有显示基于对 P1、P2 和 P3 现象的严格解释的原始 ANSI SQL 隔离级别。</p>
