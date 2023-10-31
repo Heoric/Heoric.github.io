@@ -2931,4 +2931,139 @@
         <tag>事务</tag>
       </tags>
   </entry>
+  <entry>
+    <title>How CockroachDB does distributed, atomic transactions</title>
+    <url>/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/distributed_atomic%20transactions/</url>
+    <content><![CDATA[<p><em>This article was written in 2015 when CockroachDB was pre-beta. The product has evolved significantly since then. We will be updating this post to reflect the current status of CockroachDB. In the meantime, the <a href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer">transaction section</a> of the Architecture Document provides a more current description of CockroachDB’s transaction model.</em></p>
+<p>本文写于 2015 年，当时 CockroachDB 还处于预测试阶段。 从那时起，该产品已经发生了显着的发展。 我们将更新这篇文章以反映 CockroachDB 的当前状态。 同时，架构文档的事务部分提供了 CockroachDB 事务模型的更新描述。</p>
+<span id="more"></span>
+
+<p>One of the headline features of CockroachDB is its full support for <a href="https://en.wikipedia.org/wiki/ACID">ACID transactions</a> across arbitrary keys in a distributed database. CockroachDB transactions apply a set of operations to the database while maintaining some key properties: Atomicity, Consistency, Isolation, and Durability (ACID). In this post, we’ll be focusing on how CockroachDB enables <strong>atomic</strong> transactions without using locks.</p>
+<p>CockroachDB 的主要功能之一是完全支持分布式数据库中跨任意键的 ACID 事务。 CockroachDB 事务将一组操作应用于数据库，同时维护一些关键属性：原子性、一致性、隔离性和持久性 (ACID)。 在这篇文章中，我们将重点讨论 CockroachDB 如何在不使用锁的情况下实现原子事务。</p>
+<p><strong>Atomicity</strong> can be defined as: 原子性可以定义为：</p>
+<blockquote>
+<p><em>For a group of database operations, either all of the operations are applied or none of them are applied.</em></p>
+<p>对于一组数据库操作，要么应用所有操作，要么不应用任何操作。</p>
+</blockquote>
+<p>Without atomicity, a transaction that is interrupted may only write a portion of the changes it intended to make; this may leave your database in an inconsistent state.</p>
+<p>如果没有原子性，被中断的事务可能只会写入其打算进行的部分更改； 这可能会使您的数据库处于不一致的状态。</p>
+<h2 id="Strategy-战略"><a href="#Strategy-战略" class="headerlink" title="Strategy 战略"></a>Strategy 战略</h2><p>The strategy CockroachDB uses to provide atomic transactions follows these basic steps:</p>
+<p>CockroachDB 用于提供原子事务的策略遵循以下基本步骤：</p>
+<ol>
+<li><p><strong>Switch</strong>: Before modifying the value of any key, the transaction creates a switch, which is a writeable value distinct from any of the real values being changed in the batch. The switch cannot be concurrently accessed – reads and writes of the switch are strictly ordered. The switch is initially “off,” and it can be switched to “on.”</p>
+<p>开关：在修改任何键的值之前，事务会创建一个 switch，它是一个可写的值，与批次中正在更改的任何实际值不同。 开关不能同时访问——开关的读和写是严格顺序的。 开关最初是“关闭”的，可以切换到“打开”。</p>
+</li>
+<li><p><strong>Stage</strong>: The writer prepares several changes to the database, but does not overwrite any existing values; the new values are instead staged in proximity to the original values.</p>
+<p>阶段：编写者准备对数据库进行多项更改，但不会覆盖任何现有值； 相反，新值会在接近原始值的位置上演。</p>
+</li>
+<li><p><strong>Filter</strong>: For any key with a staged value, reads for that key must check the state of the transaction’s switch before returning a value. If the switch is “off,” the reader returns the original value of the key. If the switch is “on,” the reader returns the staged value. Thus, all reads of a key with a staged value are filtered through the switch’s state.</p>
+<p>过滤器：对于任何具有暂存值的键，读取该键必须在返回值之前检查事务开关的状态。 如果开关“关闭”，则读取器返回密钥的原始值。 如果开关处于“打开”状态，则读取器返回暂存值。 因此，对具有阶段值的键的所有读取都会通过开关的状态进行过滤。</p>
+</li>
+<li><p><strong>Flip</strong>: When the writer has prepared all changes in the transaction, the writer flips the switch to the “on” position. In combination with the filtering, all values staged as part of the transaction are immediately returned by any future reads.</p>
+<p>翻转：当写入者准备好事务中的所有更改时，写入者将开关翻转到“打开”位置。 与过滤相结合，作为事务一部分暂存的所有值都将立即由任何未来的读取返回。</p>
+</li>
+<li><p><strong>Unstage</strong>: Once a transaction is completed (either aborted or committed), the staged values are cleaned up as soon as possible. If the transaction succeeded, then the original values are replaced by the staged values; on failure, the staged values are discarded. Note that unstaging is done asynchronously and does not need to have finished before the transaction is considered committed.</p>
+<p>取消暂存：一旦事务完成（中止或提交），暂存的值将尽快清除。 如果交易成功，则原始值将被暂存值替换； 失败时，阶段值将被丢弃。 请注意，取消暂存是异步完成的，不需要在事务被视为已提交之前完成。</p>
+</li>
+</ol>
+<h2 id="The-Detailed-Transaction-Process"><a href="#The-Detailed-Transaction-Process" class="headerlink" title="The Detailed Transaction Process"></a>The Detailed Transaction Process</h2><h3 id="Switch-CockroachDB-Transaction-Record"><a href="#Switch-CockroachDB-Transaction-Record" class="headerlink" title="Switch: CockroachDB Transaction Record"></a>Switch: CockroachDB Transaction Record</h3><p>To begin a transaction, a writer first needs to create a <strong>transaction record</strong>. The transaction record is used by CockroachDB to provide the <strong>switch</strong> in our overall strategy.</p>
+<p>要开始事务，写入者首先需要创建事务记录。 CockroachDB 使用事务记录来提供我们整体策略的切换。</p>
+<p>Each transaction record has the following fields:</p>
+<p>每条交易记录都有以下字段：</p>
+<ul>
+<li>A <strong>Unique ID</strong> (UUID) which identifies the transaction.</li>
+<li>A current <strong>state</strong> of <code>PENDING</code>, <code>ABORTED</code>, or <code>COMMITTED</code>.</li>
+<li>A cockroach K&#x2F;V <strong>key</strong>. This determines where the “switch” is located in the distributed data store.</li>
+</ul>
+<p>The writer generates a transaction record with a new UUID in the <code>PENDING</code> state. The writer then uses a special CockroachDB command <code>BeginTransaction()</code> to store the transaction record. The record is co-located (i.e. on the same nodes in the distributed system) with the key in the transaction record.</p>
+<p>写入器生成一条处于 PENDING 状态且具有新 UUID 的事务记录。 然后，编写者使用特殊的 CockroachDB 命令 BeginTransaction() 来存储事务记录。 该记录与交易记录中的密钥位于同一位置（即在分布式系统中的相同节点上）。</p>
+<p>Because the record is stored at a single cockroach key, operations on it are strictly ordered (by a combination of raft and our underlying storage engine). The <strong>state</strong> of the transaction is the “on&#x2F;off” state of switch, with states of <code>PENDING</code> or <code>ABORTED</code> representing “off,” and <code>COMMITTED</code> representing “on.” The transaction record thus meets the requirements for our switch.</p>
+<p>因为记录存储在单个 cockroach key 中，所以对其的操作是严格排序的（通过 raft 和我们的底层存储引擎的组合）。 事务的状态是 switch 的“开&#x2F;关”状态，其中 PENDING 或 ABORTED 状态代表“关”，COMMITTED 状态代表“开”。 这样交易记录就满足我们切换的要求了。</p>
+<p>Note that the transaction state can move from <code>PENDING</code> to either <code>ABORTED</code> or <code>COMMITTED</code>, but cannot change in any other way (i.e. <code>ABORTED</code> and <code>COMMITTED</code> are permanent states).</p>
+<p>请注意，事务状态可以从 PENDING 移动到 ABORTED 或 COMMITTED，但不能以任何其他方式更改（即 ABORTED 和 COMMITTED 是永久状态）。</p>
+<h3 id="Stage-Write-Intents"><a href="#Stage-Write-Intents" class="headerlink" title="Stage: Write Intents"></a>Stage: Write Intents</h3><p>To <strong>stage</strong> the changes in a transaction, CockroachDB uses a structure called a <strong>write intent</strong>. Any time a value is written to a key as part of a transaction, it is written as a write intent.</p>
+<p>为了暂存事务中的更改，CockroachDB 使用称为写入意图的结构。 任何时候作为事务的一部分将值写入键时，都会将其写入为写入意图。</p>
+<p>This write intent structure contains the value that will be written if the transaction succeeds.</p>
+<p>该写入意图结构包含事务成功时将写入的值。</p>
+<p>The write intent also contains the <strong>key</strong> where the transaction record is stored. This is crucial: If a reader encounters a write intent, it uses this key value to locate the transaction record (the switch).</p>
+<p>写意图还包含存储交易记录的密钥。 这一点至关重要：如果读取器遇到写入意图，它会使用此键值来定位事务记录（交换机）。</p>
+<p>As a final rule, there can only be a single write intent on any key. If there were multiple concurrent transactions, it would be possible for one transaction to try to write to a key which has an active intent from another transaction on it. However, transaction concurrency is a complicated topic which we will cover in a later blog post (on transaction isolation); for now, we will assume that there is only one transaction at a time, and that an existing write intent must be from an abandoned transaction.</p>
+<p>作为最终规则，任何键上只能有一个写入意图。 如果存在多个并发事务，则一个事务可能会尝试写入具有来自另一事务的活动意图的键。 然而，事务并发是一个复杂的主题，我们将在后面的博客文章（关于事务隔离）中介绍它； 现在，我们假设一次只有一个事务，并且现有的写入意图必须来自废弃的事务。</p>
+<p>When writing to a key which already has a write intent:</p>
+<p>当写入已经有写入意图的键时：</p>
+<ol>
+<li><p>Move the transaction record for the existing intent to the <code>ABORTED</code> state if it is still in the <code>PENDING</code> state. If the earlier transaction was <code>COMMITTED</code> or <code>ABORTED</code>, do nothing.</p>
+<p>如果现有 Intent 的事务记录仍处于 PENDING 状态，则将其移至 ABORTED 状态。 如果较早的事务已提交或已中止，则不执行任何操作。</p>
+</li>
+<li><p>Clean up the existing intent from the earlier transaction, which will remove the intent.</p>
+<p>清除先前事务中的现有意图，这将删除该意图。</p>
+</li>
+<li><p>Add a new intent for the concurrent transaction.</p>
+<p>为并发事务添加新意图。</p>
+</li>
+</ol>
+<h3 id="Filter-Reading-an-Intent"><a href="#Filter-Reading-an-Intent" class="headerlink" title="Filter: Reading an Intent"></a>Filter: Reading an Intent</h3><p>When reading a key, we must follow principle 3 of our overall strategy and consult the value of any switch before returning a value.</p>
+<p>读取键时，我们必须遵循总体策略的原则 3，并在返回值之前查阅任何开关的值。</p>
+<p>If the key contains a plain value (i.e. not a write intent), the reader is assured that there is no transaction in progress that involves this key, and that it contains the most recent committed value. The value is thus returned verbatim.</p>
+<p>如果密钥包含纯值（即不是写入意图），则读者可以确信没有正在进行的涉及该密钥的事务，并且它包含最近提交的值。 因此，该值将逐字返回。</p>
+<p>However, if the reader encounters a write intent, it means that a previous transaction was abandoned at some point before removing the intent (remember: we are assuming that there is only one transaction at a time). The reader needs to check the state of the transaction’s switch (the transaction record) before proceeding.</p>
+<p>但是，如果读者遇到写入意图，则意味着在删除意图之前的某个时刻放弃了先前的事务（请记住：我们假设一次只有一个事务）。 读者在继续之前需要检查交易开关的状态（交易记录）。</p>
+<ol>
+<li><p>Move the transaction record for the existing intent to the <code>ABORTED</code> state if it is still in the <code>PENDING</code> state.</p>
+<p>如果现有意图的事务记录仍处于“PENDING”状态，则将其移至“ABORTED”状态。</p>
+</li>
+<li><p>Clean up the existing intent from the earlier transaction, which will remove the intent.</p>
+<p>清除先前事务中的现有意图，这将删除该意图。</p>
+</li>
+<li><p>Return the plain value for the key. If the earlier transaction was <code>COMMITTED</code>, the cleanup operation will have upgraded the staged value to the plain value; otherwise, this will return the original value of the key before the transaction.</p>
+<p>返回密钥的纯值。 如果较早的事务是“COMMITTED”，则清理操作会将暂存值升级为纯值； 否则，这将返回交易前密钥的原始值。</p>
+</li>
+</ol>
+<h3 id="Flip-Commit-the-Transaction"><a href="#Flip-Commit-the-Transaction" class="headerlink" title="Flip: Commit the Transaction"></a>Flip: Commit the Transaction</h3><p>To commit the transaction, the transaction record is updated to a state of <code>COMMITTED</code>.</p>
+<p>要提交事务，事务记录将更新为 COMMITTED 状态。</p>
+<p>All write intents written by the transaction are immediately valid: any future reads which encounters a write intent for this transaction will filter through the transaction record, see that it is committed, and return the value that was staged in the intent.</p>
+<p>事务写入的所有写意图立即有效：任何遇到此事务的写意图的未来读取都将过滤事务记录，查看它是否已提交，并返回意图中暂存的值。</p>
+<h4 id="Aborting-a-Transaction"><a href="#Aborting-a-Transaction" class="headerlink" title="Aborting a Transaction"></a>Aborting a Transaction</h4><p>A transaction can be aborted by updating the state of the transaction record to <code>ABORTED</code>. At this point, the transaction is permanently aborted and future reads will ignore write intents created by this transaction.</p>
+<p>可以通过将事务记录的状态更新为 ABORTED 来中止事务。 此时，事务将永久中止，并且将来的读取将忽略该事务创建的写入意图。</p>
+<h3 id="Unstage-Cleaning-up-Intents"><a href="#Unstage-Cleaning-up-Intents" class="headerlink" title="Unstage: Cleaning up Intents"></a>Unstage: Cleaning up Intents</h3><p>The system above already provides the property of atomic commits; however, the filtering step is expensive, because it requires writes across the distributed system to filter through a central location (the transaction record). This is undesirable behavior for a distributed system.</p>
+<p>上面的系统已经提供了原子提交的属性； 然而，过滤步骤的成本很高，因为它需要跨分布式系统进行写入才能通过中央位置（事务记录）进行过滤。 对于分布式系统来说，这是不受欢迎的行为。</p>
+<p>Therefore, after a transaction is completed, we remove the write intents it created as soon as possible: if a key has a plain value without a write intent, read operations do not need to be filtered and thus complete in a properly distributed fashion.</p>
+<p>因此，在事务完成后，我们会尽快删除它创建的写意图：如果一个键具有没有写意图的纯值，则读操作不需要被过滤，从而以正确分布的方式完成。</p>
+<h4 id="Cleanup-Operation"><a href="#Cleanup-Operation" class="headerlink" title="Cleanup Operation"></a>Cleanup Operation</h4><p>The cleanup operation can be called on a write intent when the associated transaction is no longer pending. It follows these simple steps:</p>
+<p>当关联事务不再挂起时，可以根据写入意图调用清理操作。 它遵循以下简单步骤：</p>
+<ul>
+<li><p>If the transaction is <code>ABORTED</code>, the write intent is removed.</p>
+<p>如果事务被中止，则写入意图将被删除。</p>
+</li>
+<li><p>If the transaction is <code>COMMITTED</code>, the write intent’s staged value is converted into the plain value of the key, and then the write intent is removed.</p>
+<p>如果事务已提交，则写入意图的暂存值将转换为密钥的纯值，然后删除写入意图。</p>
+</li>
+<li><p>The cleanup operation is idempotent; that is, if two processes try to clean up an intent for the same key and transaction, the second operation will be a no-op.</p>
+<p>清理操作是幂等的； 也就是说，如果两个进程尝试清理相同密钥和事务的意图，则第二个操作将是无操作。</p>
+</li>
+</ul>
+<p>Cleanup is performed in the following cases:</p>
+<ul>
+<li><p>After a writer commits or aborts a transaction, it attempts to clean up every intent it wrote immediately.</p>
+<p>在写入者提交或中止事务后，它会尝试立即清理其写入的每个意图。</p>
+</li>
+<li><p>When a write encounters another write intent from an earlier transaction.</p>
+<p>当写入遇到来自较早事务的另一个写入意图时。</p>
+</li>
+<li><p>When a read encounters a write intent from an earlier transaction.</p>
+<p>当读取遇到来自较早事务的写入意图时。</p>
+</li>
+</ul>
+<p>By aggressively cleaning up expired write intents through multiple avenues, the necessary performance impact of filtering is minimized.</p>
+<p>通过多种途径积极清理过期的写入意图，可以最大限度地减少过滤对性能的影响。</p>
+<h2 id="Wrap-Up"><a href="#Wrap-Up" class="headerlink" title="Wrap Up"></a>Wrap Up</h2><p>With that, we have covered CockroachDB’s basic strategy for ensuring the atomicity of its distributed, lockless transactions.</p>
+<p>至此，我们已经介绍了 CockroachDB 确保其分布式无锁事务原子性的基本策略。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>事务</tag>
+      </tags>
+  </entry>
 </search>
