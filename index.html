@@ -123,7 +123,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -156,6 +156,93 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/" class="post-title-link" itemprop="url">How Pipelining consensus writes speeds up distributed SQL transactions</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-10-31 15:08:57 / 修改时间：16:39:01" itemprop="dateCreated datePublished" datetime="2023-10-31T15:08:57+08:00">2023-10-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>CockroachDB supports ACID transactions across arbitrary data in a distributed database. A discussion on how this works was first <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/">published on our blog</a> three years ago. Since then, a lot has changed. Perhaps most notably, CockroachDB has transitioned from a key-value store to a full SQL database that can be plugged in as a <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/why-postgres/">scalable, highly-available replacement for PostgreSQL</a>. It did so by introducing a SQL execution engine which <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/sql-in-cockroachdb-mapping-table-data-to-key-value-storage/">maps SQL tables onto its distributed key-value architecture</a>. However, over this period of time, the fundamentals of the distributed, atomic transaction protocol at the core of CockroachDB have remained untouched <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/transaction-pipelining/#fn:1">1</a>.</p>
+<p>CockroachDB 支持分布式数据库中任意数据的 ACID 事务。 三年前，我们的博客首次发表了关于其工作原理的讨论。 从那时起，很多事情都发生了变化。 也许最值得注意的是，CockroachDB 已经从键值存储转变为完整的 SQL 数据库，可以作为 PostgreSQL 的可扩展、高可用性替代品插入。 它通过引入 SQL 执行引擎来实现这一点，该引擎将 SQL 表映射到其分布式键值架构上。 然而，在这段时间里，CockroachDB 核心的分布式原子事务协议的基本原理并未受到影响1。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -962,100 +1049,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/09/17/10-%E5%B7%A5%E5%85%B7/git/0-brew/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/17/10-%E5%B7%A5%E5%85%B7/git/0-brew/" class="post-title-link" itemprop="url">git 忽略文件</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-09-17 14:44:57" itemprop="dateCreated datePublished" datetime="2023-09-17T14:44:57+08:00">2023-09-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-09-18 17:31:18" itemprop="dateModified" datetime="2023-09-18T17:31:18+08:00">2023-09-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>git 用法记录</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/09/17/10-%E5%B7%A5%E5%85%B7/git/0-brew/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
