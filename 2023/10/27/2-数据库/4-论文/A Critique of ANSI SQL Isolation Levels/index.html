@@ -26,7 +26,7 @@
 <meta property="og:description" content="Abstract: ANSI SQL-92 [MS, ANSI] defines Isolation Levels in terms of phenomena: Dirty Reads, Non-Re- peatable Reads, and Phantoms. This paper shows that these phenomena and the ANSI SQL definitions f">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-27T03:44:57.000Z">
-<meta property="article:modified_time" content="2023-10-27T08:13:10.202Z">
+<meta property="article:modified_time" content="2023-11-03T01:38:15.762Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="事务">
 <meta name="twitter:card" content="summary">
@@ -197,9 +197,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2023-10-27 11:44:57 / 修改时间：16:13:10" itemprop="dateCreated datePublished" datetime="2023-10-27T11:44:57+08:00">2023-10-27</time>
+      <time title="创建时间：2023-10-27 11:44:57" itemprop="dateCreated datePublished" datetime="2023-10-27T11:44:57+08:00">2023-10-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-03 09:38:15" itemprop="dateModified" datetime="2023-11-03T09:38:15+08:00">2023-11-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -246,13 +252,13 @@
 <p>Section 5 explores some new anomalies to differentiate the isolation levels introduced in Sections 3 and 4. The ex- tended ANSI SQL phenomena proposed here lack the power to characterize Snapshot isolation and Cursor Stability. Section 6 presents a Summary and Conclusions.</p>
 <p>第 5 节探讨了一些新的异常现象，以区分第 3 节和第 4 节中引入的隔离级别。这里提出的扩展 ANSI SQL 现象缺乏描述快照隔离和游标稳定性的能力。 第 6 节介绍了总结和结论。</p>
 <h2 id="Isolation-Definitions"><a href="#Isolation-Definitions" class="headerlink" title="Isolation Definitions"></a>Isolation Definitions</h2><h3 id="Serializability-Concepts"><a href="#Serializability-Concepts" class="headerlink" title="Serializability Concepts"></a>Serializability Concepts</h3><p>Transactional and locking concepts are well documented in the literature [BHG, PAP, PON, GR]. The next few paragraphs review the terminology used here.</p>
-<p>事务和锁定概念在文献 [BHG、PAP、PON、GR] 中有详细记录。 接下来的几段回顾了这里使用的术语。</p>
+<p>事务和锁概念在文献 [BHG、PAP、PON、GR] 中有详细记录。 接下来的几段回顾了这里使用的术语。</p>
 <p>A transaction groups a set of actions that transform the database from one consistent state to another. A history models the interleaved execution of a set of transactions as a linear ordering of their actions, such as Reads and Writes (i.e., inserts, updates, and deletes) of specific data items. Two actions in a history are said to conflict if they are performed by distinct transactions on the same data item and at least one of is a Write action. Following [EGLT], this definition takes a broad interpretation of “data item”: it could be a table row, a page, an entire table, or a message on a queue. Conflicting actions can also occur on a set of data items, covered by a predicate lock, as well as on a single data item.</p>
 <p>事务将一组操作分组，这些操作将数据库从一种一致状态转换为另一种一致状态。 历史记录将一组事务的交错执行建模为其操作的线性顺序，例如特定数据项的读取和写入（即插入、更新和删除）。 如果历史记录中的两个操作是由不同事务对同一数据项执行的，并且其中至少一个是写入操作，则称这两个操作发生冲突。 遵循 [EGLT]，此定义对“数据项”进行广义解释：它可以是表行、页面、整个表或队列上的消息。 冲突的操作也可能发生在由谓词锁覆盖的一组数据项上以及单个数据项上。</p>
 <p>A particular history gives rise to a dependency graph defining the temporal data flow among transactions. The actions of committed transactions in the history are repre- sented as graph nodes. If action op1 of transaction T1 conflicts with and precedes action op2 of transaction T2 in the history, then the pair &lt;op1, op2&gt; becomes an edge in the dependency graph. Two histories are equivalent if they have the same committed transactions and the same depen- dency graph. A history is serializable if it is equivalent to a serial history — that is, if it has the same dependency graph (inter-transaction temporal data flow) as some history that executes transactions one at a time in se- quence.</p>
 <p>特定的历史记录会产生定义事务之间的时间数据流的依赖图。 历史记录中已提交事务的操作被表示为图节点。 如果事务 T1 的操作 op1 在历史中与事务 T2 的操作 op2 冲突且先于事务 T2 的操作 op2，则对 &lt;op1, op2&gt; 成为依赖图中的边。 如果两个历史具有相同的已提交事务和相同的依赖关系图，则它们是等效的。 如果一个历史记录相当于一个串行历史记录，那么它就是可序列化的——也就是说，如果它与某个按顺序一次执行一个事务的历史记录具有相同的依赖图（事务间时间数据流）。</p>
 <h3 id="ANSI-SQL-Isolation-Levels"><a href="#ANSI-SQL-Isolation-Levels" class="headerlink" title="ANSI SQL Isolation Levels"></a>ANSI SQL Isolation Levels</h3><p>ANSI SQL Isolation designers sought a definition that would admit many different implementations, not just locking. They defined isolation with the following three phenomena:</p>
-<p>ANSI SQL 隔离设计者寻求一种允许多种不同实现的定义，而不仅仅是锁定。 他们用以下三种现象来定义隔离：</p>
+<p>ANSI SQL 隔离设计者寻求一种允许多种不同实现的定义，而不仅仅是锁。 他们用以下三种现象来定义隔离：</p>
 <p>P1 (Dirty Read): Transaction T1 modifies a data item. Another transaction T2 then reads that data item before T1 performs a COMMIT or ROLLBACK. If T1 then performs a ROLLBACK, T2 has read a data item that was never committed and so never really existed.</p>
 <p>P1（脏读）：事务T1修改了数据项。 然后，另一个事务 T2 在 T1 执行 COMMIT 或 ROLLBACK 之前读取该数据项。 如果 T1 随后执行 ROLLBACK，则 T2 已读取从未提交的数据项，因此从未真正存在过。</p>
 <p>P2 (Non-repeatable or Fuzzy Read): Transaction T1 reads a data item. Another transaction T2 then modifies or deletes that data item and commits. If T1 then attempts to reread the data item, it receives a modified value or discovers that the data item has been deleted.</p>
@@ -266,7 +272,7 @@
 <p>Phenomenon P1 might be restated as disallowing the fol- lowing scenario:</p>
 <p>现象 P1 可以重述为不允许出现以下情况：</p>
 <p>(2.1) w1[x] . . . r2[x] . . . (a1 and c2 in either order)</p>
-<p>The English statement of P1 is ambiguous. It does not ac- tually insist that T1 abort; it simply states that if this hap- pens something unfortunate might occur. Some people reading P1 interpret it to mean:</p>
+<p>The English statement of P1 is ambiguous. It does not actually insist that T1 abort; it simply states that if this happens something unfortunate might occur. Some people reading P1 interpret it to mean:</p>
 <p>P1的英文表述有歧义。 它实际上并不坚持 T1 中止；而是要求 T1 中止。 它只是指出，如果发生这种情况，可能会发生一些不幸的事情。 一些阅读 P1 的人将其解释为：</p>
 <p>(2.2) w1[x]…r2[x]…((c1 or a1) and (c2 or a2) in any order)</p>
 <p>Forbidding the (2.2) variant of P1 disallows any history where T1 modifies a data item x, then T2 reads the data item before T1 commits or aborts. It does not insist that T1 aborts or that T2 commits.</p>
@@ -325,16 +331,16 @@
 </tr>
 </tbody></table>
 <h3 id="Locking"><a href="#Locking" class="headerlink" title="Locking"></a>Locking</h3><p>Most SQL products use lock-based isolation. Consequently, it is useful to characterize the ANSI SQL isolation levels in terms of locking, although certain problems arise.</p>
-<p>大多数 SQL 产品都使用基于锁的隔离。 因此，尽管会出现某些问题，但根据锁定来表征 ANSI SQL 隔离级别还是很有用的。</p>
+<p>大多数 SQL 产品都使用基于锁的隔离。 因此，尽管会出现某些问题，但根据锁来表征 ANSI SQL 隔离级别还是很有用的。</p>
 <p>Transactions executing under a locking scheduler request Read (Share) and Write (Exclusive) locks on data items or sets of data items they read and write. Two locks by differ- ent transactions on the same item conflict if at least one of them is a Write lock.</p>
 <p>在带锁调度程序下执行的事务，对读取和写入的数据或数据集进行读取（共享）和写入（独占）锁定。 如果不同事务对同一项目的两个锁中至少有一个是写锁，则它们会发生冲突。</p>
 <p>A Read (resp. Write) predicate lock on a given [search condition] is effectively a lock on all data items satisfying the [search condition]. This may be an infinite set. It includes data present in the database and also any phantom data items not currently in the database but that would satisfy the predicate if they were inserted or if current data items were updated to satisfy the [search condition]. In SQL terms, a predicate lock covers all tuples that satisfy the predicate and any that an INSERT, UPDATE, or DELETE statement would cause to satisfy the predicate. Two predicate locks by different transactions conflict if one is a Write lock and if there is a (possibly phantom) data item covered by both locks. An item lock (record lock) is a predicate lock where the predicate names the specific record.</p>
 <p>给定&lt;搜索条件&gt;上的读（或写）谓词锁实际上是满足&lt;搜索条件&gt;的所有数据项上的锁。 这可能是一个无限集。 它包括数据库中存在的数据以及当前不在数据库中但如果插入它们或更新当前数据项以满足&lt;搜索条件&gt;则将满足谓词的任何虚拟数据项。 在 SQL 术语中，谓词锁涵盖满足谓词的所有元组以及 INSERT、UPDATE 或 DELETE 语句将导致满足谓词的任何元组。 如果一个是写锁并且两个锁都覆盖了一个（可能是幻影）数据项，则不同事务的两个谓词锁会发生冲突。 项锁（记录锁）是谓词锁，其中谓词命名特定记录。</p>
 <p>A transaction has well-formed writes (reads) if it requests a Write (Read) lock on each data item or predicate before writing (reading) that data item, or set of data items defined by a predicate. The transaction is well-formed if it has well-formed writes and reads. A transaction has two- phase writes (reads) if it does not set a new Write (Read) lock on a data item after releasing a Write (Read) lock. A transaction exhibits two-phase locking if it does not request any new locks after releasing some lock.</p>
-<p>如果事务在写入（读取）每个数据项或谓词定义的数据项集之前请求对每个数据项或谓词进行写入（读取）锁定，则该事务具有格式正确的写入（读取）。 如果事务具有格式良好的写入和读取，则该事务是格式良好的。 如果事务在释放写（读）锁后没有对数据项设置新的写（读）锁，则该事务具有两阶段写（读）。 如果事务在释放某些锁后不再请求任何新锁，则该事务表现出两阶段锁定。</p>
+<p>如果事务在写入（读取）每个数据项或谓词定义的数据项集之前请求对每个数据项或谓词进行写入（读取）锁定，则该事务具有格式正确的写入（读取）。 <font color="red">如果事务具有格式良好的写入和读取，则该事务是格式良好的。</font> 如果事务在释放写（读）锁后没有对数据项设置新的写（读）锁，则该事务具有两阶段写（读）。<font color="red"> 如果事务在释放某些锁后不再请求任何新锁，则该事务表现出两阶段锁定。</font></p>
 <p>The locks requested by a transaction are of long duration if they are held until after the transaction commits or aborts. Otherwise, they are of short duration. Typically, short locks are released immediately after the action completes.</p>
 <p>如果事务请求的锁一直保持到事务提交或中止之后，则它们的持续时间很长。 否则，它们的持续时间很短。 通常，短锁会在操作完成后立即释放。</p>
-<p>If a transaction holds a lock, and another transaction re- quests a conflicting lock, then the new lock request is not granted until the former transaction’s conflicting lock has been released.</p>
+<p>If a transaction holds a lock, and another transaction requests a conflicting lock, then the new lock request is not granted until the former transaction’s conflicting lock has been released.</p>
 <p>如果一个事务持有锁，而另一个事务请求冲突锁，则在前一个事务的冲突锁被释放之前，新的锁请求不会被授予。</p>
 <p>The fundamental serialization theorem is that well-formed two-phase locking guarantees serializability — each his- tory arising under two-phase locking is equivalent to some serial history. Conversely, if a transaction is not well- formed or two-phased then, except in degenerate cases, non-serializable execution histories are possible [EGLT].</p>
 <p>基本的序列化定理是，格式良好的两阶段锁定保证了可序列化性——两阶段锁定下产生的每个历史都相当于一些串行历史。 相反，如果事务不是格式良好的或两阶段的，那么除了退化情况之外，不可序列化的执行历史是可能的[EGLT]。</p>
@@ -391,7 +397,7 @@
 <p>In comparing isolation levels we differentiate them only in terms of the non-serializable histories that can occur in one but not the other. Two isolation levels can also differ in terms of the serializable histories they permit, but we say Locking SERIALIZABLE &#x3D;&#x3D; Serializable even though it is well known that a locking scheduler does not admit all possible Serializable histories. It is possible for an isolation level to be impractical because of disallowing too many serializable histories, but we do not deal with this here.</p>
 <p>在比较隔离级别时，我们仅根据可能发生在一个而不是另一个中的不可序列化历史来区分它们。 两个隔离级别在它们允许的可序列化历史方面也可能有所不同，但我们说锁定可序列化&#x3D;&#x3D;可序列化，即使众所周知锁定调度程序不承认所有可能的可序列化历史。 由于不允许太多可序列化的历史记录，隔离级别可能不切实际，但我们在这里不处理这个问题。</p>
 <p>These definitions yield the following remark. 这些定义产生以下评论。</p>
-<p>Remark 1: Locking READ UNCOMMITTED </p>
+<p><strong>Remark</strong> 1: Locking READ UNCOMMITTED </p>
 <p>​					« Locking READ COMMITTED</p>
 <p>​						« Locking REPEATABLE READ </p>
 <p>​							« Locking SERIALIZABLE</p>
@@ -399,7 +405,7 @@
 <p>在下一节中，我们将重点比较 ANSI 和锁定定义。</p>
 <h2 id="Analyzing-ANSI-SQL-Isolation-Levels"><a href="#Analyzing-ANSI-SQL-Isolation-Levels" class="headerlink" title="Analyzing ANSI SQL Isolation Levels"></a>Analyzing ANSI SQL Isolation Levels</h2><p>To start on a positive note, the locking isolation levels comply with the ANSI SQL requirements.</p>
 <p>从积极的方面来说，锁定隔离级别符合 ANSI SQL 要求。</p>
-<p>Remark 2. The locking protocols of Table 2 define lock- ing isolation levels that are at least as strong as the corre- sponding phenomena-based isolation levels of Table 1. See [OOBBGM] for proof.</p>
+<p><strong>Remark</strong> 2. The locking protocols of Table 2 define lock- ing isolation levels that are at least as strong as the corre- sponding phenomena-based isolation levels of Table 1. See [OOBBGM] for proof.</p>
 <p>备注 2. 表 2 的锁定协议定义的锁定隔离级别至少与表 1 相应的基于现象的隔离级别一样强。有关证明，请参阅 [OOBBGM]。</p>
 <p>Hence, locking isolation levels are at least as isolated as the same-named ANSI levels. Are they more isolated? The answer is yes, even at the lowest level. Locking READ UNCOMMITTED provides long duration write locking to avoid a phenomenon called “Dirty Writes,” but ANSI SQL does not exclude this anomalous behavior other than ANSI SERIALIZABLE. Dirty writes are defined as follows:</p>
 <p>因此，锁定隔离级别至少与同名的 ANSI 级别一样隔离。 他们更孤立吗？ 答案是肯定的，即使是在最低级别。 锁定 READ UNCOMMITTED 提供长时间写锁定以避免称为“脏写”的现象，但 ANSI SQL 不排除除 ANSI SERIALIZABLE 之外的这种异常行为。 脏写定义如下：</p>
@@ -501,7 +507,7 @@
 <h2 id="Other-Isolation-Types"><a href="#Other-Isolation-Types" class="headerlink" title="Other Isolation Types"></a>Other Isolation Types</h2><h3 id="Cursor-Stability"><a href="#Cursor-Stability" class="headerlink" title="Cursor Stability"></a>Cursor Stability</h3><p>Cursor Stability is designed to prevent the lost update phenomenon.</p>
 <p>光标稳定性旨在防止丢失更新现象。</p>
 <p>P4 (Lost Update): The lost update anomaly occurs when transaction T1 reads a data item and then T2 updates the data item (possibly based on a previous read), then T1 (based on its earlier read value) updates the data item and commits. In terms of histories, this is:</p>
-<p>P4（丢失更新）：当事务T1读取一个数据项，然后T2更新该数据项（可能基于之前的读取），然后T1（基于其之前读取的值）更新该数据项并提交时，就会发生丢失更新异常 。 从历史来看，是这样的：</p>
+<p><strong>P4（丢失更新）</strong>：当事务T1读取一个数据项，然后T2更新该数据项（可能基于之前的读取），然后T1（基于其之前读取的值）更新该数据项并提交时，就会发生丢失更新异常 。 从历史来看，是这样的：</p>
 <p>P4: r1[x]…w2[x]…w1[x]…c1  (lost update)</p>
 <p>The problem, as illustrated in history H4, is that even if T2 commits, T2’s update will be lost.</p>
 <p>正如历史记录 H4 所示，问题在于即使 T2 提交，T2 的更新也会丢失。</p>
@@ -523,7 +529,7 @@
 <p>快照隔离是一种多版本并发控制。 它扩展了[BHG]中描述的多版本混合方法，该方法允许只读事务进行快照读取。</p>
 <p>When the transaction T1 is ready to commit, it gets a Commit-Timestamp, which is larger than any existing Start-Timestamp or Commit-Timestamp. The transaction successfully commits only if no other transaction T2 with a Commit-Timestamp in T1’s execution interval [Start- Timestamp, Commit-Timestamp] wrote data that T1 also wrote. Otherwise, T1 will abort. This feature, called First- committer-wins prevents lost updates (phenomenon P4). When T1 commits, its changes become visible to all transactions whose Start-Timestamps are larger than T1‘s Commit-Timestamp.</p>
 <p>当事务 T1 准备好提交时，它会获得一个 Commit-Timestamp，该时间戳大于任何现有的 Start-Timestamp 或 Commit-Timestamp。 仅当在 T1 的执行间隔 [Start-Timestamp, Commit-Timestamp] 内没有其他具有 Commit-Timestamp 的事务 T2 写入 T1 也写入的数据时，事务才会成功提交。 否则，T1将中止。 这个称为“Firstcommitter-wins”的功能可以防止更新丢失（现象 P4）。 当 T1 提交时，其更改对于所有开始时间戳大于 T1 的提交时间戳的事务都可见。</p>
-<p>Snapshot Isolation is a multi-version (MV) method, so sin- gle-valued (SV) histories do not properly reflect the tempo- ral action sequences. At any time, each data item might have multiple versions, created by active and committed transactions. Reads by a transaction must choose the appropriate version. Consider history H1 at the beginning of Section 3, which shows the need for P1 in a single valued execution. Under Snapshot Isolation, the same sequence of actions would lead to the multi-valued history:</p>
+<p>Snapshot Isolation is a multi-version (MV) method, so single-valued (SV) histories do not properly reflect the tempo- ral action sequences. At any time, each data item might have multiple versions, created by active and committed transactions. Reads by a transaction must choose the appropriate version. Consider history H1 at the beginning of Section 3, which shows the need for P1 in a single valued execution. Under Snapshot Isolation, the same sequence of actions would lead to the multi-valued history:</p>
 <p>快照隔离是一种多版本（MV）方法，因此单值（SV）历史不能正确反映时间动作序列。 在任何时候，每个数据项都可能有多个版本，由活动和已提交的事务创建。 事务读取必须选择合适的版本。 考虑第 3 节开头的历史 H1，它显示了在单值执行中需要 P1。 在快照隔离下，相同的操作序列将导致多值历史记录：</p>
 <p>H1.SI: r1[x0&#x3D;50] w1[x1&#x3D;10] r2[x0&#x3D;50] r2[y0&#x3D;50] c2 </p>
 <p>​           r1[y0&#x3D;50] w1[y1&#x3D;90] c1</p>
@@ -543,10 +549,10 @@
 <p>约束违反是一种常见且重要的并发异常类型。 各个数据库满足多个数据项的约束（例如，键的唯一性、引用完整性、两个表中行的复制等）。 它们一起形成数据库不变约束谓词 C(DB)。 如果数据库状态 DB 与约束一致，则不变量为 TRUE，否则为 FALSE。 事务必须保留约束谓词以保持一致性：如果事务启动时数据库是一致的，那么事务提交时数据库也会一致。 如果事务读取违反约束谓词的数据库状态，则该事务将遭受约束违反并发异常。 这种约束违反在 [DAT] 中称为不一致分析。</p>
 <p>A5 (Data Item Constraint Violation). Suppose C() is a database constraint between two data items x and y in the database. Here are two anomalies arising from constraint violation.</p>
 <p>A5（数据项约束违规）。 假设C()是数据库中两个数据项x和y之间的数据库约束。 这是由于违反约束而产生的两个异常。</p>
-<p>A5A Read Skew Suppose transaction T1 reads x, and then a second transaction T2 updates x and y to new values and commits. If now T1 reads y, it may see an inconsistent state, and therefore produce an inconsistent state as output. In terms of histories, we have the anomaly:</p>
+<p><strong>A5A Read Skew</strong> Suppose transaction T1 reads x, and then a second transaction T2 updates x and y to new values and commits. If now T1 reads y, it may see an inconsistent state, and therefore produce an inconsistent state as output. In terms of histories, we have the anomaly:</p>
 <p>A5A 读取偏差 假设事务 T1 读取 x，然后第二个事务 T2 将 x 和 y 更新为新值并提交。 如果现在 T1 读取 y，它可能会看到不一致的状态，因此会产生不一致的状态作为输出。 就历史而言，我们有一个异常现象：</p>
 <p>A5A: r1[x]…w2[x]…w2[y]…c2…r1[y]…(c1 or a1)     (Read Skew)</p>
-<p>A5B Write Skew Suppose T1 reads x and y, which are consistent with C(), and then a T2 reads x and y, writes x, and commits. Then T1 writes y. If there were a constraint between x and y, it might be violated. In terms of histo- ries:</p>
+<p><strong>A5B Write Skew</strong> Suppose T1 reads x and y, which are consistent with C(), and then a T2 reads x and y, writes x, and commits. Then T1 writes y. If there were a constraint between x and y, it might be violated. In terms of histo- ries:</p>
 <p>A5B Write Skew 假设T1读取x和y，与C()一致，然后T2读取x和y，写入x并提交。 然后T1写入y。 如果 x 和 y 之间存在约束，则可能会被违反。 就历史而言：</p>
 <p>A5B: r1[x]…r2[y]…w1[y]…w2[x]…(c1 and c2 occur)  (Write Skew)</p>
 <p>Fuzzy Reads (P2) is a degenerate form of Read Skew where x&#x3D;y. More typically, a transaction reads two dif- ferent but related items (e.g., referential integrity). Write Skew (A5B) could arise from a constraint at a bank, where account balances are allowed to go negative as long as the sum of commonly held balances remains non-negative, with an anomaly arising as in history H5.</p>
