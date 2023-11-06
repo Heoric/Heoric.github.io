@@ -21,7 +21,7 @@
     <meta name="description" content="[Linearizability versus Serializability]线性化与串行化 原文链接 (http:&#x2F;&#x2F;www.bailis.org&#x2F;blog&#x2F;linearizability-versus-serializability&#x2F;)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linearizability versus Serializability">
-<meta property="og:url" content="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="[Linearizability versus Serializability]线性化与串行化 原文链接 (http:&#x2F;&#x2F;www.bailis.org&#x2F;blog&#x2F;linearizability-versus-serializability&#x2F;)">
 <meta property="og:locale" content="zh_CN">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/">
+<link rel="canonical" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/","path":"2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/Linearizability versus Serializability/","title":"Linearizability versus Serializability"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/","path":"2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/00-Linearizability versus Serializability/","title":"Linearizability versus Serializability"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Linearizability versus Serializability | Leoirc's Blogs</title>
@@ -132,7 +132,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -300,7 +300,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Linearizability%20versus%20Serializability/" title="Linearizability versus Serializability">http://heoric.github.io/2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/Linearizability versus Serializability/</a>
+      <a href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/" title="Linearizability versus Serializability">http://heoric.github.io/2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/00-Linearizability versus Serializability/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -316,13 +316,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/" rel="prev" title="Real transactions are serializable">
-                  <i class="fa fa-angle-left"></i> Real transactions are serializable
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/" rel="prev" title="CockroachDB's consistency model">
+                  <i class="fa fa-angle-left"></i> CockroachDB's consistency model
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/10/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Consistency%20Models/" rel="next" title="Consistency Models">
-                  Consistency Models <i class="fa fa-angle-right"></i>
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/01-Real%20transactions%20are%20serializable/" rel="next" title="Real transactions are serializable">
+                  Real transactions are serializable <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -405,7 +405,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e0b5716c10aad2bbb42e63e10223f2e5"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"5bf2c88ee386c72ece275df20f9979fa"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

@@ -21,22 +21,22 @@
     <meta name="description" content="原文链接 https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;consistency-model&#x2F; A few days ago, prompted by a Hacker News post, my friend Ivo texted me saying “Does your head ever explode when you’re thinking about databa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CockroachDB&#39;s consistency model">
-<meta property="og:url" content="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/CockroachDB's%20consistency%20model/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="原文链接 https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;consistency-model&#x2F; A few days ago, prompted by a Hacker News post, my friend Ivo texted me saying “Does your head ever explode when you’re thinking about databa">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-25T06:44:57.000Z">
-<meta property="article:modified_time" content="2023-11-03T08:23:32.657Z">
+<meta property="article:modified_time" content="2023-11-03T10:01:37.579Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="事务">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/CockroachDB's%20consistency%20model/">
+<link rel="canonical" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/CockroachDB's%20consistency%20model/","path":"2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/CockroachDB's consistency model/","title":"CockroachDB's consistency model"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/","path":"2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/03-CockroachDB's consistency model/","title":"CockroachDB's consistency model"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>CockroachDB's consistency model | Leoirc's Blogs</title>
@@ -132,7 +132,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/CockroachDB's%20consistency%20model/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -205,7 +205,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-03 16:23:32" itemprop="dateModified" datetime="2023-11-03T16:23:32+08:00">2023-11-03</time>
+      <time title="修改时间：2023-11-03 18:01:37" itemprop="dateModified" datetime="2023-11-03T18:01:37+08:00">2023-11-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -410,7 +410,7 @@
 <p>Relatedly, a backup, taken through the <code>backup database</code> command, is using <code>as of system time</code> queries under the hood, and so a particular backup might contain row 2 but not row 1.</p>
 <p>相关地，通过备份数据库命令进行的备份在幕后使用系统时间查询，因此特定备份可能包含第 2 行，但不包含第 1 行。</p>
 <h2 id="CockroachDB-implementation-details"><a href="#CockroachDB-implementation-details" class="headerlink" title="CockroachDB implementation details"></a>CockroachDB implementation details</h2><p>The <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/overview">architecture of CockroachDB</a> is based on a separation between multiple layers (a SQL layer on top down to a storage layer at the bottom). For the subject at hand, the interesting layer is the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer">Transaction Layer</a>, which is in charge of making sure that a transaction doesn’t miss writes that it’s supposed to be seeing. Each transaction has a timestamp, assigned by the “gateway node” — the node that a client happens to be talking to — when the transaction starts (through a SQL BEGIN statement). As the transaction talks to different other nodes that might be responsible for <em><em>ranges</em></em> of data it wants to read, this timestamp is used to decide what values are visible (because they’ve been written by transactions “in the past”) and which values aren’t visible because they’ve been written “in the future”.</p>
-<p>CockroachDB的架构基于多层之间的分离（顶部的SQL层到底部的存储层）。 对于当前的主题，有趣的层是事务层，它负责确保事务不会错过它应该看到的写入。 每个事务都有一个时间戳，由事务开始时（通过 SQL BEGIN 语句）由“网关节点”（客户端恰好与之通信的节点）分配。 当事务与可能负责其想要读取的数据范围的不同其他节点进行通信时，此时间戳用于决定哪些值是可见的（因为它们是由“过去”的事务写入的）以及哪些值是可见的。 不可见，因为它们已被写为“未来”。</p>
+<p>CockroachDB的架构基于多层之间的分离（顶部的SQL层到底部的存储层）。 对于当前的主题，有趣的层是事务层，它负责确保事务不会错过它应该看到的写入。 每个事务都有一个时间戳，由事务开始时（通过 SQL BEGIN 语句）由“网关节点”（客户端恰好与之通信的节点）分配。 当事务与可能负责其想要读取的数据范围的不同其他节点进行通信时，此时间戳用于决定哪些值是可见的（因为它们是由“过去”的事务写入的）以及哪些值是不可见，因为它们已被写为“未来”。</p>
 <p>CockroachDB uses multi-version concurrency control (MVCC), which means that the history of each row is available for transactions to look through. The difficulties, with respect to consistency guarantees, stem from the fact that the timestamp recording into MVCC are taken from the clock of the gateway node that wrote it, which generally is not the same one as the gateways assigning transaction timestamp for a reader, and we assume that the clock can be desynchronized up to a limit (we call the phenomenon “clock skew”). So, given transaction timestamp <em>t</em> and value timestamp <em>t’</em>, how does one decide whether the value in question should be visible or not?</p>
 <p>CockroachDB使用多版本并发控制（MVCC），这意味着每一行的历史记录都可供事务查看。 一致性保证方面的困难源于以下事实：MVCC 中的时间戳记录取自写入它的网关节点的时钟，该时钟通常与为读取器分配事务时间戳的网关不同，并且 我们假设时钟可以去同步到一定限度（我们将这种现象称为“时钟偏差”）。 那么，给定交易时间戳 t 和值时间戳 t’，如何决定所讨论的值是否应该可见？</p>
 <p>The rules are that, if <em>t’ &lt;&#x3D; t</em>, then the transaction will see the respective value (and so we’ll essentially order our transaction after that writer). The reasoning is that either our transaction really started after the other one committed, or, if not, the two were concurrent and so we can order things either way.</p>
@@ -442,7 +442,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/CockroachDB's%20consistency%20model/" title="CockroachDB&#39;s consistency model">http://heoric.github.io/2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/CockroachDB's consistency model/</a>
+      <a href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/" title="CockroachDB&#39;s consistency model">http://heoric.github.io/2023/10/25/2-数据库/1-cockroachdb/cockroach-blogs/03-CockroachDB's consistency model/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -463,8 +463,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Real%20transactions%20are%20serializable/" rel="next" title="Real transactions are serializable">
-                  Real transactions are serializable <i class="fa fa-angle-right"></i>
+                <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/" rel="next" title="Linearizability versus Serializability">
+                  Linearizability versus Serializability <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -547,7 +547,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"46ccf9e36e873ebba4b27bcd48dd15b5"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"942bc2de57c9536d164d24a103f433fe"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

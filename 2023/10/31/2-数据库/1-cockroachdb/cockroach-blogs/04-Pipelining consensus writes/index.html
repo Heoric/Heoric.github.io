@@ -21,7 +21,7 @@
     <meta name="description" content="CockroachDB supports ACID transactions across arbitrary data in a distributed database. A discussion on how this works was first published on our blog three years ago. Since then, a lot has changed. P">
 <meta property="og:type" content="article">
 <meta property="og:title" content="How Pipelining consensus writes speeds up distributed SQL transactions">
-<meta property="og:url" content="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="CockroachDB supports ACID transactions across arbitrary data in a distributed database. A discussion on how this works was first published on our blog three years ago. Since then, a lot has changed. P">
 <meta property="og:locale" content="zh_CN">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/">
+<link rel="canonical" href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/","path":"2023/10/31/2-数据库/1-cockroachdb/cockroach-blogs/Pipelining consensus writes/","title":"How Pipelining consensus writes speeds up distributed SQL transactions"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/","path":"2023/10/31/2-数据库/1-cockroachdb/cockroach-blogs/04-Pipelining consensus writes/","title":"How Pipelining consensus writes speeds up distributed SQL transactions"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>How Pipelining consensus writes speeds up distributed SQL transactions | Leoirc's Blogs</title>
@@ -132,7 +132,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -169,7 +169,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -403,7 +403,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Pipelining%20consensus%20writes/" title="How Pipelining consensus writes speeds up distributed SQL transactions">http://heoric.github.io/2023/10/31/2-数据库/1-cockroachdb/cockroach-blogs/Pipelining consensus writes/</a>
+      <a href="http://heoric.github.io/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/" title="How Pipelining consensus writes speeds up distributed SQL transactions">http://heoric.github.io/2023/10/31/2-数据库/1-cockroachdb/cockroach-blogs/04-Pipelining consensus writes/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -419,7 +419,7 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/distributed_atomic%20transactions/" rel="prev" title="How CockroachDB does distributed, atomic transactions">
+                <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/02-distributed_atomic%20transactions/" rel="prev" title="How CockroachDB does distributed, atomic transactions">
                   <i class="fa fa-angle-left"></i> How CockroachDB does distributed, atomic transactions
                 </a>
             </div>
@@ -505,7 +505,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"0c2b20164a30159d7c846dbf0997e2c4"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"431276fe47902ce9e995664b184046db"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

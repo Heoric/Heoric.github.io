@@ -21,7 +21,7 @@
     <meta name="description" content="原文：https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;serializable-lockless-distributed-isolation-cockroachdb&#x2F; Editor’s Note*: This post was originally authored when CockroachDB was pre-1.0. CockroachDB’s architectur">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Isolation in CockroachDB">
-<meta property="og:url" content="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="原文：https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;serializable-lockless-distributed-isolation-cockroachdb&#x2F; Editor’s Note*: This post was originally authored when CockroachDB was pre-1.0. CockroachDB’s architectur">
 <meta property="og:locale" content="zh_CN">
@@ -38,11 +38,11 @@
 <meta name="twitter:image" content="http://heoric.github.io/img/Isolation_in_CockroachDB/1.avif">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/">
+<link rel="canonical" href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/","path":"2023/10/27/2-数据库/1-cockroachdb/cockroach-blogs/Isolation in CockroachDB/","title":"Isolation in CockroachDB"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/","path":"2023/10/27/2-数据库/1-cockroachdb/cockroach-blogs/03-Isolation in CockroachDB/","title":"Isolation in CockroachDB"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Isolation in CockroachDB | Leoirc's Blogs</title>
@@ -138,7 +138,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -175,7 +175,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -435,7 +435,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/Isolation%20in%20CockroachDB/" title="Isolation in CockroachDB">http://heoric.github.io/2023/10/27/2-数据库/1-cockroachdb/cockroach-blogs/Isolation in CockroachDB/</a>
+      <a href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/" title="Isolation in CockroachDB">http://heoric.github.io/2023/10/27/2-数据库/1-cockroachdb/cockroach-blogs/03-Isolation in CockroachDB/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -456,7 +456,7 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/distributed_atomic%20transactions/" rel="next" title="How CockroachDB does distributed, atomic transactions">
+                <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/02-distributed_atomic%20transactions/" rel="next" title="How CockroachDB does distributed, atomic transactions">
                   How CockroachDB does distributed, atomic transactions <i class="fa fa-angle-right"></i>
                 </a>
             </div>
@@ -540,7 +540,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"2e979571e150000dd503643b407f47b8"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"810209c05d436fa17ea77e9935c47403"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
