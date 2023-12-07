@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="This paper describes a new extensible query optimization framework that resolves many of the short- comings of the EXODUS and Volcano optimizer generators. In addition to extensibility, dynamic pro- g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库SQL总结">
+<meta property="og:url" content="http://heoric.github.io/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="This paper describes a new extensible query optimization framework that resolves many of the short- comings of the EXODUS and Volcano optimizer generators. In addition to extensibility, dynamic pro- g">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-07T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-11-07T07:44:22.882Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="优化器">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://heoric.github.io/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/","path":"2023/11/07/2-数据库/4-论文/1-Cascades/","title":"数据库SQL总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据库SQL总结 | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.</span> <span class="nav-text">1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Optimization-Algorithm-and-Tasks"><span class="nav-number">2.</span> <span class="nav-text">2 Optimization Algorithm and Tasks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Data-Abstraction-and-the-User-Interface"><span class="nav-number">3.</span> <span class="nav-text">3 Data Abstraction and the User Interface</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Operators-and-Their-Arguments"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Operators and Their Arguments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Logical-and-Physical-Properties-Costs"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Logical and Physical Properties, Costs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Expression-Trees"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 Expression Trees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-Rules"><span class="nav-number">3.4.</span> <span class="nav-text">3.6 Rules</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Future-Work"><span class="nav-number">4.</span> <span class="nav-text">4 Future Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Summary-and-Conclusions"><span class="nav-number">5.</span> <span class="nav-text">5 Summary and Conclusions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Acknowledgments"><span class="nav-number">6.</span> <span class="nav-text">6 Acknowledgments</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据库SQL总结 | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库SQL总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-07 14:44:57 / 修改时间：15:44:22" itemprop="dateCreated datePublished" datetime="2023-11-07T14:44:57+08:00">2023-11-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index"><span itemprop="name">论文</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><em>This paper describes a new extensible query optimization framework that resolves many of the short- comings of the EXODUS and Volcano optimizer generators. In addition to extensibility, dynamic pro- gramming, and memorization based on and extended from the EXODUS and Volcano prototypes, this new optimizer provides (i) manipulation of operator arguments using rules or functions, (ii) operators that are both logical and physical for predicates etc., (iii) schema-specific rules for materialized views, (iv) rules to insert ”enforcers” or ”glue operators,” (v) rule-specific guidance, permitting grouping of rules, (vi) basic facilities that will later permit parallel search, partially ordered cost measures, and dy- namic plans, (vii) extensive tracing support, and (viii) a clean interface and implementation making full use of the abstraction mechanisms of C++. We describe and justify our design choices for each of these issues. The optimizer system described here is operational and will serve as the foundation for new query optimizers in Tandem’s NonStop SQL product and in Microsoft’s SQL Server product.</em></p>
+<p>本文描述了一种新的可扩展查询优化框架，它解决了 EXODUS 和 Volcano 优化器生成器的许多缺点。 除了基于 EXODUS 和 Volcano 原型并从其扩展的可扩展性、动态编程和记忆之外，这个新的优化器还提供（i）使用规则或函数操作运算符参数，（ii）逻辑和物理运算符 谓词等，(iii) 物化视图的特定于模式的规则，(iv) 插入“执行者”或“粘合操作符”的规则，(v) 特定于规则的指导，允许对规则进行分组，(vi) 将 后来允许并行搜索、部分有序成本测量和动态计划，(vii) 广泛的跟踪支持，以及 (viii) 充分利用 C++ 抽象机制的干净接口和实现。 我们针对每个问题描述并证明我们的设计选择。 这里描述的优化器系统是可操作的，并将作为 Tandem NonStop SQL 产品和 Microsoft SQL Server 产品中新查询优化器的基础。</p>
+<span id="more"></span>
+
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a><strong>1 Introduction</strong></h2><p>Following our experiences with the EXODUS Optimizer Generator [GrD87], we built a new optimizer generator as part of the Volcano project [GrM93]. The main contributions of the EXODUS work were the optimizer gener- ator architecture based on code generation from declarative rules, logical and physical algebra’s, the division of a query optimizer into modular components, and interface definitions for support functions to be provided by the database implementor (DBI), whereas the Volcano work combined improved extensibility with an efficient search engine based on dynamic programming and memorization. By using the Volcano Optimizer Generator in two applications, a object-oriented database systems [BMG93] and a scientific database system prototype [WoG93], we identified a number of flaws in its design. Overcoming these flaws is the goal of a completely new extensi- ble optimizer developed in the Cascades project, a new project applying many of the lessons learned from the Volcano project on extensible query optimization, parallel query execution, and physical database design. Com- pared to the Volcano design and implementation, the new Cascades optimizer has the following advantages. In their entirety, they represent a substantial improvement over our own earlier work as well as other related work in functionality, ease-of-use, and robustness.</p>
+<p>根据我们使用 EXODUS 优化器生成器 [GrD87] 的经验，我们构建了一个新的优化器生成器作为 Volcano 项目 [GrM93] 的一部分。 EXODUS 工作的主要贡献是基于声明性规则、逻辑和物理代数的代码生成的优化器生成器体系结构、将查询优化器划分为模块化组件以及由数据库实现者提供的支持功能的接口定义 （DBI），而 Volcano 工作将改进的可扩展性与基于动态编程和记忆的高效搜索引擎结合起来。 通过在两个应用程序（面向对象的数据库系统 [BMG93] 和科学数据库系统原型 [WoG93]）中使用 Volcano Optimizer Generator，我们发现了其设计中的许多缺陷。 克服这些缺陷是 Cascades 项目中开发的全新可扩展优化器的目标，该新项目应用了从 Volcano 项目中获得的有关可扩展查询优化、并行查询执行和物理数据库设计的许多经验教训。 与Volcano的设计和实现相比，新的Cascades优化器具有以下优点。 总的来说，它们比我们早期的工作以及其他相关工作在功能、易用性和稳健性方面有了实质性的改进。</p>
+<ul>
+<li>Abstract interface classes defining the DBI-optimizer interface and permitting DBI-defined subclass hier- archies</li>
+</ul>
+<p>  定义 DBI 优化器接口并允许 DBI 定义的子类层次结构的抽象接口类</p>
+<ul>
+<li>Rules as objects</li>
+</ul>
+<p>  规则作为对象</p>
+<ul>
+<li>Facilities for schema- and even query-specific rules</li>
+</ul>
+<p>  模式甚至查询特定规则的设施</p>
+<ul>
+<li>Simple rules requiring minimal DBI support</li>
+</ul>
+<p>  简单的规则需要最少的 DBI 支持</p>
+<ul>
+<li>Rules with substitutes consisting of a complex expression</li>
+</ul>
+<p>  包含复杂表达式的替代规则</p>
+<ul>
+<li>Rules that map an input pattern to a DBI-supplied function</li>
+</ul>
+<p>  将输入模式映射到 DBI 提供的函数的规则</p>
+<ul>
+<li>Rules to place property enforcers such as sort operations</li>
+</ul>
+<p>  放置属性执行器的规则，例如排序操作</p>
+<ul>
+<li>Operators that may be both logical and physical, e.g., predicates</li>
+</ul>
+<p>  既可以是逻辑运算符也可以是物理运算符，例如谓词</p>
+<ul>
+<li>Patterns that match an entire subtree, e.g., a predicate</li>
+</ul>
+<p>  匹配整个子树的模式，例如谓词</p>
+<ul>
+<li>Optimization tasks as data structures</li>
+</ul>
+<p>  作为数据结构的优化任务</p>
+<ul>
+<li>Incremental enumeration of equivalent logical expressions</li>
+</ul>
+<p>  等价逻辑表达式的增量枚举</p>
+<ul>
+<li>Guided or exhaustive search</li>
+</ul>
+<p>  引导式或详尽的搜索</p>
+<ul>
+<li>Ordering of moves by promise</li>
+</ul>
+<p>  按承诺排序动作</p>
+<ul>
+<li>Rule-specific guidance</li>
+</ul>
+<p>  特定规则的指导</p>
+<ul>
+<li>Incremental improvement of estimated logical properties</li>
+</ul>
+<p>  估计逻辑属性的增量改进</p>
+<p>The points in the list above and their effects will be discussed in this paper. While the system is operational, we have not performed any performance studies and the system is not fully tuned yet. Detailed analysis and focused improvement of the Cascades optimizer’s efficiency is left for further work.</p>
+<p>本文将讨论上述要点及其影响。 虽然系统正在运行，但我们尚未进行任何性能研究，并且系统尚未完全调整。 Cascades优化器效率的详细分析和重点提升有待进一步工作。</p>
+<h2 id="2-Optimization-Algorithm-and-Tasks"><a href="#2-Optimization-Algorithm-and-Tasks" class="headerlink" title="2 Optimization Algorithm and Tasks"></a><strong>2 Optimization Algorithm and Tasks</strong></h2><p>The optimization algorithm is broken into several parts, which we call ”tasks.” While each task could easily be implemented as a procedure, we chose to realize tasks as objects that, among other methods, have a ”perform” method defined for them. Task objects offer significantly more flexibility than procedure invocations, in particu- lar with respect to search algorithm and search control. A task object exists for each task that has yet to be done; all such task objects are collected in a task structure. The task structure is currently realized as a last-in-first-out stack; however, other structures can easily be envisioned. In particular, task objects can be reordered very easily at any point, enabling very flexible mechanisms for heuristic guidance. Moreover, we plan on representing the task structure by a graph that captures dependencies or the topological ordering among tasks and permit efficient parallel search (using shared memory). However, in order to obtain a working system fast, the current implemen- tation is restricted to a LIFO stack, and scheduling a task is very similar to invoking a function, with the exception that any work to be done after a sub-task completes must be scheduled as a separate task.</p>
+<p>优化算法分为几个部分，我们称之为“任务”。 虽然每个任务都可以很容易地实现为一个过程，但我们选择将任务实现为对象，除了其他方法之外，还为它们定义了一个“执行”方法。 任务对象比过程调用提供了更大的灵活性，特别是在搜索算法和搜索控制方面。 每个尚未完成的任务都存在一个任务对象； 所有此类任务对象都收集在任务结构中。 任务结构目前实现为后进先出堆栈； 然而，可以很容易地设想其他结构。 特别是，任务对象可以在任何时候非常容易地重新排序，从而实现非常灵活的启发式指导机制。 此外，我们计划用一个图来表示任务结构，该图捕获任务之间的依赖关系或拓扑顺序，并允许高效的并行搜索（使用共享内存）。 然而，为了快速获得一个工作系统，当前的实现仅限于后进先出堆栈，并且调度任务与调用函数非常相似，除了子任务完成后要完成的任何工作 必须安排为单独的任务。</p>
+<p>Figure 1 shows the tasks that make up the optimizer’s search algorithm. Arrows indicate which type of task schedules (invokes) which other type; dashed arrows indicate where invocations pertain to inputs, i.e., subqueries or subplans. Brief pseudo-code for the tasks is also given in the appendix. The ”optimize()” procedure first copies the original query into the internal ”memo” structure and then triggers the entire optimization process with a task to optimize the class corresponding to the root node of the original query tree, which in turn triggers optimization of smaller and smaller subtrees.</p>
+<p>图 1 显示了构成优化器搜索算法的任务。 箭头表示哪种类型的任务调度（调用）哪种其他类型； 虚线箭头表示调用与输入相关的位置，即子查询或子计划。 附录中还给出了任务的简短伪代码。 “optimize()”过程首先将原始查询复制到内部“memo”结构中，然后触发整个优化过程，其中一个任务是优化原始查询树的根节点对应的类，进而触发优化 子树越来越小。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">----------&gt; Optimize Group &lt;-------- Optimize Inputs</span></span><br><span class="line">									<span class="operator">|</span>                        <span class="operator">|</span></span><br><span class="line">									<span class="operator">|</span> d                      <span class="operator">|</span> up</span><br><span class="line">						Optimize Experssion            <span class="operator">|</span></span><br><span class="line">            			<span class="operator">|</span>            \  \up      <span class="operator">|</span></span><br><span class="line">            			<span class="operator">|</span>  d         d\   \ </span><br><span class="line">            Explore <span class="keyword">Group</span>              Apply Rule</span><br><span class="line">            	<span class="operator">|</span>     <span class="operator">|</span>             d <span class="operator">/</span> <span class="operator">/</span></span><br><span class="line">            	<span class="operator">|</span>d    <span class="operator">|</span> up          <span class="operator">/</span> <span class="operator">/</span>   up</span><br><span class="line">						Explore Expression</span><br></pre></td></tr></table></figure>
+
+
+
+<p>A task to optimize a group or an expression represents what was called an ”optimization goal” in the Volcano optimizer generator: it combines a group or expression with a cost limit and with required and excluded physical properties. Performing such a task results either in a plan or a failure. Optimizing a group means finding the best plan for any expression in the group and therefore applies rules to all expressions, whereas optimizing an expression starts with a single expression. The former is realized by invoking the latter for each expression. The latter results in transitive rule applications and therefore, if the rule set is complete, finds the best plan within the starting expression’s group. The distinction between the two task types is made purely for pragmatic reasons. On the one hand, there must be a task to find the best plan for any expression in a group in order to initiate optimization of an entire query tree or a subtree after an implementation rule has been applied; on the other hand, there must be a task to optimize a single (new) expression after applying a transformation rule.</p>
+<p>优化组或表达式的任务代表了 Volcano 优化器生成器中所谓的“优化目标”：它将组或表达式与成本限制以及所需和排除的物理属性相结合。 执行这样的任务要么会导致计划成功，要么会失败。 优化组意味着为组中的任何表达式找到最佳计划，因此将规则应用于所有表达式，而优化表达式则从单个表达式开始。 前者是通过为每个表达式调用后者来实现的。 后者导致传递规则应用，因此，如果规则集完整，则会在起始表达式组中找到最佳计划。 两种任务类型之间的区别纯粹是出于实用原因。 一方面，必须有一个任务来为组中的任何表达式找到最佳计划，以便在应用实现规则后启动整个查询树或子树的优化； 另一方面，在应用转换规则后必须有一个任务来优化单个（新）表达式。</p>
+<p>The task to optimize a group also implements dynamic programming and memorization. Before initiating optimization of all a group’s expressions, it checks whether the same optimization goal has been pursued already; if so, it simply returns the plan found in the earlier search. Reusing plans derived earlier is the crucial aspect of dynamic programming and memorization. Exploring a group or an expression is an entirely new concept that has no equivalent in the Volcano optimizer generator. In the Volcano search strategy, a first phase applied all transformation rules to create all possible logical expressions for a query and all its subtrees. The second phase, which performed the actual optimization, navigated within that network of equivalence classes and expressions, applied implementation rules to obtain plans, and determined the best plan.</p>
+<p>优化群体的任务也实现了动态规划和记忆。 在开始优化所有组的表达式之前，它会检查是否已经追求相同的优化目标； 如果是这样，它只是返回在先前搜索中找到的计划。 重用先前导出的计划是动态编程和记忆的关键方面。 探索组或表达式是一个全新的概念，在 Volcano 优化器生成器中没有等效概念。 在火山搜索策略中，第一阶段应用所有转换规则来为查询及其所有子树创建所有可能的逻辑表达式。 第二阶段执行实际的优化，在等价类和表达式的网络中导航，应用实现规则来获取计划，并确定最佳计划。</p>
+<p>In the Cascades optimizer, this separation into two phases is abolished, because it is not useful to derive all logically equivalent forms of all expressions, e.g., of a predicate. A group is explored using transformation rules only on demand, and it is explored only to create all members of the group that match a given pattern. Thus, exploring a group or an expression (the distinction between these two mirrors the distinction between optimizing a group or an expression) means deriving all logical expressions that match a given pattern. The pattern, which is part of the task definition, is a subtree of the rule’s antecedent or ”before”-pattern.</p>
+<p>在 Cascades 优化器中，取消了这种分为两个阶段的做法，因为派生所有表达式（例如谓词）的所有逻辑等效形式是没有用的。 仅根据需要使用转换规则来探索组，并且仅探索创建与给定模式匹配的组的所有成员。 因此，探索组或表达式（这两者之间的区别反映了优化组或表达式之间的区别）意味着导出与给定模式匹配的所有逻辑表达式。 该模式是任务定义的一部分，是规则的先行词或“之前”模式的子树。</p>
+<p>As do optimization tasks, exploration tasks also avoid duplicate work. Before exploring a group’s expres- sions, the task to explore a group checks whether the same pattern has already been explored for the given group. If so, the task terminates immediately without spawning other tasks. Thus, the overall effort to expand logical expressions is also reduced by dynamic programming, i.e., retaining and reusing results of earlier search effort. The decision whether or not a pattern has already been explored is made using a ”pattern memory” initialized and administered by the DBI.</p>
+<p>与优化任务一样，探索任务也避免了重复工作。 在探索组的表达式之前，探索组的任务会检查是否已经为给定组探索了相同的模式。 如果是这样，该任务将立即终止，而不会生成其他任务。 因此，动态编程也减少了扩展逻辑表达式的总体工作，即保留和重用早期搜索工作的结果。 使用由 DBI 初始化和管理的“模式记忆”来决定是否已经探索过某个模式。</p>
+<p>In order to make this discussion more concrete, consider a join associativity rule. In Volcano, all equivalence classes are completely expanded to contain all equivalent logical expressions before the actual optimization phase begins. Thus, during the optimization phase, when a join operator matches the top join operator in the rule, all join expressions for the rule’s lower join are readily available so the rule can immediately applied with all possible bindings. In Cascades, these expressions are not immediately available and must be derived before the rule is applied. The exploration tasks provide this functionality; they are invoked not during a pre-optimization phase as in Volcano but on demand for a specific group and a specific pattern.</p>
+<p>为了使此讨论更加具体，请考虑连接关联性规则。 在 Volcano 中，在实际优化阶段开始之前，所有等价类都被完全扩展为包含所有等价逻辑表达式。 因此，在优化阶段，当连接运算符与规则中的顶部连接运算符匹配时，该规则的较低连接的所有连接表达式都随时可用，因此该规则可以立即应用于所有可能的绑定。 在级联中，这些表达式不是立即可用的，必须在应用规则之前导出。 探索任务提供了此功能； 它们不是像 Volcano 那样在预优化阶段调用，而是根据特定组和特定模式的需求调用。</p>
+<p>One might ask which of the Volcano technique and the Cascades technique is more efficient and more effec- tive. The Volcano technique generates all equivalent logical expressions exhaustively in the first phase. Even if the actual optimization phase uses a greedy search algorithm, this first phase in Volcano must still be exhaustive. In the Cascades technique, this represents the worst case. If there is no guidance indicating which rule might lead to expressions matching the given pattern, exhaustive enumeration of all equivalent logical expressions cannot be avoided. On the other hand, if there is some guidance, some of that effort can be avoided, and the Cascades search strategy seems superior. On the other hand, the same group might have to be explored multiple times for different patterns ; if so, redundant rule applications and derivations might occur. In order to avoid that, each expression in the ”memo” structure includes a bit map that indicates which transformation rules have already been applied to it and thus should not be re-applied. Thus, we believe that the Cascades search strategy is more efficient because it explores groups only for truly useful patterns. In the worst case, i.e., without any guidance, the efficiency of the Cascades search will equal that of the Volcano search strategy.</p>
+<p>有人可能会问火山技术和级联技术哪一种更高效、更有效。 火山技术在第一阶段详尽地生成所有等效逻辑表达式。 即使实际的优化阶段使用贪婪搜索算法，Volcano 中的第一阶段仍然必须是详尽的。 在级联技术中，这代表最坏的情况。 如果没有指导指示哪个规则可能导致表达式与给定模式匹配，则无法避免对所有等效逻辑表达式的详尽枚举。 另一方面，如果有一些指导，则可以避免一些工作，并且级联搜索策略似乎更优越。 另一方面，同一组可能需要多次探索不同的模式； 如果是这样，可能会出现冗余的规则应用和推导。 为了避免这种情况，“memo”结构中的每个表达式都包含一个位图，该位图指示哪些转换规则已经应用于它，因此不应重新应用。 因此，我们认为级联搜索策略更有效，因为它只探索真正有用的模式的组。 在最坏的情况下，即没有任何指导，Cascades 搜索的效率将等于 Volcano 搜索策略的效率。</p>
+<p>On the other hand, if such guidance is incorrect, incorrect pruning of the search space may occur and the Cascades optimizer’s effectiveness might suffer. Thus, it is very important that such guidance be correct. We plan on using two techniques for guidance, which are not implemented yet. First, by inspecting the entire rule set, in particular the top operators of each rule’s antecedent (”before”-pattern) and consequent (”after”-pattern, substitute), we can identify which operators can be mapped to which other operators in a single rule application. By taking the transitive closure of this reachability relationship, we can exclude some rules from consideration. Note that this transitive closure can be computed when the optimizer is generated from the rule set, i.e., only once. Second, we plan on implementing mechanisms for guidance by the DBI.</p>
+<p>另一方面，如果此类指导不正确，则可能会错误地修剪搜索空间，并且 Cascades 优化器的有效性可能会受到影响。 因此，这种指导的正确性非常重要。 我们计划使用两种技术进行指导，但尚未实施。 首先，通过检查整个规则集，特别是每个规则的前件（“before”模式）和后件（“after”模式，替换）的顶级运算符，我们可以识别哪些运算符可以映射到其中的哪些其他运算符 单个规则应用程序。 通过采用这种可达性关系的传递闭包，我们可以排除一些规则。 请注意，当从规则集生成优化器时，可以计算此传递闭包，即仅计算一次。 其次，我们计划落实DBI的指导机制。</p>
+<p>Applying a rule creates a new expression; notice that the new expression can be complex (consisting of mul- tiple operators, as in a join associativity rule) and may be either a transformation rule (creating a new logical expression) or an implementation rule (creating a new physical expression or plan). In fact, since an operator can be both logical and physical, one rule may be both a transformation and an implementation rule. Correct rule application for such rules is guaranteed, although we expect such operators and rules to be exceptions rather than the norm.</p>
+<p>应用规则会创建一个新的表达式； 请注意，新表达式可以很复杂（由多个运算符组成，如连接关联性规则），并且可以是转换规则（创建新的逻辑表达式）或实现规则（创建新的物理表达式或计划） 。 事实上，由于运算符既可以是逻辑的，也可以是物理的，因此一个规则可以既是转换规则，又是实现规则。 尽管我们希望此类运算符和规则是例外而不是规范，但可以保证此类规则的正确应用。</p>
+<p>Performing an ”apply rule” task is fairly complex. It may roughly be broken into four components. First, all bindings for the rule’s pattern are derived and iterated over one by one. Second, for each binding, the rule is used to create a new expression. Note that for function rules, there may be multiple new expressions for each binding. Third, the new expressions are integrated in the ”memo” structure. Within this process, exact replicas of expressions that already exist in ”memo” are identified and removed from further consideration. Fourth, each expression that is not a duplicate of an earlier one is optimized or explored with the same goal and context that triggered the current rule application. Let us discuss these four components in turn.</p>
+<p>执行“应用规则”任务相当复杂。 它大致可以分为四个部分。 首先，规则模式的所有绑定都是逐一派生和迭代的。 其次，对于每个绑定，该规则用于创建一个新表达式。 请注意，对于函数规则，每个绑定可能有多个新表达式。 第三，新的表达方式被整合到“备忘录”结构中。 在此过程中，“备忘录”中已存在的表达式的精确副本将被识别并从进一步考虑中删除。 第四，每个与先前表达式不重复的表达式都会以触发当前规则应用程序的相同目标和上下文进行优化或探索。 让我们依次讨论这四个组成部分。</p>
+<p>Since each rule’s antecedent (”before”-pattern) may be complex, the Cascades optimizer employs a complex procedure to identify all possible bindings for a rule. This procedure is recursive, with each recursive invocation for each node in the pattern. Most of its complexity serves to obtain all possible bindings for a rule’s pattern. In fact, the procedure is realized as an iterator that produces the next feasible binding with each invocation. The state of this iteration is captured in the ”BINDING” class with one instance of that class for each node in the pattern. Once a binding is found, it is translated into a tree consisting of ”EXPR” nodes (note that this class is part of the DBI interface, whereas the optimizer’s internal data structures are not). This copy step represents some effort, but it isolates the optimizer from the DBI methods that may be invoked for this tree. For each binding, the rule’s con- dition function is invoked and qualifying bindings are then translated into the rule’s consequent (”after”-pattern, substitute). For some rules, this is very easy and entirely left to the optimizer. For other rules, the DBI specified a function to create the substitute, and this function is invoked repeatedly to create as many substitute as possible. In other words, this function may be an iterator producing multiple substitutes in consecutive invocations. Thus, the effort of extracting a binding from the ”memo” is leveraged for multiple transformations if possible.</p>
+<p>由于每个规则的先行词（“之前”模式）可能很复杂，因此 Cascades 优化器采用复杂的过程来识别规则的所有可能的绑定。 此过程是递归的，每次递归调用都会针对模式中的每个节点。 它的大部分复杂性是为了获取规则模式的所有可能的绑定。 事实上，该过程被实现为一个迭代器，每次调用都会生成下一个可行的绑定。 这一迭代的状态在“BINDING”类中捕获，模式中的每个节点都有该类的一个实例。 一旦找到绑定，它就会被转换为由“EXPR”节点组成的树（请注意，此类是 DBI 接口的一部分，而优化器的内部数据结构则不是）。 此复制步骤需要付出一定的努力，但它将优化器与可能为此树调用的 DBI 方法隔离开来。 对于每个绑定，都会调用规则的条件函数，然后将限定绑定转换为规则的结果（“after”模式，替换）。 对于某些规则，这非常简单，完全留给优化器。 对于其他规则，DBI指定一个函数来创建替代品，并且重复调用该函数以创建尽可能多的替代品。 换句话说，该函数可以是在连续调用中产生多个替代的迭代器。 因此，如果可能的话，从“备忘录”中提取绑定的努力可用于多次转换。</p>
+<p>Each substitute expression is then integrated into the ”memo” structure. This process includes search for and detection of duplicates, i.e., expression that have been derived earlier in the optimization. This process is very similar to duplicate expression detection in both the EXODUS and Volcano optimizer generators. It is a recursive process that starts at the leaves of the substitute, which may be either query or plan tree leaves (i.e., scans) or leaf operators that denote the scope of a rewrite operation (as described as part of the DBI interface), and works upwards in the substitute towards the substitute’s root; this direction is required for correct duplicate detection. The search for duplicates is very fast as it employs a hash table using an operator and the groups of its inputs as keys.</p>
+<p>然后将每个替换表达式集成到“备忘录”结构中。 该过程包括搜索和检测重复项，即先前在优化中导出的表达式。 此过程与 EXODUS 和 Volcano 优化器生成器中的重复表达检测非常相似。 这是一个从替代的叶子开始的递归过程，替代的叶子可以是查询或计划树叶子（即扫描）或表示重写操作范围的叶子运算符（如 DBI 接口的一部分所述）， 并在替代物中向上工作至替代物的根； 正确的重复检测需要这个方向。 搜索重复项的速度非常快，因为它使用哈希表，使用运算符及其输入组作为键。</p>
+<p>Finally, if a substitute’s root is a new expression, follow-on tasks may be initiated. If the substitute was created as part of an exploration, a task is created to explore the substitute for the same pattern. If the substitute was created as part of an optimization, the follow-on tasks depend on whether the rule was a transformation or an implementation rule, i.e., whether the substitute’s root operator is a logical or a physical operator. Note, again, that an operator can be both logical and physical; thus, a rule can be both a transformation or an implementation rule. In that case, both types of follow-on tasks are created. For a logical root operator, an optimization task is created to optimize the substitute, keeping the same optimization goal. For a physical root operator, a new task is scheduled to optimize the operator’s inputs and to calculated processing costs. The ”optimize inputs” task is different from all other tasks. While all other tasks schedule their follow-on tasks and then vanish, this sixth task type become active multiple times. In other words, it schedules a follow-on task, waits for its completion, resumes and schedules the next follow-on task, etc. The follow-on tasks are all of the same type, which is optimizing input groups for a suitable optimization goal. Thus, like the Volcano search strategy, the Cascades search engine guarantees that only those subtrees and interesting properties are optimized that could indeed participate in a query evaluation plan. Each time after an input has been optimized, the optimize inputs task obtains the best execution cost derived, and derives a new cost limit for optimizing the next input. Thus, pruning is as tight as possible.</p>
+<p>最后，如果替换的根是一个新的表达式，则可以启动后续任务。 如果替代品是作为探索的一部分创建的，则会创建一个任务来探索相同模式的替代品。 如果替换是作为优化的一部分创建的，则后续任务取决于规则是转换规则还是实现规则，即替换的根运算符是逻辑运算符还是物理运算符。 再次注意，运算符可以是逻辑运算符，也可以是物理运算符； 因此，规则既可以是转换规则，也可以是实现规则。 在这种情况下，将创建两种类型的后续任务。 对于逻辑根算子，创建优化任务来优化替代项，保持相同的优化目标。 对于物理根算子，计划一项新任务来优化算子的输入并计算处理成本。 “优化输入”任务不同于所有其他任务。 当所有其他任务安排其后续任务然后消失时，第六种任务类型会多次激活。 换句话说，它会调度一个后续任务，等待其完成，恢复并调度下一个后续任务，等等。后续任务都是同一类型，正在优化输入组以进行适当的优化 目标。 因此，与 Volcano 搜索策略一样，Cascades 搜索引擎保证只有那些确实可以参与查询评估计划的子树和有趣的属性才会被优化。 每次优化输入后，优化输入任务都会获得导出的最佳执行成本，并导出用于优化下一个输入的新成本限制。 因此，修剪尽可能严格。</p>
+<h2 id="3-Data-Abstraction-and-the-User-Interface"><a href="#3-Data-Abstraction-and-the-User-Interface" class="headerlink" title="3 Data Abstraction and the User Interface"></a><strong>3 Data Abstraction and the User Interface</strong></h2><p>Developing the Cascades optimizer system required pursuing three different activities in rapid alternation. First, designing the interface between database implementor and optimizer had to focus on minimal, functional, and clean abstractions. Second, implementing a prototype optimizer as our own DBI was an exercise in exploiting the interface as effectively as possible. Third, design and implementation of an efficient search strategy was based on lessons learned during the EXODUS and Volcano projects, combined with the requirements set forth by a workshop of academic and industrial query optimization researchers and by the first user group of this software. Each of these three activities had different goals and required a different mind-set; in our internal discussions, we constantly alternated among these perspectives in order to design and develop a truly extensible and useful tool. In this section, we describe the data structuring decisions made for the interface between database implementor and the optimizer.</p>
+<p>开发 Cascades 优化器系统需要快速交替执行三种不同的活动。 首先，设计数据库实现者和优化器之间的接口必须关注最小化、功能性和简洁的抽象。 其次，实现原型优化器作为我们自己的 DBI 是尽可能有效地利用接口的练习。 第三，高效搜索策略的设计和实施是基于 EXODUS 和 Volcano 项目期间吸取的经验教训，并结合学术和工业查询优化研究人员研讨会以及该软件的第一个用户组提出的要求。 这三项活动都有不同的目标，需要不同的心态； 在我们的内部讨论中，我们不断地交替使用这些观点，以设计和开发一个真正可扩展且有用的工具。 在本节中，我们描述为数据库实现者和优化器之间的接口做出的数据结构化决策。</p>
+<p>Users of the EXODUS and Volcano optimizer generator generators made it very clear that the interface of these system could bear improvement. Feedback from users of the Volcano optimizer generator matches our own analysis [BMG93]; therefore, we focused on (i) clean abstractions for support functions in order to enable an optimizer generator to create them from specification, (ii) rule mechanisms that permit the DBI to choose rules or functions to manipulate operator arguments (such as predicates), and (iii) more concise and complete interface specifications, both in the code and in the written documentation. Following these guidelines, we designed the following interface.</p>
+<p>EXODUS 和 Volcano 优化器生成器的用户明确表示，这些系统的界面需要改进。 Volcano 优化器生成器用户的反馈与我们自己的分析相符 [BMG93]； 因此，我们专注于（i）支持函数的干净抽象，以便使优化器生成器能够根据规范创建它们，（ii）允许 DBI 选择规则或函数来操作运算符参数（例如谓词）的规则机制， (iii) 代码和书面文档中的接口规范更加简洁和完整。 遵循这些准则，我们设计了以下界面。</p>
+<p>Each of the classes that make up the interface between the Cascades optimizer and the DBI is designed to become the root of a subclass hierarchy. Thus, creation of new objects of one of these classes is associated with another class. For example, creation a new ”guidance” structure is associated with a ”rule” object. The rule object can be of some DBI-defined subclass of the interface class ”RULE,” and the newly created guidance structure can be of any DBI-defined subclass of the interface class ”GUIDANCE.” The optimizer relies only on the method defined in this interface; the DBI is free to add additional methods when defining subclasses.</p>
+<p>构成 Cascades 优化器和 DBI 之间接口的每个类都被设计为成为子类层次结构的根。 因此，这些类之一的新对象的创建与另一个类相关联。 例如，创建新的“指导”结构与“规则”对象相关联。 规则对象可以是接口类“RULE”的某个DBI定义的子类，并且新创建的指导结构可以是接口类“GUIDANCE”的任何DBI定义的子类。 优化器仅依赖于该接口中定义的方法； DBI 在定义子类时可以自由添加额外的方法。</p>
+<h3 id="3-1-Operators-and-Their-Arguments"><a href="#3-1-Operators-and-Their-Arguments" class="headerlink" title="3.1 Operators and Their Arguments"></a><strong>3.1 Operators and Their Arguments</strong></h3><p>Central to any database query optimizer are the sets of operators supported in the query language and in the query evaluation engine. Notice that these two sets are different; we call them logical and physical operators [Gra93]. While previous extensible operators required that these two sets be disjunct, we have abandoned this requirement. The ”class OP-ARG” in the Cascades optimizer interface includes both logical and physical operators. For each operator, one method called ”is-logical” indicates whether or not an operator is a logical operator, while a second method called ”is-physical” indicates whether or not an operator is a physical operator. In fact, it is possible that an operator is neither logical or physical; such an operator might be useful if the optimization is organized as an expansion grammar including ”non-terminals” like the Starburst optimizer [Loh88]. On the other hand, a DBI who wishes to do so can easily retain a strict separation of logical and physical operators, e.g., by defining subclasses with suitable definitions for the methods ”is-logical” and ”is-physical” and by defining all operators as subclasses of these two classes.</p>
+<p>任何数据库查询优化器的核心都是查询语言和查询评估引擎中支持的运算符集。 请注意，这两组是不同的； 我们称它们为逻辑和物理运算符[Gra93]。 虽然以前的可扩展运算符要求这两个集合是分离的，但我们已经放弃了这一要求。 Cascades 优化器接口中的“类 OP-ARG”包括逻辑运算符和物理运算符。 对于每个运算符，一种称为“is-logic”的方法指示该运算符是否是逻辑运算符，而第二种称为“is-physical”的方法指示该运算符是否是物理运算符。 事实上，操作符有可能既不是逻辑操作符也不是物理操作符； 如果优化被组织为包含“非终结符”的扩展语法（如 Starburst 优化器 [Loh88]），这样的运算符可能会很有用。 另一方面，希望这样做的 DBI 可以轻松地保持逻辑和物理运算符的严格分离，例如，通过为方法“is-logic”和“is-physical”定义适当的定义来定义子类，并定义所有 运算符作为这两个类的子类。</p>
+<p>The definition of operators includes their arguments. Thus, no separate mechanisms are required or provided for ”argument transfer” as in EXODUS and Volcano. Notice, however, that there are two crucial facilities that permits and encourage modeling predicates etc., which had been modeled as operator arguments in all our pro- totypes constructed in the EXODUS and Volcano frameworks, as primary operators in the logical and physical algebra’s. First, an operator can be both logical and physical, which is natural for single-record predicates, called ”sargable” in System R [SAC79]. Second, specific predicate transformations, e.g., splitting from a complex pred- icate those components that can be pushed through a join, which are most easily and efficiently implemented in a DBI function rather than as rules to be interpreted by the optimizer’s search engine, can easily be realized in rules that invoke a DBI-supplied to map an expression to substitute expressions (one or more). Thus, after the EXODUS and the Volcano work has been repeatedly criticized that predicate manipulation has been very cum- bersome, the Cascades optimizer offers much improved facilities.</p>
+<p>运算符的定义包括它们的参数。 因此，不需要或为 EXODUS 和 Volcano 中的“参数转移”提供单独的机制。 然而，请注意，有两个关键的设施允许和鼓励建模谓词等，它们在我们在 EXODUS 和 Volcano 框架中构建的所有原型中被建模为运算符参数，作为逻辑和物理代数中的主要运算符。 首先，运算符既可以是逻辑运算符，也可以是物理运算符，这对于单记录谓词来说是很自然的，在 System R [SAC79] 中称为“sargable”。 其次，特定的谓词转换，例如，从复杂的谓词中分离出那些可以通过连接推送的组件，这些组件在 DBI 函数中最容易、最有效地实现，而不是作为由优化器的搜索引擎解释的规则，可以 很容易在调用 DBI 提供的规则中实现，以将表达式映射到替换表达式（一个或多个）。 因此，在 EXODUS 和 Volcano 工作多次被批评谓词操作非常繁琐之后，Cascades 优化器提供了大大改进的设施。</p>
+<p>The optimizer’s design does not include assumptions about the logical and physical algebra’s to be optimized; therefore, no query or plan operators are built into the optimizer. For use in rules, however, there are two special operators, called ”LEAF-OP” and ”TREE-OP.” The leaf operator can be used as leaf in any rule; during matching, it matches any subtree. Before a rule is applied, an expression is extracted from the search memory that matches the rule’s pattern; where the rule’s pattern has leaves, the extracted expression also has leaf operators that refer (via an array index) to equivalence classes in the search memory. The tree operator is like the leaf operator except that the extracted expression contains an entire expression, independent of its size or complexity, down to the leaf operators in the logical algebra. This operator is particularly useful in connection with function rules, which are described below.</p>
+<p>优化器的设计不包括有关要优化的逻辑和物理代数的假设； 因此，优化器中没有内置任何查询或计划运算符。 然而，为了在规则中使用，有两个特殊的运算符，称为“LEAF-OP”和“TREE-OP”。 叶子运算符可以用作任何规则中的叶子； 匹配时，匹配任意子树。 在应用规则之前，从搜索内存中提取与规则模式匹配的表达式； 如果规则的模式具有叶子，则提取的表达式还具有叶子运算符，这些运算符（通过数组索引）引用搜索内存中的等价类。 树运算符类似于叶运算符，只不过提取的表达式包含整个表达式（与其大小或复杂性无关），直至逻辑代数中的叶运算符。 该运算符在与函数规则结合时特别有用，如下所述。</p>
+<p>Beyond the methods ”is-logical” and ”is-physical,” all operators must provide a method ”opt- cutoff”. Given a set of moves during an optimization task, this method determines how many of those will be pursued, obviously the most promising ones. By default, all possible moves will be pursued, because exhaustive search guarantees that the optimal plan will be found. There is also a small set of methods that must be provided only for those operators that have been declared logical. For pattern matching and for finding duplicate expressions, methods for matching and hashing are required. Methods for finding and improving logical properties are used to determine an original set of properties (e.g., the schema) and then to improve it when alternative expressions have been found (e.g., more bounds on selectivity or the output size). Finally, for exploration tasks, an operator may be called upon to initialize a pattern memory and to decide how many moves to pursue during an exploration task.</p>
+<p>除了“is-logic”和“is-physical”方法之外，所有操作员都必须提供“opt-cutoff”方法。 给定优化任务期间的一组移动，此方法确定将执行其中的多少个，显然是最有希望的移动。 默认情况下，将追求所有可能的移动，因为穷举搜索保证找到最佳计划。 还有一小组必须仅为已声明为逻辑的运算符提供的方法。 对于模式匹配和查找重复表达式，需要匹配和散列方法。 查找和改进逻辑属性的方法用于确定一组原始属性（例如，模式），然后在找到替代表达式（例如，选择性或输出大小的更多界限）时对其进行改进。 最后，对于探索任务，操作员可能被要求初始化模式存储器并决定在探索任务期间要进行多少次移动。</p>
+<p>Similarly, there are some methods for physical operators. Obviously, there is a method to determine an oper- ator’s (physical) output properties, i.e., properties of the representation. Moreover, there are three methods that compute and inspect costs. The first of these calculates the local cost of an algorithm, without any regard to the costs of its inputs. The second one combines the costs and physical properties of an algorithm’s inputs into the cost of an entire subplan. The third of these methods verifies, between optimizing two inputs of an algorithm, that the cost limit has not been exceeded yet, and computes a new cost limit to be used when optimizing the next input. Finally, just as the last method maps an expression’s cost limit to a cost limit for one of its inputs, there is a method that maps the optimization goal for an expression to an optimization goal for one of its inputs, i.e., a cost limit and required and excluded physical properties, called ”input-reqd-prop.” Let us discuss properties and their methods next.</p>
+<p>同样，物理操作符也有一些方法。 显然，有一种方法可以确定算子的（物理）输出属性，即表示的属性。 此外，还有三种计算和检查成本的方法。 第一个计算算法的本地成本，而不考虑其输入的成本。 第二个将算法输入的成本和物理属性结合到整个子计划的成本中。 第三种方法在优化算法的两个输入之间验证是否尚未超出成本限制，并计算优化下一个输入时要使用的新成本限制。 最后，正如最后一种方法将表达式的成本限制映射到其输入之一的成本限制一样，有一种方法将表达式的优化目标映射到其输入之一的优化目标，即成本限制和 必需和排除的物理属性，称为“input-reqd-prop”。 接下来让我们讨论属性及其方法。</p>
+<h3 id="3-2-Logical-and-Physical-Properties-Costs"><a href="#3-2-Logical-and-Physical-Properties-Costs" class="headerlink" title="3.2 Logical and Physical Properties, Costs"></a><strong>3.2 Logical and Physical Properties, Costs</strong></h3><p>The interface to the interface for anticipated execution costs, the ”class COST,” is very simple, since instances of costs are created and returned by methods associated with other classes, e.g., operators. Beyond destruction and printing, the only method for costs is a comparison method. Similarly, the only method for the encapsulation of logical properties, the ”class SYNTH-LOG- PROP,” is a hash function that permits faster retrieval of duplicate expressions Since even this function does not apply to physical expressions, the encapsulation for physical prop- erties, the ”class SYNTH-PHYS-PROP,” has no methods at all. The class for required physical properties, the ”class REQD-PHYS-PROP,” has only one method associated with it, which determines whether a synthesized physical property instance covers the required physical properties. If one set of properties is more specific than another, e.g., one indicates a result sorted on attributes ”A, B, C” and the one requires sort order on ”A, B” only, the comparison method returns the value ”MORE.” The default implementation of this method returns the value ”UNDEFINED.”</p>
+<p>预期执行成本的接口“类 COST”非常简单，因为成本实例是由与其他类（例如运算符）关联的方法创建和返回的。 除了销毁和印刷之外，衡量成本的唯一方法就是比较法。 类似地，封装逻辑属性的唯一方法“类 SYNTH-LOG-PROP”是一个散列函数，它允许更快地检索重复表达式。由于即使该函数也不适用于物理表达式，所以对物理属性的封装 erties，“SYNTH-PHYS-PROP 类”根本没有方法。 所需物理属性的类，“类REQD-PHYS-PROP”，只有一个与其关联的方法，该方法确定合成的物理属性实例是否涵盖所需的物理属性。 如果一组属性比另一组更具体，例如，一组属性指示按属性“A、B、C”排序的结果，而一组属性只需要按“A、B”排序，则比较方法返回值“MORE”。 ” 此方法的默认实现返回值“UNDEFINED”。</p>
+<h3 id="3-3-Expression-Trees"><a href="#3-3-Expression-Trees" class="headerlink" title="3.3 Expression Trees"></a><strong>3.3 Expression Trees</strong></h3><p>In order to communicate expressions between the DBI and the optimizer, e.g., as queries, as plans, or in rules, another abstract data type is part of the interface, call the ”class EXPR.” Each instance of this class is a node in a tree, consisting of an operator and to pointers to input nodes. Obviously, the number of children in any expres- sion node must be equal to the arity function of the node’s operator. Methods on an expression node, beyond constructor, destructor, and printing, include methods to extract the operator or one of the inputs as well as a matching method, which recursively traverses two expression trees and invokes the matching method for each node’s operator.</p>
+<p>为了在 DBI 和优化器之间传递表达式（例如，作为查询、作为计划或在规则中），另一种抽象数据类型是接口的一部分，称为“类 EXPR”。 此类的每个实例都是树中的一个节点，由一个运算符和指向输入节点的指针组成。 显然，任何表达式节点中的子节点数量必须等于节点运算符的元数函数。 除了构造函数、析构函数和打印之外，表达式节点上的方法还包括提取运算符或输入之一的方法以及匹配方法，该方法递归遍历两个表达式树并为每个节点的运算符调用匹配方法。</p>
+<p><strong>3.4 Search Guidance</strong></p>
+<p>In addition to pattern, cost limits, and required and excluded physical properties, rule application can also con- trolled by heuristics represented by instances of the ”class GUIDANCE.” Its purpose is to transfer optimization heuristics from one rule application to the next. Notice that costs and properties pertain to the expressions be- ing manipulated and to the intermediate result those expressions will product when a query plan is executed; the guidance class captures knowledge about the search process and heuristics for future search activities. For ex- ample, some rules such as commutativity rules are to applied only once; for those, a simple guidance structure and a rule class are provided as part of the DBI interface, called ”ONCE-GUIDANCE” and ”ONCE-RULE.”</p>
+<p>除了模式、成本限制以及必需和排除的物理属性之外，规则应用还可以通过“类 GUIDANCE”实例所代表的启发法来控制。 其目的是将优化启发式从一个规则应用程序转移到下一个规则应用程序。 请注意，成本和属性与正在操作的表达式以及执行查询计划时这些表达式将产生的中间结果有关； 指导类获取有关搜索过程的知识以及未来搜索活动的启发法。 例如，某些规则（例如交换性规则）仅适用一次； 对于这些，一个简单的指导结构和一个规则类作为 DBI 接口的一部分提供，称为“ONCE-GUIDANCE”和“ONCE-RULE”。</p>
+<p>Some researchers have advocated to divide a query optimizer’s rule set into ”modules” that can be invoked one at a time, e.g., Mitchell et al. [MDZ93]. Guidance structures can easily facilitate this design: a guidance structure indicates which module is to be chosen, and each rule checks this indication in its promise (or condition) function and then creates suitable indications when creating guidance structures for its</p>
+<p> newly created expressions and their inputs.</p>
+<p>一些研究人员主张将查询优化器的规则集划分为可以一次调用一个的“模块”，例如，Mitchell 等人。 [MDZ93]。 指导结构可以轻松地促进这种设计：指导结构指示要选择哪个模块，每个规则在其承诺（或条件）函数中检查该指示，然后在为其新创建的表达式及其输入创建指导结构时创建合适的指示 。</p>
+<p><strong>3.5 Pattern Memory</strong></p>
+<p>In addition to the search guidance, exploration effort can be restricted by use of the pattern memory. The purpose of the pattern memory is to prevent that the same group is explored unnecessarily, e.g., twice for the same pattern. There is one instance of a pattern memory associated with each group. Before a group is explored for a pattern, the pattern memory is permitted to add the pattern to itself and is asked to determine whether or not exploration should take place. In the most simple search, in which exploration for any pattern is performed by exhaustive application of transformation rules, the pattern memory needs to contain only a Boolean, i.e., a memory whether or not the group has been explored previously. More sophisticated pattern memories would store each pattern.</p>
+<p>除了搜索指导之外，还可以通过使用模式存储器来限制探索工作。 模式记忆的目的是防止不必要地探索同一组，例如同一模式两次。 每一组都有一个与模式存储器相关联的实例。 在对一个组进行模式探索之前，模式存储器被允许将该模式添加到自身中，并被要求确定是否应该进行探索。 在最简单的搜索中，通过详尽地应用转换规则来执行对任何模式的探索，模式存储器只需要包含一个布尔值，即无论该组之前是否已被探索过的存储器。 更复杂的模式存储器将存储每个模式。</p>
+<p>Obviously, the pattern memory interacts with the exploration promise function. For the most simple promise function that always admits exhaustive search, the simple pattern memory above is suitable. It is left to the DBI to design pattern memory and promise functions most suitable to the algebra to be optimized.</p>
+<p>显然，模式记忆与探索承诺函数相互作用。 对于总是允许穷举搜索的最简单的 Promise 函数，上面的简单模式内存是合适的。 DBI 负责设计模式内存并承诺最适合待优化代数的函数。</p>
+<p>Beyond checking whether a given pattern already exists in the memory, and saving it to detect a second ex- ploration with the same pattern, the most complex method for pattern memories is to merge two pattern memories into one. This method is required when two groups of equivalent expressions are detected to be actually one, i.e., when a transformed expression already occurs in a different group in the search memory.</p>
+<p>除了检查给定模式是否已经存在于内存中，并将其保存以检测相同模式的第二次探索之外，模式记忆最复杂的方法是将两个模式记忆合并为一个。 当检测到两组等效表达式实际上是一组时，即当变换后的表达式已经出现在搜索存储器中的不同组中时，需要此方法。</p>
+<h3 id="3-6-Rules"><a href="#3-6-Rules" class="headerlink" title="3.6 Rules"></a><strong>3.6 Rules</strong></h3><p>Next to operators, the other important class of objects in the Cascades optimizer are rules. Notice that rules are objects; thus, new ones can be created at run-time, they can be printed, etc. While other rule-based optimizers, in particular the EXODUS and Volcano optimizer generators, divide logical and physical operators as well as (logical) transformation and (physical) implementation rules into disjoint sets, the Cascades optimizer does not distinguish between those rules, other than by invoking the is-logical and is-physical methods on newly created expressions. All rules are instances of the ”class RULE,” which provides for rule name, an antecedent (the ”be- fore” pattern), and a consequent (the substitute). Pattern and substitute are represented as expression trees, which were discussed above.</p>
+<p>除了运算符之外，Cascades 优化器中另一类重要的对象是规则。 请注意，规则是对象； 因此，可以在运行时创建新的运算符，可以打印它们等。而其他基于规则的优化器，特别是 EXODUS 和 Volcano 优化器生成器，将逻辑运算符和物理运算符分开，以及（逻辑）转换和（物理） ) 实现规则到不相交的集合中，Cascades 优化器不会区分这些规则，除非对新创建的表达式调用 is-logic 和 is-physical 方法。 所有规则都是“类 RULE”的实例，它提供了规则名称、前件（“之前”模式）和后件（替代项）。 模式和替代被表示为表达式树，这在上面已经讨论过。</p>
+<p>In their simplest case, rules do not contain more than that; whenever the pattern is found or can be created with exploration tasks, the substitute expression is included in the search memory. Both a rule’s pattern and sub- stitute can be arbitrarily complex. In the EXODUS and Volcano optimizer generators, an implementation rule’s substitute could not consist of more than a single implementation operator; in the Cascades design, this restriction has been removed. The remaining restriction is that all but the substitute’s top operator must be logical opera- tors. For example, it is possible to transform a (logical) join operator into a (physical) nested loops operator with a (logical) selection on its inner input, thus, detaching the selection predicate from the join algorithm and pushing it into the inner input tree.</p>
+<p>在最简单的情况下，规则仅包含这些内容； 每当找到或可以通过探索任务创建模式时，替代表达式就会包含在搜索内存中。 规则的模式和替代规则都可以任意复杂。 在 EXODUS 和 Volcano 优化器生成器中，实现规则的替代品不能包含多个实现运算符； 在Cascades设计中，这个限制已经被去掉了。 剩下的限制是除了替换的顶级运算符之外的所有运算符都必须是逻辑运算符。 例如，可以将（逻辑）连接运算符转换为（物理）嵌套循环运算符，并在其内部输入上进行（逻辑）选择，从而将选择谓词与连接算法分离并将其推入内部输入 树。</p>
+<p>For more sophisticated rules, two types of condition functions are supported. All of them consider not only the rule but also the current optimization goal, i.e., cost limit and required and excluded physical properties. First, before exploration starts, ”promise” functions informs the optimizer how useful the rule might be. There is one promise function for optimization tasks and one for exploration tasks. For unguided exhaustive search, all promise functions should return the value 1.0. A value of 0 or less will prevent the optimizer from further work for the current rule and expression. The default promise function returns 0 if a specific physical property is required, 2 if the substitute is an implementation algorithm, and 1 otherwise. If the cutoff methods associated with the operators choose exhaustive search (see above), the return value of the promise function will not change the quality of the final query evaluation plan, although it may affect the order in which plans are found, pruning effectiveness, and therefore the time an optimization takes.</p>
+<p>对于更复杂的规则，支持两种类型的条件函数。 它们不仅考虑了规则，还考虑了当前的优化目标，即成本限制以及所需和排除的物理属性。 首先，在探索开始之前，“promise”函数会通知优化器该规则的有用性。 有一种用于优化任务的承诺函数，一种用于探索任务的承诺函数。 对于无引导的穷举搜索，所有 Promise 函数都应返回值 1.0。 0 或更小的值将阻止优化器进一步处理当前规则和表达式。 如果需要特定的物理属性，则默认的 Promise 函数返回 0；如果替代是实现算法，则返回 2；否则返回 1。 如果与运算符相关的截止方法选择穷举搜索（见上文），则 Promise 函数的返回值不会改变最终查询评估计划的质量，尽管它可能会影响计划被发现的顺序、剪枝有效性、 以及优化所需的时间。</p>
+<p>Since the promise functions are invoked before exploration of subgroups, i.e., before entire expression trees corresponding to a rule’s pattern have been explored and extracted from the search memory, a ”condition” func- tion checks whether a rule is truly applicable after exploration is complete and a complete set of operators corre- sponding to the pattern in the rule is available. Whereas the promise functions return a real value that expresses grades of promise, the condition function returns a Boolean to indicate whether or not the rule is applicable.</p>
+<p>由于 Promise 函数是在探索子组之前调用的，即在探索并从搜索内存中提取与规则模式相对应的整个表达式树之前，“条件”函数会在探索完成后检查规则是否真正适用 并且与规则中的模式对应的完整的运算符集是可用的。 承诺函数返回表示承诺等级的实际值，而条件函数返回布尔值以指示规则是否适用。</p>
+<p>In addition to promise and condition functions, a small set of methods is associated with rules. Of course, there are constructor, destructor, and print methods, as well as method to extract the pattern, the substitute, the rule’s name, and its arity (the pattern’s number of leaf operators). The ”rule-type” method indicates whether a  rule is a simple rule (as described so far) or a function rule (to be described shortly). The ”top-match” method determines whether or not an operator in the search memory matches the top operator in the rule’s pattern; this method is the only built-in check before an promise function is invoked. The method ”opt-cases” indicates how often a physical expression is to be optimized with different physical properties. In all but a few cases, this will be one; one of the few exception is a merge-join algorithm with two equality clauses (say ”R.A &#x3D;&#x3D; S.A and R.B &#x3D;&#x3D; S.B”) that should be optimized for two sort orders (sorted on ”A, B” and on ”B, A”). By default, this method returns 1. The remaining methods all create new guidance structures to be used when optimizing a newly created expression and its inputs. There are two methods each for optimization and for exploration, and two each for the new expression and for its inputs, called ”opt-guidance,” ”expl-guidance,” ”input-opt-guidance,” and ”input- expl-guidance.” By default, all of them return ”NULL,” i.e., no specific guidance.</p>
+<p>除了承诺和条件函数之外，还有一小组与规则相关的方法。 当然，还有构造函数、析构函数和打印方法，以及提取模式、替代项、规则名称及其数量（模式的叶运算符的数量）的方法。 “规则类型”方法指示规则是简单规则（如上所述）还是函数规则（稍后描述）。 “top-match”方法确定搜索存储器中的操作符是否与规则模式中的顶部操作符匹配； 此方法是调用 Promise 函数之前唯一的内置检查。 方法“opt-cases”指示使用不同物理属性优化物理表达式的频率。 除了少数情况外，在所有情况下，这都是一个； 少数例外之一是具有两个相等子句（例如“R.A &#x3D;&#x3D; S.A 和 R.B &#x3D;&#x3D; S.B”）的合并连接算法，该算法应针对两种排序顺序进行优化（按“A，B”和“B”排序， A”）。 默认情况下，此方法返回 1。其余方法都创建新的指导结构，以便在优化新创建的表达式及其输入时使用。 优化和探索各有两种方法，新表达式及其输入各有两种方法，称为“opt-guidance”、“expl-guidance”、“input-opt-guidance”和“input-expl-” 指导。” 默认情况下，它们都返回“NULL”，即没有具体指导。</p>
+<p>If a rule’s substitute consists of only a leaf operator, the rule is a reduction rule. If a reduction rule is appli- cable, two groups in the search memory will be merged. On the other hand, if a rule’s pattern consists of only a leaf operator, the rule is an expansion rule that is always applicable. The Cascades optimizer must rely on the DBI to design appropriate promise and condition functions to avoid useless transformations. Nonetheless, there is an important class of situations in which expansion rules are useful, namely the insertion of physical operators that enforce or guarantee desired physical properties. Such rules may also be called enforcer rules. Consider the inputs to a merge-join’s inputs, which must be sorted. An enforcer rule may insert a sort operation, the rule’s promise and condition functions must permit this rule only of sort order is required, and the sort operator’s ”input- reqd-prop” method must set excluded properties to avoid consideration of plans that produce their output in the desired sort order as input to the sort operator.</p>
+<p>如果规则的替代仅由叶运算符组成，则该规则是归约规则。 如果适用缩减规则，搜索存储器中的两组将被合并。 另一方面，如果规则的模式仅由叶运算符组成，则该规则是始终适用的扩展规则。 Cascades优化器必须依赖DBI来设计适当的承诺和条件函数以避免无用的转换。 尽管如此，有一类重要的情况下扩展规则是有用的，即插入强制或保证所需物理属性的物理运算符。 此类规则也可称为执行者规则。 考虑合并连接输入的输入，这些输入必须进行排序。 执行者规则可以插入排序操作，规则的承诺和条件函数必须允许仅需要排序顺序的规则，并且排序运算符的“input-reqd-prop”方法必须设置排除的属性，以避免考虑产生其结果的计划。 以所需的排序顺序输出作为排序运算符的输入。</p>
+<p>In some situations, it is easier to write a function that directly transforms an expression than to design and control a rule set for the same transformation. For example, dividing a complex join predicate into clauses that apply to left, right, and both inputs is a deterministic process best implemented by a single function. For those cases, the Cascades optimizer supports a second class of rules, called the ”class FUNCTION-RULE.” Once an expression is extracted that corresponds to the rule’s pattern, an iterator method is invoked repeatedly to create all substitutes for the expression. Note that the extracted expression can be arbitrarily deep and complex if the tree operator (see above) is employed in the rule’s pattern. Thus, tree operators and function rules permit the DBI to write just about any transformation. In the extreme case, a set of function rules could perform all query transformations, although that would defeat some of the Cascades framework’s purpose.</p>
+<p>在某些情况下，编写直接转换表达式的函数比设计和控制同一转换的规则集更容易。 例如，将复杂的连接谓词划分为适用于左、右和两个输入的子句是一个确定性过程，最好由单个函数实现。 对于这些情况，Cascades 优化器支持第二类规则，称为“类 FUNCTION-RULE”。 一旦提取出与规则模式相对应的表达式，就会重复调用迭代器方法来创建该表达式的所有替代项。 请注意，如果在规则模式中使用树运算符（见上文），则提取的表达式可以是任意深度和复杂的。 因此，树运算符和函数规则允许 DBI 编写任何转换。 在极端情况下，一组函数规则可以执行所有查询转换，尽管这会违背 Cascades 框架的某些目的。</p>
+<h2 id="4-Future-Work"><a href="#4-Future-Work" class="headerlink" title="4 Future Work"></a><strong>4 Future Work</strong></h2><p>Of course, there is a lot of work that should be done to make the Cascades optimizer more useful and complete. First, the optimizer has not yet gone through a thorough evaluation and tuning phase. Second, building addi- tional optimizers based on this framework will undoubtedly show many weaknesses not yet apparent. Third, one or more generators that produce Cascades specifications from higher-level data model and algebra descriptions would be very useful. Fourth, we already know of a number of desirable improvements for the search strategy and its implementation.</p>
+<p>当然，要使 Cascades 优化器更加有用和完整，还有很多工作要做。 首先，优化器尚未经历彻底的评估和调整阶段。 其次，基于这个框架构建额外的优化器无疑会显示出许多尚未明显的弱点。 第三，从更高级别的数据模型和代数描述生成级联规范的一个或多个生成器将非常有用。 第四，我们已经知道搜索策略及其实施方面有许多值得改进的地方。</p>
+<p>The Cascades optimizer was designed to be reasonably fast, although extensibility was a more important de- sign goal. Among the artifacts of separating the optimizer framework and the DBI’s specification of operators, cost functions, etc. are extensive use of virtual methods, a very large number of references between structures, and very frequent object allocation and deallocation. While unavoidable, there probably is room for improve- ment, in particular if one is willing to give up the strong separation that permits modifications of DBI code without recompiling Cascades code. Before this ”de-modularization” step is taken, however, a strong argument should be made based on a measurement study that this would indeed improve an optimizer’s performance.</p>
+<p>尽管可扩展性是更重要的设计目标，但 Cascades 优化器的设计速度相当快。 将优化器框架与 DBI 的运算符、成本函数等规范分开的工件包括虚拟方法的广泛使用、结构之间的大量引用以及非常频繁的对象分配和释放。 虽然不可避免，但可能还有改进的空间，特别是如果愿意放弃允许修改 DBI 代码而无需重新编译 Cascades 代码的强分离。 然而，在采取这种“去模块化”步骤之前，应该根据测量研究提出强有力的论据，证明这确实会提高优化器的性能。</p>
+<h2 id="5-Summary-and-Conclusions"><a href="#5-Summary-and-Conclusions" class="headerlink" title="5 Summary and Conclusions"></a><strong>5 Summary and Conclusions</strong></h2><p>Beyond a better and more robust implementation than found in the EXODUS and Volcano optimizer generators, the Cascades optimizer offers a number of advantages, without giving up modularity, extensibility, dynamic pro- gramming, and memorization explored in those earlier prototypes. First, predicates and other item operations can conveniently modeled as part of the query and plan algebra. Operators that are both logical and physical; thus, it is easy to specify operators that may appear both in the optimizer input (the query) an din its output (the plan). Function rules and the tree operator permit direct manipulation of even complex trees of item operations using DBI-supplied functions. Second, enforcers such as sorting are normal operators in all ways; in particular, they are inserted into a plan based on explicit rules. In Volcano, they were special operators that did not appear in any rule. Third, both exploration (enumeration of equivalent logical expressions) and optimization (mapping a logical to a physical expression) can be guided and controlled by the DBI. Together with the more robust imple- mentation as required for industrial deployment, we believe that the Cascades optimizer represents a substantial improvement over earlier extensible database query optimizers.</p>
+<p>除了比 EXODUS 和 Volcano 优化器生成器更好、更强大的实现之外，Cascades 优化器还提供了许多优点，同时又不放弃早期原型中探索的模块化、可扩展性、动态编程和记忆功能。 首先，谓词和其他项操作可以方便地建模为查询和计划代数的一部分。 逻辑和物理运算符； 因此，很容易指定可能同时出现在优化器输入（查询）和输出（计划）中的运算符。 函数规则和树运算符允许使用 DBI 提供的函数直接操作甚至复杂的项目操作树。 其次，像排序这样的执行者在所有方面都是正常的操作者； 特别是，它们被插入到基于明确规则的计划中。 在火山中，他们是没有出现在任何规则中的特殊干员。 第三，探索（等效逻辑表达式的枚举）和优化（将逻辑表达式映射到物理表达式）都可以由 DBI 引导和控制。 结合工业部署所需的更强大的实现，我们相信 Cascades 优化器比早期的可扩展数据库查询优化器有了重大改进。</p>
+<h2 id="6-Acknowledgments"><a href="#6-Acknowledgments" class="headerlink" title="6 Acknowledgments"></a><strong>6 Acknowledgments</strong></h2><p>The query processing group at Tandem has been very helpful in forcing me to address the hard problems unre- solved in the EXODUS and Volcano optimizer generators and in finding effective and usable solutions. David Maier has been a great sounding board for ideas during the design and development of the Cascades optimizer.</p>
+<p>Tandem 的查询处理小组非常有帮助，迫使我解决 EXODUS 和 Volcano 优化器生成器中未解决的难题，并找到有效且可用的解决方案。 在 Cascades 优化器的设计和开发过程中，David Maier 一直是一个很好的意见反馈者。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/" title="数据库SQL总结">http://heoric.github.io/2023/11/07/2-数据库/4-论文/1-Cascades/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BC%98%E5%8C%96%E5%99%A8/" rel="tag"># 优化器</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/" rel="prev" title="Generalized Isolation Level Definitions">
+                  <i class="fa fa-angle-left"></i> Generalized Isolation Level Definitions
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/07/7-%E5%88%86%E5%B8%83%E5%BC%8F/raft/" rel="next" title="深入理解raft">
+                  深入理解raft <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"b1a6e403e857e900f45cdef3b62af30b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

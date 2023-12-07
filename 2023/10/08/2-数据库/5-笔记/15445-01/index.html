@@ -18,15 +18,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。 今天我们来讲讲数据库SQL。">
+    <meta name="description" content="15445 是 一门 数据库管理系统的设计与实现 的课程。 课程大纲：  Relational Databases Storage Execution Concurrency Control Recovery Distributed Databases Potpourri">
 <meta property="og:type" content="article">
-<meta property="og:title" content="存储">
+<meta property="og:title" content="15445">
 <meta property="og:url" content="http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
-<meta property="og:description" content="数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。 今天我们来讲讲数据库SQL。">
+<meta property="og:description" content="15445 是 一门 数据库管理系统的设计与实现 的课程。 课程大纲：  Relational Databases Storage Execution Concurrency Control Recovery Distributed Databases Potpourri">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-08T06:44:57.000Z">
-<meta property="article:modified_time" content="2023-10-24T08:41:00.054Z">
+<meta property="article:modified_time" content="2023-11-14T03:16:45.028Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
@@ -36,10 +36,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/","path":"2023/10/08/2-数据库/5-笔记/15445-01/","title":"存储"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/","path":"2023/10/08/2-数据库/5-笔记/15445-01/","title":"15445"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>存储 | Leoirc's Blogs</title>
+<title>15445 | Leoirc's Blogs</title>
   
 
 
@@ -111,7 +111,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E5%A6%82%E4%BD%95%E8%A1%A8%E7%A4%BApage-%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">该如何表示page 存储架构?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E4%B8%80%E4%B8%AApage%E4%B8%AD%EF%BC%8C%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E4%B8%A4%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E6%96%B9%E5%BC%8F%E6%9D%A5%E8%A1%A8%E7%A4%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">在一个page中，我们可以通过两种不同的方式来表示数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-pool"><span class="nav-number"></span> <span class="nav-text">buffer pool</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-table"><span class="nav-number"></span> <span class="nav-text">hash table</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">关系模型关系代数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A81"><span class="nav-number">2.</span> <span class="nav-text">存储1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E5%A6%82%E4%BD%95%E8%A1%A8%E7%A4%BApage-%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">2.0.1.</span> <span class="nav-text">该如何表示page 存储架构?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E4%B8%80%E4%B8%AApage%E4%B8%AD%EF%BC%8C%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E4%B8%A4%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E6%96%B9%E5%BC%8F%E6%9D%A5%E8%A1%A8%E7%A4%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">2.0.2.</span> <span class="nav-text">在一个page中，我们可以通过两种不同的方式来表示数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A82"><span class="nav-number">3.</span> <span class="nav-text">存储2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer-pool-Manager"><span class="nav-number">4.</span> <span class="nav-text">buffer pool Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E7%AD%96%E7%95%A5"><span class="nav-number">4.1.</span> <span class="nav-text">替换策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-table"><span class="nav-number">5.</span> <span class="nav-text">hash table</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -126,7 +126,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -137,7 +137,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -182,12 +182,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="存储 | Leoirc's Blogs">
+      <meta itemprop="name" content="15445 | Leoirc's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          存储
+          15445
         </h1>
 
         <div class="post-meta-container">
@@ -205,7 +205,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-24 16:41:00" itemprop="dateModified" datetime="2023-10-24T16:41:00+08:00">2023-10-24</time>
+      <time title="修改时间：2023-11-14 11:16:45" itemprop="dateModified" datetime="2023-11-14T11:16:45+08:00">2023-11-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,20 +233,30 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>数据库、操作系统和编译器是计算机软件的三大系统。其中数据库更接近业务层，几乎所有软件都会用到数据库，所以对数据库的熟练使用时每个开发人员必备的技能，而数据库对外最直接的接口就是 SQL。</p>
-<p>今天我们来讲讲数据库SQL。</p>
+    <div class="post-body" itemprop="articleBody"><p>15445 是 一门 数据库管理系统的设计与实现 的课程。</p>
+<p>课程大纲：</p>
+<ul>
+<li>Relational Databases</li>
+<li>Storage</li>
+<li>Execution</li>
+<li>Concurrency Control</li>
+<li>Recovery</li>
+<li>Distributed Databases</li>
+<li>Potpourri</li>
+</ul>
 <span id="more"></span>
 
-
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Relational Databases</span><br><span class="line">Storage</span><br><span class="line">Execution</span><br><span class="line">Concurrency Control</span><br><span class="line">Recovery</span><br><span class="line">Distributed Databases</span><br><span class="line">Potpourri</span><br></pre></td></tr></table></figure>
-
-
-
+<h2 id="关系模型关系代数"><a href="#关系模型关系代数" class="headerlink" title="关系模型关系代数"></a>关系模型关系代数</h2><h2 id="存储1"><a href="#存储1" class="headerlink" title="存储1"></a>存储1</h2><p>面向磁盘的数据库，所有数据都存储在磁盘中。</p>
+<p>mmap 不要用在数据库存储种。</p>
 <p>如何将数据存储在磁盘上 ？</p>
 <p>需要暴露那些 API ？</p>
-<p>如何表示磁盘上文件中的数据 ？</p>
-<p>如果管理内存和磁盘之间的数据移动。（buffer pools）</p>
+<hr>
+<ol>
+<li><p>如何表示磁盘上文件中的数据 ？</p>
+</li>
+<li><p>如果管理内存和磁盘之间的数据移动。（buffer pools）</p>
+</li>
+</ol>
 <p>第一个问题</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">File Storage</span><br><span class="line">Page Layout</span><br><span class="line">Tuple Layout</span><br></pre></td></tr></table></figure>
 
@@ -259,7 +269,7 @@
 
 
 
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page(oracle)</span><br><span class="line">indirection 层 运行将 page <span class="built_in">id</span> 映射到文件中的某一个位置。</span><br><span class="line">page directory 记录page 在哪里</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br><span class="line">对磁盘进行 write 和 flush 只能保证 4kb 是原子的。</span><br></pre></td></tr></table></figure>
 
 
 
@@ -270,28 +280,81 @@
 
 
 <p>HEAP FILE 无序的</p>
-<p>链表。page目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">提供操作page 的函数</span><br><span class="line">create</span><br><span class="line">get</span><br><span class="line">write</span><br><span class="line">delete</span><br><span class="line">  </span><br><span class="line">迭代page   </span><br><span class="line">iterating</span><br><span class="line">  </span><br><span class="line">元数据表示 page 是否有空间，有那些 page</span><br><span class="line">  </span><br><span class="line">两种方式表示 heap file</span><br><span class="line">  链表（没人用）、page目录</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h4 id="该如何表示page-存储架构"><a href="#该如何表示page-存储架构" class="headerlink" title="该如何表示page 存储架构?"></a>该如何表示page 存储架构?</h4><p>最常⻅的方式是使用Heap File Organization.</p>
 <p>数据库中的 heap 文件是一个无序的 page 集合。</p>
 <p>用 page 目录来表示page 对应的位置。</p>
-<p>page header里面有 page 大小，checksum，数据库版本之类的东西。</p>
+<p><strong>更新数据和 page 目录的时候，有可能会崩溃，需要确保重建数据库的时候，能准确无误。</strong></p>
+<p>每个 page 的  header里面有 page 大小，checksum，数据库版本之类的东西。</p>
 <p>当新版本发布时候，可以判断根据不同版本来解析page。</p>
 <h4 id="在一个page中，我们可以通过两种不同的方式来表示数据"><a href="#在一个page中，我们可以通过两种不同的方式来表示数据" class="headerlink" title="在一个page中，我们可以通过两种不同的方式来表示数据"></a>在一个page中，我们可以通过两种不同的方式来表示数据</h4><p>面向 tuple 的方式 和 log-structured 的策略</p>
-<p>page header 里面有个 slot 数组 ，表明 tuple 数据。</p>
-<h3 id="buffer-pool"><a href="#buffer-pool" class="headerlink" title="buffer pool"></a>buffer pool</h3><p>malloc 一块内存，分成固定大小的 chunk，叫做  frame。</p>
-<p>page table 用来跟踪内存中有哪些 page。必须是线程安全的</p>
+<p>page header 后面有个 slot 数组 ，表明 tuple 数据。</p>
+<p>page header 里面记录有条 tuple （没人这么干）</p>
+<p>一个page 里都是相同 格式的 tuple。如果有碎片，需要 vaccum 进行整理碎片</p>
+<p>tuple id 一般由 page id 加 slot 组成。</p>
+<p>会有元数据记录 tuple 的组成。为了读取。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> r(id <span class="type">int</span> <span class="keyword">primary</span> key, val <span class="type">varchar</span>(<span class="number">6</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> r <span class="keyword">values</span>(<span class="number">101</span>,<span class="string">&#x27;aaa&#x27;</span>),(<span class="number">102</span>,<span class="string">&#x27;bbb&#x27;</span>),(<span class="number">103</span>,<span class="string">&#x27;ccc&#x27;</span>);</span><br><span class="line"><span class="keyword">select</span> r.ctid, r.<span class="operator">*</span> <span class="keyword">from</span> r;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- protgres ctid 表示了数据的位置。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> r <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">102</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> r <span class="keyword">values</span>(<span class="number">104</span>, <span class="string">&#x27;ddd&#x27;</span>); 会在后面追加。</span><br><span class="line"></span><br><span class="line"><span class="comment">--  pg 的 vacuum 会整理page。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="存储2"><a href="#存储2" class="headerlink" title="存储2"></a>存储2</h2><p>lsm tree 型数据库</p>
+<p>优势，速度快。追加</p>
+<p>劣势，查找慢。(压缩，建索引 提高查找速度)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Data Representation</span><br><span class="line">System Catalogs</span><br><span class="line">Storage Models</span><br></pre></td></tr></table></figure>
+
+<p>数据类型，decimal。大多数情况下，page的大小是固定的。</p>
+<p>如果一个 page 放不下数据的话。使用 overflow page。 通过一个指针，指向存数据的位置。</p>
+<p>postgres 中叫做 TOAST。 还有一种是放在 外部文件中。</p>
+<p>区分 olap 和 oltp</p>
+<h2 id="buffer-pool-Manager"><a href="#buffer-pool-Manager" class="headerlink" title="buffer pool Manager"></a>buffer pool Manager</h2><p><strong>如何将磁盘中的数据库文件 或者 page 放到内存中</strong></p>
+<p>什么时候将 page 读入内存，什么时候写出到磁盘。</p>
+<p>malloc 一块内存，分成固定大小的 chunk，叫做  frame。</p>
+<p>page table 用来跟踪内存(pool)中有哪些 page。必须是线程安全的.</p>
+<p>通过page table 和 page id 就可以定位到 内存中 的 特定page</p>
+<p>每个 page 都需要 额外的 元数据 来表示 page 发生的变化。page修改前， 需要写日志。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Dirty Flag   (page 是否被修改)</span><br><span class="line">Pin/Reference Counter  (引用该 page 的线程数，这样就不想写到磁盘中)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Locks:</span><br><span class="line">	保护数据库中的逻辑内容，</span><br><span class="line">Latches:</span><br><span class="line">	保护内部数据或者线程</span><br></pre></td></tr></table></figure>
+
+
+
 <p>page catalog 记录page 在数据库的文件的什么位置。需要持久化。</p>
-<p>page table 记录 buffer pool 中 page 的位置，不需要持久化。</p>
-<p>LRU 算法 LRU 的变体clock；</p>
+<p>page table 记录 buffer pool （内存）中 page 的位置，不需要持久化。</p>
+<p><strong>buffer pool optimizations</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Multiple Buffers Pools</span><br><span class="line">Pre-Fetching</span><br><span class="line">Scan Sharing</span><br><span class="line">Buffer Pool Bypass</span><br></pre></td></tr></table></figure>
+
+<p>多种策略：</p>
+<p>每个表一个 buffer pool。例如一个 buffer pool 处理索引，一个处理表。这样可以减少冲突。</p>
+<p>预取，提前把可能要读的数据放到内存中。</p>
+<p>查询共享，跟结果缓存不一样，结果缓存要求查询必须一样。两个查询要扫描相同的数据。</p>
+<p>不使用 操作系统的 缓存，一般使用 direct_io。posgtresql 是唯一一个依赖操作系统缓存的。</p>
+<p>fwrite 不是真正的写到磁盘，只有调用 sync 才会写。</p>
+<h3 id="替换策略"><a href="#替换策略" class="headerlink" title="替换策略"></a>替换策略</h3><p>LRU 算法 LRU 的变体clock；</p>
+<p>不跟踪时间戳，跟踪每个 page 的标志位。(在检查过后，这个page 是否被访问过。)</p>
+<p>环形 buffer，然后有个指针可以转，来检查标志位是 1还是 0。</p>
+<p>如果标志位是 0.那么自从上次检查过后，page没有被访问过。可以移除。</p>
 <p>优化 ：</p>
 <ol>
-<li><p>LRU-K</p>
+<li><p>LRU-K，访问达到 k 次的才会被移除。</p>
 </li>
 <li><p>多个buff er池</p>
 </li>
 <li><p>priority hints(优先级提示)</p>
 </li>
 </ol>
+<p><strong>如何处理 dirty pages ？</strong></p>
+<p>page 上有一个 dirty bit 标志是否有 query 对他进行了修改。</p>
+<p>其他内存池：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sorting + <span class="built_in">join</span></span><br><span class="line">query caches</span><br><span class="line">maintenance buffers</span><br><span class="line"><span class="built_in">log</span> buffers</span><br><span class="line">dictionary buffers</span><br></pre></td></tr></table></figure>
+
+
+
+<p>project 1s</p>
 <h2 id="hash-table"><a href="#hash-table" class="headerlink" title="hash table"></a>hash table</h2><ul>
 <li>hash functions</li>
 <li>Static Hashing Schemes</li>
@@ -341,7 +404,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/" title="存储">http://heoric.github.io/2023/10/08/2-数据库/5-笔记/15445-01/</a>
+      <a href="http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/" title="15445">http://heoric.github.io/2023/10/08/2-数据库/5-笔记/15445-01/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！

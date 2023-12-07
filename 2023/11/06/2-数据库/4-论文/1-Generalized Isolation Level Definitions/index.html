@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Commercial databases support different isolation levels to allow programmers to trade off consistency for a poten- tial gain in performance. The isolation levels are defined in the current ANSI standa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generalized Isolation Level Definitions">
+<meta property="og:url" content="http://heoric.github.io/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Commercial databases support different isolation levels to allow programmers to trade off consistency for a poten- tial gain in performance. The isolation levels are defined in the current ANSI standa">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-06T06:44:57.000Z">
+<meta property="article:modified_time" content="2023-11-07T03:54:49.130Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="事务">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://heoric.github.io/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/","path":"2023/11/06/2-数据库/4-论文/1-Generalized Isolation Level Definitions/","title":"Generalized Isolation Level Definitions"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Generalized Isolation Level Definitions | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.</span> <span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Previous-Work"><span class="nav-number">2.</span> <span class="nav-text">2. Previous Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Restrictiveness-of-Preventative-Approach"><span class="nav-number">3.</span> <span class="nav-text">3. Restrictiveness of Preventative Approach</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Database-Model-and-Transaction-Histories"><span class="nav-number">4.</span> <span class="nav-text">4. Database Model and Transaction Histories</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Database-Model"><span class="nav-number">4.1.</span> <span class="nav-text">4.1. Database Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Transaction-Histories"><span class="nav-number">4.2.</span> <span class="nav-text">4.2. Transaction Histories</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Generalized Isolation Level Definitions | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Generalized Isolation Level Definitions
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-06 14:44:57" itemprop="dateCreated datePublished" datetime="2023-11-06T14:44:57+08:00">2023-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-07 11:54:49" itemprop="dateModified" datetime="2023-11-07T11:54:49+08:00">2023-11-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index"><span itemprop="name">论文</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><em>Commercial databases support different isolation levels to allow programmers to trade off consistency for a poten- tial gain in performance. The isolation levels are defined in the current ANSI standard, but the definitions are ambigu- ous and revised definitions proposed to correct the problem are too constrained since they allow only pessimistic (lock- ing) implementations. This paper presents new specifica- tions for the ANSI levels. Our specifications are</em> portable*; they apply not only to locking implementations, but also to optimistic and multi-version concurrency control schemes. Furthermore, unlike earlier definitions, our new specifica- tions handle predicates in a correct and flexible manner at all levels.*</p>
+<p>商业数据库支持不同的隔离级别，使程序员可以牺牲一致性来获得潜在的性能提升。 隔离级别在当前的 ANSI 标准中进行了定义，但这些定义是不明确的，并且为纠正该问题而提出的修订定义过于受限，因为它们只允许悲观（锁定）实现。 本文提出了 ANSI 级别的新规范。 我们的规格是便携式的； 它们不仅适用于锁定实现，还适用于乐观和多版本并发控制方案。 此外，与早期的定义不同，我们的新规范在各个级别以正确且灵活的方式处理谓词。</p>
+<span id="more"></span>
+
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a><strong>1. Introduction</strong></h2><p>This paper gives new, precise definitions of the ANSI- SQL isolation levels [6]. Unlike previous proposals [13, 6, 8], the new definitions are both correct (they rule out all bad histories) and implementation-independent. Our spec- ifications allow a wide range of concurrency control tech- niques, including locking, optimistic techniques [20, 2, 5], and multi-version mechanisms [9, 24]. Thus, they meet the goals of ANSI-SQL and could be used as an isolation standard.</p>
+<p>本文给出了 ANSI-SQL 隔离级别的新的、精确的定义 [6]。 与之前的提案 [13,6,8] 不同，新定义既正确（它们排除了所有不良历史）又独立于实现。 我们的规范允许广泛的并发控制技术，包括锁定、乐观技术[20,2,5]和多版本机制[9,24]。 因此，它们满足 ANSI-SQL 的目标，并且可以用作隔离标准。</p>
+<p>The concept of isolation levels was first introduced in [13] under the name <em>Degrees of Consistency</em>. The goal of this work was to provide improved concurrency for workloads by sacrificing the guarantees of perfect isolation. The work in [13] and some refinements suggested by [11] set the stage for the ANSI&#x2F;ISO SQL-92 definitions for isolation levels [6], where the goal was to develop a standard that was implementation-independent. However, a subsequent paper [8] showed that the definitions provided in [6] were ambiguous. That paper proposed different definitions that avoided the ambiguity problems, but, as stated in [8], these definitions were simply “disguised versions of locking” and therefore disallow optimistic and multi-version mech- anisms. Thus, these definitions fail to meet the goals of ANSI-SQL with respect to implementation-independence.</p>
+<p>隔离级别的概念首次在[13]中以“一致性程度”的名称引入。 这项工作的目标是通过牺牲完美隔离的保证来提高工作负载的并发性。 [13] 中的工作和 [11] 建议的一些改进为隔离级别的 ANSI&#x2F;ISO SQL-92 定义奠定了基础 [6]，其目标是开发一个独立于实现的标准。 然而，随后的论文[8]表明[6]中提供的定义是不明确的。 该论文提出了避免歧义问题的不同定义，但是，正如[8]中所述，这些定义只是“锁定的变相版本”，因此不允许乐观和多版本机制。 因此，这些定义无法满足 ANSI-SQL 在实现独立性方面的目标。</p>
+<p>Thus, we have a problem: the standard is intended to be implementation-independent, but lacks a precise definition that meets this goal. Implementation-independence is im- portant since it provides flexibility to implementors, which can lead to better performance. Optimism can outperform locking in some environments, such as large scale, wide- area distributed systems [2, 15]; optimistic mechanisms are the schemes of choice for mobile environments; and Gem- stone [22] and Oracle [24] provide serializability and Snap- shot Isolation, respectively, using multi-version optimistic implementations. It is undesirable for the ANSI standard to rule out these implementations. For example, Gemstone provides serializability even though it does not meet the locking-based rules given in [8].</p>
+<p>因此，我们遇到了一个问题：该标准旨在独立于实现，但缺乏满足此目标的精确定义。 实现独立性很重要，因为它为实现者提供了灵活性，从而可以带来更好的性能。 在某些环境中，乐观可以胜过锁定，例如大规模、广域分布式系统 [2, 15]； 乐观机制是移动环境的首选方案； Gemstone [22] 和 Oracle [24] 使用多版本乐观实现分别提供可序列化和快照隔离。 ANSI 标准排除这些实现是不可取的。 例如，Gemstone 提供了可序列化性，即使它不满足 [8] 中给出的基于锁定的规则。</p>
+<p>This paper presents new implementation-independent specifications that correct the problems with the existing definitions. Our definitions cover the weaker isolation lev- els that are in everyday use: Most database vendors and database programmers take advantage of levels below se- rializability levels to achieve better performance; in fact, READ COMMITTED is the default for some database products and database vendors recommend using this level instead of serializability if high performance is desired. Our defi- nitions also enable database vendors to develop innovative implementations of the different levels using a wide variety of concurrency control mechanisms including locking, op- timistic and multi-version mechanisms. Furthermore, our specifications handle predicate-based operations correctly at all isolation levels.</p>
+<p>本文提出了新的独立于实现的规范，纠正了现有定义的问题。 我们的定义涵盖了日常使用的较弱隔离级别：大多数数据库供应商和数据库程序员利用低于可串行性级别的级别来实现更好的性能； 事实上，READ COMMITTED 是某些数据库产品的默认设置，如果需要高性能，数据库供应商建议使用此级别而不是串行化。 我们的定义还使数据库供应商能够使用各种并发控制机制（包括锁定、乐观和多版本机制）开发不同级别的创新实现。 此外，我们的规范在所有隔离级别正确处理基于谓词的操作。</p>
+<p>Thus, the paper makes the following contributions:</p>
+<p>因此，本文做出以下贡献：</p>
+<ul>
+<li>It specifies the existing ANSI isolation levels in an implementation-independent manner. The definitions are correct (they rule out all bad histories). They are also complete (they allow all good histories) for serializability; in particular, they provide conflict- serializability [9]. It is difficult to prove completeness for lower isolation levels, but we can easily show that our definitions are more permissive than those given in [8].</li>
+</ul>
+<p>  它以独立于实现的方式指定现有的 ANSI 隔离级别。 定义是正确的（它们排除了所有不好的历史）。 它们对于可序列化也是完整的（它们允许所有好的历史记录）； 特别是，它们提供冲突可串行化[9]。 很难证明较低隔离级别的完整性，但我们可以轻松证明我们的定义比[8]中给出的定义更宽松。</p>
+<ul>
+<li><p>Our specifications also handle predicates correctly in a flexible manner; earlier definitions were either lock- based or incomplete [8].</p>
+<p>我们的规范还以灵活的方式正确处理谓词； 早期的定义要么是基于锁的，要么是不完整的[8]。</p>
+</li>
+</ul>
+<p>Our approach can be used to define additional levels as well, including commercial levels such as Cursor Stability [11], and Oracle’s Snapshot Isolation and Read Consistency [24], and new levels; for example, we have developed an ad- ditional isolation level called PL-2+, which is the weakest level that guarantees consistent reads and causal consistency with respect to transactions. Details can be found in [1].</p>
+<p>我们的方法也可用于定义其他级别，包括商业级别，例如游标稳定性 [11]、Oracle 的快照隔离和读取一致性 [24]，以及新级别； 例如，我们开发了一个名为 PL-2+ 的附加隔离级别，这是保证事务一致性读取和因果一致性的最弱级别。 详细信息可以参见[1]。</p>
+<p>Our definitions are given using a combination of con- straints on transaction histories and graphs; we proscribe different types of cycles in a serialization graph at each isolation level. Our graphs are similar to those that have been used before for specifying serializability [9, 19, 14], semantics-based correctness criterion [4], and for defining extended transaction models [10]. Our approach is the first that applies these techniques to defining ANSI and commer- cial isolation levels. Our specifications are different from the multi-version theory presented in [9] since that work only describes conditions for serializability whereas we specify all ANSI&#x2F;SQL-92 and other commercial isolation levels for multi-version systems. Furthermore, unlike our specifica- tions, their definitions do not take predicates into account. Our work is also substantially different from the definitions presented in [8] since our specifications handle multi-version systems, optimistic systems and also deal with predicates in a correct and flexible manner at all isolation levels.</p>
+<p>我们的定义是结合交易历史和图表的约束给出的； 我们在每个隔离级别的序列化图中禁止不同类型的循环。 我们的图与之前用于指定可序列化性 [9,19,14]、基于语义的正确性标准 [4] 以及定义扩展事务模型 [10] 的图类似。 我们的方法是第一个将这些技术应用于定义 ANSI 和商业隔离级别的方法。 我们的规范与 [9] 中提出的多版本理论不同，因为该工作仅描述了可串行性的条件，而我们为多版本系统指定了所有 ANSI&#x2F;SQL-92 和其他商业隔离级别。 此外，与我们的规范不同，它们的定义没有考虑谓词。 我们的工作也与[8]中提出的定义有很大不同，因为我们的规范处理多版本系统、乐观系统，并且还在所有隔离级别以正确和灵活的方式处理谓词。</p>
+<p>Relaxed correctness conditions based on semantics and extended transaction models have been suggested in the past [10, 4, 17, 7]. By contrast, our work focuses on specifying existing ANSI and commercial isolation levels that are being used by large numbers of application programmers.</p>
+<p>过去已经提出了基于语义和扩展事务模型的宽松正确性条件[10,4,17,7]。 相比之下，我们的工作重点是指定大量应用程序员正在使用的现有 ANSI 和商业隔离级别。</p>
+<p>The rest of this paper is organized as follows. Section 2 discusses prior work in more detail. Section 3 shows that the current definitions are inadequate and motivates the need for our work. Section 4 describes our database model. Section 5 provides our definitions for the existing ANSI isolation lev- els. We close in Section 6 with a discussion of what we have accomplished.</p>
+<p>本文的其余部分安排如下。 第 2 节更详细地讨论了之前的工作。 第 3 节表明当前的定义是不充分的，并激发了我们工作的需要。 第 4 节描述了我们的数据库模型。 第 5 节提供了我们对现有 ANSI 隔离级别的定义。 我们在第 6 节结束时讨论了我们所取得的成就。</p>
+<h2 id="2-Previous-Work"><a href="#2-Previous-Work" class="headerlink" title="2. Previous Work"></a><strong>2. Previous Work</strong></h2><p>The original proposal for isolation levels [13] introduced four degrees of consistency, degrees 0, 1, 2 and 3, where de- gree 3 was the same as serializability. That paper, however, was concerned with locking schemes, and as a consequence the definitions were not implementation-independent.</p>
+<p>隔离级别的最初提议[13]引入了四种一致性程度：0、1、2 和 3 度，其中 3 度与可串行性相同。 然而，该论文关注的是锁定方案，因此定义并不是独立于实现的。</p>
+<p>However, that work, together with the refinement of the levels provided by Date [11], formed the basis for the ANSI&#x2F;ISO SQL-92 isolation level definitions [6]. The ANSI standard had implementation-independence as a goal and the definitions were supposed to be less constraining than ear- lier ones. The approach taken was to proscribe certain types of bad behavior called <em>phenomena</em>; more restrictive consis- tency levels disallow more phenomena and serializability does not permit any phenomenon. The isolation levels were named READ UNCOMMITTED, READ COMMITTED, REPEAT- ABLE READ, and SERIALIZABLE; some of these levels were intended to correspond to the degrees of [13].</p>
+<p>然而，这项工作与 Date [11] 提供的级别的细化一起，构成了 ANSI&#x2F;ISO SQL-92 隔离级别定义 [6] 的基础。 ANSI 标准以实现独立性为目标，并且其定义应该比早期的定义更少限制。 采取的方法是禁止某些类型的不良行为，称为现象； 更严格的一致性级别不允许更多的现象，并且可串行化不允许任何现象。 隔离级别被命名为 READ UNCOMMITTED、READ COMMITTED、REPEATABLE READ 和 SERIALIZABLE； 其中一些级别旨在与[13]的程度相对应。</p>
+<p>The work in [8] analyzed the ANSI-SQL standard and demonstrated several problems in its isolation level defini- tions: some phenomena were ambiguous, while others were missing entirely. It then provided new definitions. As with the ANSI-SQL standard, various isolation levels are defined by having them disallow various phenomena. The phenom- ena proposed by [8] are:</p>
+<p>[8] 中的工作分析了 ANSI-SQL 标准并展示了其隔离级别定义中的几个问题：一些现象是不明确的，而另一些现象则完全缺失。 然后它提供了新的定义。 与 ANSI-SQL 标准一样，各种隔离级别是通过禁止各种现象来定义的。 [8]提出的现象是：</p>
+<ol>
+<li>P0:  w1[x] … w2[x] … (c1 or a1)</li>
+<li>P1:  w1[x] … r2[x] … (c1 or a1)</li>
+<li>P2:  r1[x] … w2[x] … (c1 or a1)</li>
+<li>P3:  r1[P] … w2[y in P] … (c1 or a1)</li>
+</ol>
+<p>Proscribing P0 (which was missing in the ANSI-SQL defi- nitions) requires that a transaction T2 cannot write an object <em>x</em> if an uncommitted transaction T1 has already modified <em>x</em>. This is simply a disguised locking definition, requiring T1 and T2 to acquire long write-locks. (Long-term locks are held until the transaction taking them commits; short- term locks are released immediately after the transaction completes the read or write that triggered the lock attempt.) Similarly, proscribing P1 requires T1 to acquire a long write- lock and T2 to acquire (at least) a short-term read-lock, and proscribing P2 requires the use of long read and write locks.</p>
+<p>禁止 P0（ANSI-SQL 定义中缺少）要求如果未提交的事务 T1 已经修改了 x，则事务 T2 不能写入对象 x。 这只是一个变相的锁定定义，要求T1和T2获取长写锁。 （长期锁会一直保持到获取它们的事务提交为止；短期锁会在事务完成触发锁尝试的读取或写入后立即释放。）类似地，禁止 P1 需要 T1 获取长写锁，并且 T2 获取（至少）短期读锁，而禁止 P2 需要使用长期读写锁。</p>
+<p>Phenomenon P3 deals with the queries based on predi- cates. Proscribing P3 requires that a transaction T2 cannot modify a predicate P by inserting, updating, or deleting a row such that its modification changes the result of a query executed by an uncommitted transaction T1 based on pred- icate P; to avoid this situation, T1 acquires a long phantom read-lock [14] on predicate P.</p>
+<p>现象 P3 处理基于谓词的查询。 禁止 P3 要求事务 T2 不能通过插入、更新或删除行来修改谓词 P，从而使其修改改变未提交事务 T1 基于谓词 P 执行的查询的结果； 为了避免这种情况，T1 在谓词 P 上获取长幻影读锁 [14]。</p>
+<p>Thus, these definitions only allow histories that would occur in a system using long&#x2F;short read&#x2F;write item&#x2F;predicate locks. Since locking serializes transactions by preventing certain situations (e.g., two concurrent transactions both modifying the same object), <font color="red">we refer to this approach as the preventative approach.</font></p>
+<p>因此，这些定义仅允许使用长&#x2F;短读&#x2F;写项&#x2F;谓词锁的系统中发生的历史记录。 由于锁定通过防止某些情况（例如，两个并发事务都修改同一对象）来序列化事务，因此我们将这种方法称为预防性方法。</p>
+<p>Figure 1 summarizes the isolation levels as defined in [8] and relates them to a lock-based implementation. Thus the READ UNCOMMITTED level proscribes P0; READ COM- MITTED proscribes P0 and P1; the REPEATABLE READ level proscribes P0 - P2; and SERIALIZABLE proscribes P0 - P3.</p>
+<p>图 1 总结了 [8] 中定义的隔离级别，并将它们与基于锁的实现相关联。 因此 READ UNCOMMITTED 级别禁止 P0； READ COMMITTED 禁止 P0 和 P1； 可重复读取级别规定 P0 - P2； 并且 SERIALIZABLE 禁止 P0 - P3。</p>
+<p><strong>Figure 1. Consistency Levels and Locking ANSI-92 Isolation Levels</strong></p>
+<table>
+<thead>
+<tr>
+<th>Locking Isolation Level</th>
+<th>Proscribed Phenomena</th>
+<th>Read Locks on Data Items and Phantoms (same unless noted)</th>
+<th>Write Locks on Data Items and Phantoms (always the same)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Degree 0</td>
+<td>none</td>
+<td>none</td>
+<td>Short write locks</td>
+</tr>
+<tr>
+<td>Degree 1 &#x3D; Locking READ UNCOMMITTED</td>
+<td>P0</td>
+<td>none</td>
+<td>Long write locks</td>
+</tr>
+<tr>
+<td>Degree 2 &#x3D; Locking READ COMMITTED</td>
+<td>P0, P1</td>
+<td>Short read locks</td>
+<td>Long write locks</td>
+</tr>
+<tr>
+<td>Locking REPEATABLE READ</td>
+<td>P0, P1, P2</td>
+<td>Long data-item read locks,Short phantom read locks</td>
+<td>Long write locks</td>
+</tr>
+<tr>
+<td>Degree 3 &#x3D; Locking SERIALIZABLE</td>
+<td>P0, P1, P2, P3</td>
+<td>Long read locks</td>
+<td>Long write locks</td>
+</tr>
+</tbody></table>
+<h2 id="3-Restrictiveness-of-Preventative-Approach"><a href="#3-Restrictiveness-of-Preventative-Approach" class="headerlink" title="3. Restrictiveness of Preventative Approach"></a><strong>3. Restrictiveness of Preventative Approach</strong></h2><p>预防方法的限制性</p>
+<p>We now show that the preventative approach is overly restrictive since it rules out optimistic and multi-version implementations. As mentioned, this approach disallows all histories that would not occur in a locking scheme and <em>prevents</em> conflicting operations from executing concurrently.</p>
+<p>我们现在表明，预防性方法过于严格，因为它排除了乐观和多版本的实现。 如前所述，此方法不允许在锁定方案中不会发生的所有历史记录，并防止同时执行冲突的操作。</p>
+<p>The authors in [8] wanted to ensure that multi-object con- straints (e.g., constraints like x + y &#x3D; 10) are not observed as violated by transactions that request an isolation level such as serializability. They showed that histories such as H1 and H2 are allowed by one interpretation of the ANSI standard (at the SERIALIZABLE isolation level) even though they are non-serializable:</p>
+<p>[8] 中的作者希望确保请求隔离级别（例如可序列化性）的事务不会违反多对象约束（例如 x + y &#x3D; 10 等约束）。 他们表明，诸如 H1 和 H2 之类的历史记录是 ANSI 标准的一种解释所允许的（在 SERIALIZABLE 隔离级别），即使它们是不可序列化的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">H1: r1(x, <span class="number">5</span>) w1(x, <span class="number">1</span>) r2(x, <span class="number">1</span>) r2(y, <span class="number">5</span>) c2 r1(y, <span class="number">5</span>) w1(y, <span class="number">9</span>) c1 </span><br><span class="line">H2: r2(x, <span class="number">5</span>) r1(x, <span class="number">5</span>) w1(x, <span class="number">1</span>) r1(y, <span class="number">5</span>) w1(y, <span class="number">9</span>) c1 r2(y, <span class="number">9</span>) c2</span><br></pre></td></tr></table></figure>
+
+<p>In both cases, T2 observes an inconsistent state (it observes invariant x + y &#x3D; 10 to be violated). These histories are not allowed by the preventative approach; H1 is ruled out by P1 and H2 is ruled out by P2.</p>
+<p>在这两种情况下，T2 都会观察到不一致的状态（它观察到不变量 x + y &#x3D; 10 被违反）。 预防性方法不允许出现这些历史； H1被P1排除，H2被P2排除。</p>
+<p>Optimistic and multi-version mechanisms [2, 5, 9, 20, 22] that provide serializability also disallow non-serializable histories such as H1 and H2. However, they allow many legal histories that are not permitted by P0, P1, P2, and P3. Thus, the preventative approach disallows such implemen- tations. Furthermore, it rules out histories that really occur in practical implementations.</p>
+<p>提供可序列化性的乐观和多版本机制 [2,5,9,20,22] 也不允许不可序列化的历史，例如 H1 和 H2。 然而，它们允许许多 P0、P1、P2 和 P3 不允许的法律历史记录。 因此，预防性方法不允许此类实施。 此外，它排除了实际实施中真正发生的历史。</p>
+<p>Phenomenon P0 can occur in optimistic implementations since there can be many uncommitted transactions modify- ing local copies of the same object concurrently; if neces- sary, some of them will be forced to abort so that serializ- ability can be provided. Thus, disallowing P0 can rule out optimistic implementations.</p>
+<p>现象 P0 可能发生在乐观实现中，因为可能有许多未提交的事务同时修改同一对象的本地副本； 如果有必要，其中一些将被迫中止，以便提供可串行性。 因此，禁止 P0 可以排除乐观的实现。</p>
+<p>Condition P1 precludes transactions from reading up- dates by uncommitted transactions. Such reads are disal- lowed by many optimistic schemes, but they are desirable in mobile environments, where commits may take a long time if clients are disconnected from the servers [12, 16]; furthermore, reads from uncommitted transactions may be desirable in high traffic hotspots [23]. For example, in his- tory H1, if T2 reads T1’s values for both x and y, it can be serialized after T1 :</p>
+<p>条件 P1 阻止事务读取未提交事务的更新。 许多乐观方案都不允许这种读取，但它们在移动环境中是可取的，如果客户端与服务器断开连接，提交可能需要很长时间[12, 16]； 此外，在高流量热点中可能需要读取未提交的事务[23]。 例如，在历史 H1 中，如果 T2 读取 T1 的 x 和 y 值，则可以在 T1 之后序列化：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H10 : r1(x, <span class="number">5</span>) w1(x, <span class="number">1</span>) r1(y, <span class="number">5</span>) w1(y, <span class="number">9</span>) r2(x, <span class="number">1</span>) r2(y, <span class="number">9</span>) c1 c2</span><br></pre></td></tr></table></figure>
+
+<p>The above history can occur in a mobile system, but P1 disallows it. In such a system, commits can be assumed to have happened “tentatively” at client machines [12, 16]; later transactions may observe modifications of those tentative transactions. When the client reconnects with the servers, its work is checked to determine if consistency has been violated and the relevant transactions are aborted. Of course, if dirty reads are allowed, cascading aborts can occur, e.g., in history H10 , T2 must abort if T1 aborts; this problem can be alleviated by using compensating actions [18, 26, 19].</p>
+<p>上述历史可以在移动系统中发生，但P1不允许。 在这样的系统中，可以假设提交“暂时”发生在客户端计算机上 [12, 16]； 后续交易可能会观察到这些暂定交易的修改。 当客户端重新与服务器连接时，将检查其工作以确定是否违反了一致性并中止相关事务。 当然，如果允许脏读，则可能会发生级联中止，例如，在历史记录H10中，如果T1中止，则T2必须中止； 这个问题可以通过使用补偿措施来缓解[18,26,19]。</p>
+<p>Proscribing phenomenon P2 disallows a modification to an object that has been read by an uncommitted transaction (P3 rules out a similar situation with respect to predicates). As with P0, uncommitted transactions may read&#x2F;write the same object concurrently in an optimistic implementation. There is no harm in allowing phenomenon P2 if transactions commit in the right order. For example, in history H2 given above, if T2 reads the old values of <em>x</em> and <em>y</em>, the transactions can be serialized in the order T2; T1:</p>
+<p>禁止现象 P2 不允许对已由未提交事务读取的对象进行修改（P3 排除了谓词方面的类似情况）。 与 P0 一样，未提交的事务可以在乐观实现中同时读&#x2F;写同一对象。 如果事务以正确的顺序提交，那么允许 P2 现象并没有什么坏处。 例如，在上面给出的历史H2中，如果T2读取x和y的旧值，则交易可以按照T2的顺序序列化； T1：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H20 : r2(x, <span class="number">5</span>) r1(x, <span class="number">5</span>) w1(x, <span class="number">1</span>) r1(y, <span class="number">5</span>) r2(y, <span class="number">5</span>) w1(y, <span class="number">9</span>) c2 c1</span><br></pre></td></tr></table></figure>
+
+<p>The real problem with the preventative approach is that the phenomena are expressed in terms of single-object his- tories. However, the properties of interest are often multi- object constraints. To avoid problems with such constraints, the phenomena need to restrict what can be done with indi- vidual objects more than is necessary. Our approach avoids this difficulty by using specifications that capture constraints on multiple objects directly. Furthermore, the definitions in the preventative approach are not applicable to multi-version systems since they are described in terms of objects rather than in terms of versions. On the other hand, our specifica- tions deal with multi-version and single-version histories.</p>
+<p>预防性方法的真正问题在于，这些现象是用单一对象历史来表达的。 然而，感兴趣的属性通常是多对象约束。 为了避免此类约束带来的问题，现象需要对单个对象所能做的事情进行超出必要的限制。 我们的方法通过使用直接捕获多个对象的约束的规范来避免这个困难。 此外，预防性方法中的定义不适用于多版本系统，因为它们是根据对象而不是版本来描述的。 另一方面，我们的规范涉及多版本和单版本历史。</p>
+<p>The approach in [8] only allows schemes that provide the same guarantees for running and committed transac- tions (a lock-based implementation does indeed have this property). However, many optimistic mechanisms provide weak guarantees to transactions as they run while provid- ing strong guarantees such as serializability for committed transactions. Our definitions allow different isolation guar- antees for committed and running transactions; in this paper, we only present guarantees for committed transactions.</p>
+<p>[8]中的方法只允许为运行和提交的事务提供相同保证的方案（基于锁的实现确实具有此属性）。 然而，许多乐观机制在事务运行时为事务提供弱保证，同时提供强保证，例如已提交事务的可串行性。 我们的定义允许对已提交和正在运行的事务提供不同的隔离保证； 在本文中，我们仅对已提交的交易提供担保。</p>
+<h2 id="4-Database-Model-and-Transaction-Histories"><a href="#4-Database-Model-and-Transaction-Histories" class="headerlink" title="4. Database Model and Transaction Histories"></a><strong>4. Database Model and Transaction Histories</strong></h2><p>We now describe our database model, transaction histories, and serialization graphs. We use a multi-version model similar to the one presented in [9]. However, unlike [9], our model incorporates predicates also. Furthermore, we al- low predicate behavior that is possible in non-locking based systems.</p>
+<p>我们现在描述我们的数据库模型、事务历史和序列化图。 我们使用类似于[9]中提出的多版本模型。 然而，与[9]不同的是，我们的模型也包含谓词。 此外，我们允许在基于非锁定的系统中可能出现的谓词行为。</p>
+<h3 id="4-1-Database-Model"><a href="#4-1-Database-Model" class="headerlink" title="4.1. Database Model"></a><strong>4.1. Database Model</strong></h3><p>The database consists of objects that can be read or writ- ten by transactions; in a relational database system, each row or tuple is an object. Each transaction reads and writes objects and indicates a total order in which these operations occur.</p>
+<p>数据库由可以通过事务读取或写入的对象组成； 在关系数据库系统中，每一行或元组都是一个对象。 每个事务读取和写入对象并指示这些操作发生的总顺序。</p>
+<p>An object has one or more versions. However, trans- actions interact with the database only in terms of objects; the system maps each operation on an object to a specific version of that object. A transaction may read versions created by committed, uncommitted, or even aborted trans- actions; constraints imposed by some isolation levels will prevent certain types of reads, e.g., reading versions created by aborted transactions.</p>
+<p>一个对象有一个或多个版本。 然而，事务仅以对象的形式与数据库进行交互。 系统将对象上的每个操作映射到该对象的特定版本。 事务可以读取由已提交、未提交甚至中止的事务创建的版本； 某些隔离级别施加的约束将阻止某些类型的读取，例如读取由中止事务创建的版本。</p>
+<p>When a transaction writes an object <em>x</em>, it creates a new version of <em>x</em>. A transaction Ti can modify an object multiple times; its first modification of object <em>x</em> is denoted by xi:1, the second by xi:2, and so on. Version xi denotes the final modification of <em>x</em> performed by Ti before it commits or aborts. A transaction’s last operation, <em>commit</em> or <em>abort</em>, indicates whether its execution was successful or not; there is at most one commit or abort operation for each transaction.</p>
+<p>当事务写入对象 x 时，它会创建 x 的新版本。 一个事务Ti可以多次修改一个对象； 它对对象 x 的第一次修改用 xi:1 表示，第二次用 xi:2 表示，依此类推。 版本 xi 表示 Ti 在提交或中止之前对 x 执行的最终修改。 事务的最后一个操作，提交或中止，表明其执行是否成功； 每个事务至多有一次提交或中止操作。</p>
+<p>The <em>committed state</em> reflects the modifications of committed transactions. When transaction Ti commits, each version xi created by Ti becomes a part of the committed state and we say that Ti <em>installs</em> xi ; the system determines the ordering of xi relative to other committed version of x. If Ti aborts,x does not become part of the committed state.</p>
+<p><em>提交状态</em>反映了已提交事务的修改。 当事务 Ti 提交时，Ti 创建的每个版本 xi 都成为已提交状态的一部分，我们说 Ti <em>安装</em> xi ； 系统确定 xi 相对于其他已提交版本的 x 的顺序。 如果 Ti 中止，xi 不会成为提交状态的一部分。</p>
+<p>Conceptually, the initial committed state comes into existence as a result of running a special initialization transaction, T(init). Transaction T(init) creates all objects that will ever exist in the database; at this point, each object <em>x</em> has an initial version, x(init) , called the <em>unborn</em> version. When an application transaction creates an object <em>x</em> (e.g., by in- serting a tuple in a relation), we model it as the creation of a <em>visible</em> version for <em>x</em>. Thus, a transaction that loads thedatabase creates the initial visible versions of the objects being inserted. When a transaction Ti deletes an object <em>x</em> (e.g., by deleting a tuple from some relation), we model it as the creation of a special <em>dead</em> version, i.e., in this case, xi is a dead version. Thus, object versions can be of three kinds — unborn, visible, and dead; the ordering relationship between these versions is discussed in Section 4.2.</p>
+<p>从概念上讲，初始提交状态是由于运行特殊初始化事务 T(init) 而产生的。 事务 T(init) 创建数据库中存在的所有对象； 此时，每个对象 <em>x</em> 都有一个初始版本 x(init) ，称为 <em>unborn</em> 版本。 当应用程序事务创建对象<em>x</em>（例如，通过在关系中插入元组）时，我们将其建模为创建<em>x</em>的<em>可见</em>版本。 因此，加载数据库的事务创建所插入的对象的初始可见版本。 当事务 Ti 删除对象 <em>x</em> 时（例如，通过从某个关系中删除元组），我们将其建模为创建特殊的 <em>dead</em> 版本，即在这种情况下，xi 是一个dead 版本。 因此，对象版本可以分为三种：未出生的、可见的和死亡的。 这些版本之间的顺序关系将在 4.2 节中讨论。</p>
+<p>If an object <em>x</em> is deleted from the committed database state and inserted later, we consider the two incarnations of <em>x</em> to be distinct objects. When a transaction Ti performs an insert operation, the system selects a <em>unique</em> object <em>x</em> that has never been selected for insertion before and Ti creates a visible version of <em>x</em> if it commits.</p>
+<p>如果一个对象 x 从已提交的数据库状态中删除并稍后插入，我们认为 x 的两个化身是不同的对象。 当事务 Ti 执行插入操作时，系统会选择一个之前从未选择插入的唯一对象 x，如果提交，Ti 将创建 x 的可见版本。</p>
+<p>We assume object versions exist forever in the committed state to simplify the handling of inserts and deletes, i.e., we simply treat inserts&#x2F;deletes as write (update) operations. An implementation only needs to maintain visible versions of objects, and a single-version implementation can maintain just one visible version at a time. Furthermore, application transactions in a real system access only visible versions.</p>
+<p>我们假设对象版本永远以提交状态存在，以简化插入和删除的处理，即我们简单地将插入&#x2F;删除视为写（更新）操作。 一种实现只需要维护对象的可见版本，而单版本实现一次只能维护一个可见版本。 此外，真实系统中的应用程序事务仅访问可见版本。</p>
+<h3 id="4-2-Transaction-Histories"><a href="#4-2-Transaction-Histories" class="headerlink" title="4.2. Transaction Histories"></a><strong>4.2. Transaction Histories</strong></h3><p>We capture what happens in an execution of a database system by a history. A <em>history H</em> over a set of transactions consists of two parts — a partial order of events <em>E</em> that reflects the operations (e.g., read, write, abort, commit) of those transactions, and a version order, , that is a total order on committed versions of each object.</p>
+<p>我们通过历史记录来捕获数据库系统执行过程中发生的情况。 一组事务的历史记录 H 由两部分组成：事件 E 的部分顺序，反映这些事务的操作（例如读、写、中止、提交），以及版本顺序 ，即全顺序 每个对象的提交版本。</p>
+<p>Each event in a history corresponds to an operation of some transaction, i.e., read, write, commit, or abort. A write operation on object <em>x</em> by transaction Ti is denoted by wi (xi ) (or wi (xi:m )); if it is useful to indicate the value <em>v</em> being written into xi , we use the notation, wi (xi , v). When a transaction Tj reads a version of <em>x</em> that was created by Ti , we denote this as rj (xi ) (or rj (xi:a )). If it is useful to indicate the value <em>v</em> being read, we use the notation rj (xi , v).</p>
+<p>历史记录中的每个事件对应于某个事务的操作，即读、写、提交或中止。 事务 Ti 对对象 x 的写操作记为 wi (xi ) （或 wi (xi:m )）； 如果需要指示将值 v 写入 xi ，我们使用符号 wi (xi , v)。 当事务 Tj 读取由 Ti 创建的 x 版本时，我们将其表示为 rj (xi ) （或 rj (xi:a )）。 如果指示正在读取的值 v 有用，我们使用符号 rj (xi , v)。</p>
+<p>The partial order of events <em>E</em> in a history obeys the fol- lowing constraints:</p>
+<p>历史中事件 E 的偏序遵循以下约束：</p>
+<ul>
+<li><p>It preserves the order of all events within a transaction including the commit and abort events.</p>
+<p>它保留事务中所有事件的顺序，包括提交和中止事件。</p>
+</li>
+<li><p>If an event rj (xi:m ) exists in E, it is preceded by wi (xi:m ) in E, i.e., a transaction Tj cannot read ver- sion xi:m of object x before it has been produced by Ti . Note that the version read by Tj is not necessarily the most recently installed version in the committed database state; also, Ti may be uncommitted when rj (xi:m ) occurs.</p>
+<p>如果 E 中存在事件 rj (xi:m)，则 E 中的事件 rj (xi:m) 前面有 wi (xi:m)，即事务 Tj 在 Ti 生成对象 x 之前无法读取对象 x 的版本 xi:m。 注意，Tj读取的版本不一定是提交数据库状态下最近安装的版本； 另外，当 rj (xi:m ) 发生时，Ti 可能未提交。</p>
+</li>
+<li><p>If an event wi (xi:m ) is followed by ri (xj ) without an intervening event wi (xi:n ) in <em>E</em>, xj must be xi:m . This condition ensures that if a transaction modifies object <em>x</em> and later reads <em>x</em>, it will observe its last update to <em>x</em>.</p>
+<p>如果事件 wi (xi:m ) 后面跟着 ri (xj )，而 E 中没有中间事件 wi (xi:n )，则 xj 必须是 xi:m 。 此条件确保如果事务修改对象 x 并且稍后读取 x，它将观察其对 x 的最后更新。</p>
+</li>
+<li><p>The history must be <em>complete</em>: if <em>E</em> contains a read or write event that mentions a transaction Ti , <em>E</em> must contains a commit or abort event for Ti .</p>
+<p>历史记录必须完整：如果 E 包含提及事务 Ti 的读取或写入事件，则 E 必须包含 Ti 的提交或中止事件。</p>
+</li>
+</ul>
+<p>A history that is not complete can be completed by append- ing abort events for uncommitted transactions in <em>E</em>. Adding these events is intuitively correct since any implementation that allows a commit of a transaction that reads from an uncommitted transaction Ti can do so only if it is legal for Ti to abort later.</p>
+<p>不完整的历史记录可以通过在 E 中附加未提交事务的中止事件来完成。添加这些事件直观上是正确的，因为任何允许提交从未提交事务 Ti 读取的事务的实现只有在以下情况下才可以这样做： Ti 稍后中止是合法的。</p>
+<p>For convenience, we will present event histories in ex- amples as a total order (from left to right) that is consistent with the partial order.</p>
+<p>为了方便起见，我们将在示例中将事件历史呈现为与部分顺序一致的全顺序（从左到右）。</p>
+<p>The second part of a history H is the version order, , that specifies a total order on versions of each object created by <em>committed</em> transactions in H; there is no ordering of versions due to uncommitted or aborted transactions. We also refer to versions due to committed transactions in H as <em>committed versions</em>. We impose two constraints on a history’s version order for different kinds of committed versions:</p>
+<p>历史记录 H 的第二部分是版本顺序 ，它指定由 H 中已提交事务创建的每个对象的版本的总顺序； 由于未提交或中止的事务，不会对版本进行排序。 我们还将 H 中已提交事务的版本称为已提交版本。 我们对不同类型的提交版本的历史版本顺序施加两个约束：</p>
+<ul>
+<li><p>the version order of each object <em>x</em> contains exactly one initial version, xinit , and at most one committed dead version, xdead .</p>
+<p>每个对象 <em>x</em> 的版本顺序恰好包含一个初始版本 xinit 和至多一个已提交的死版本 xdead 。</p>
+</li>
+<li><p>xinit is <em>x</em>’s first version in its version order and xdead is its last version (if it exists); all committed visible versions are placed between xinit and xdead .</p>
+<p>xinit 是 <em>x</em> 按其版本顺序排列的第一个版本，xdead 是其最后一个版本（如果存在）； 所有提交的可见版本都放置在 xinit 和 xdead 之间。</p>
+</li>
+</ul>
+<p>We additionally constrain the system to allow reads only of visible versions:</p>
+<p>我们还限制系统只允许读取可见版本：</p>
+<ul>
+<li>if rj (xi ) occurs in a history, then xi is a visible version.</li>
+</ul>
+<p>  如果 rj (xi ) 出现在历史记录中，则 xi 是可见版本。</p>
+<p>For convenience, we will only show the version order for visible versions in our example histories; in cases where unborn or dead versions help in illustrating an issue, we will show some of these versions as well.</p>
+<p>为了方便起见，我们将仅在示例历史记录中显示可见版本的版本顺序； 如果未出生或已死亡的版本有助于说明问题，我们也会展示其中的一些版本。</p>
+<p>The version order in a history H can be different from the order of write or commit events in H. This flexibility is needed to allow certain optimistic and multi-version imple- mentations where it is possible that a version xi is placed before version xj in the version order (xi  xj ) even though xi is installed in the committed state <em>after</em> version xj was installed. For example, in history Hw r iteor der ,</p>
+<p>历史记录 H 中的版本顺序可能与 H 中写入或提交事件的顺序不同。需要这种灵活性来允许某些乐观和多版本实现，其中版本 xi 可能放置在版本 xj 之前 版本顺序 (xi xj )，即使 xi 在安装版本 xj 之后以已提交状态安装。 例如，在历史 Hw r ite order 中，</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2023/11/06/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Generalized%20Isolation%20Level%20Definitions/" title="Generalized Isolation Level Definitions">http://heoric.github.io/2023/11/06/2-数据库/4-论文/1-Generalized Isolation Level Definitions/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag"># 事务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/04-Pipelining%20consensus%20writes/" rel="prev" title="How Pipelining consensus writes speeds up distributed SQL transactions">
+                  <i class="fa fa-angle-left"></i> How Pipelining consensus writes speeds up distributed SQL transactions
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/07/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/1-Cascades/" rel="next" title="数据库SQL总结">
+                  数据库SQL总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f0af445869a580e8fa71dae5fe20fcaf"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

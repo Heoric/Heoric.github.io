@@ -21,7 +21,7 @@
     <meta name="description" content="VolcanoAn Extensible and Parallel Query Evaluation System  Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Volcano">
-<meta property="og:url" content="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/index.html">
+<meta property="og:url" content="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="VolcanoAn Extensible and Parallel Query Evaluation System  Volcano-一个可扩展的并行查询评估系统 Abstract-To investigate the interactions  parallelism in database query processing, we have developed a new dataflow q">
 <meta property="og:locale" content="zh_CN">
@@ -40,11 +40,11 @@
 <meta name="twitter:image" content="http://heoric.github.io/img/volcano-pic/image-20230720151302454.png">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/">
+<link rel="canonical" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/","path":"2023/08/15/2-数据库/4-论文/volcano/","title":"Volcano"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/","path":"2023/08/15/2-数据库/4-论文/0-volcano/","title":"Volcano"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Volcano | Leoirc's Blogs</title>
@@ -134,7 +134,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -145,7 +145,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -177,7 +177,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -510,7 +510,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/" title="Volcano">http://heoric.github.io/2023/08/15/2-数据库/4-论文/volcano/</a>
+      <a href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/" title="Volcano">http://heoric.github.io/2023/08/15/2-数据库/4-论文/0-volcano/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -615,7 +615,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f2721622a847e569e8cede82fee504e4"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6ab25f91e1edb3b0a2451f37933ca31b"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

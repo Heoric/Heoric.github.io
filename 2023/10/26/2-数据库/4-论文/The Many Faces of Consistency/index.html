@@ -26,7 +26,7 @@
 <meta property="og:description" content="The notion of consistency is used across different computer science disciplines from distributed systems to database systems to computer architecture. It turns out that consistency can mean quite diff">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-26T06:44:57.000Z">
-<meta property="article:modified_time" content="2023-11-06T01:36:55.546Z">
+<meta property="article:modified_time" content="2023-11-06T07:25:41.101Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="事务">
 <meta name="twitter:card" content="summary">
@@ -126,7 +126,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -137,7 +137,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -205,7 +205,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-06 09:36:55" itemprop="dateModified" datetime="2023-11-06T09:36:55+08:00">2023-11-06</time>
+      <time title="修改时间：2023-11-06 15:25:41" itemprop="dateModified" datetime="2023-11-06T15:25:41+08:00">2023-11-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -247,7 +247,7 @@
 <p>这个问题没有一个在所有情况下都正确的答案。 一致性属性通过限制数据的更改方式或客户端在每种情况下可以观察到的内容来控制可能的结果。 例如，对于 DNS，对域的更改可能在数小时内不可见； 唯一的保证是最终会看到更新——一个称为最终一致性的属性的例子[23]。 但对于航班座位分配，更新必须是立即且互斥的，以确保没有两名乘客获得相同的座位——这是可串行性提供的强一致性的一个例子 [5]。 其他一致性属性包括因果一致性 [13]、读我的写 [21]、有界陈旧性 [1]、连续一致性 [1, 25]、发布一致性 [10]、分叉一致性 [16]、epsilon 可串行性 [ 18]等等。</p>
 <p>Consistency is important because developers must understand the answer to the above fundamental question. This is especially true when the clients interacting with the system are not humans but other computer programs that must be coded to deal with all possible outcomes.</p>
 <p>一致性很重要，因为开发人员必须理解上述基本问题的答案。 当与系统交互的客户端不是人类而是必须编码以处理所有可能结果的其他计算机程序时尤其如此。</p>
-<p>In this article, we examine many examples of how consistency is used across three computer science disci- plines: distributed systems, database systems, and computer architecture. We find that the use of consistency varies significantly across these disciplines. To bring some clarity, we identify two fundamentally different types of consistency: state consistency and operation consistency. State consistency concerns the state of the system and establishes constraints on the allowable relationships between different data items or different replicas of the same items. For instance, state consistency might require that two replicas store the same value when updates are not outstanding. Operation consistency concerns operations on the system and establishes constraints on what results they may return. For instance, operation consistency might require that a read of a file reflects the contents of the most recent write on that file. State consistency tends to be simpler and application dependent, while operation consistency tends to be more complex and application agnostic. Both types of consistency are important and, in our opinion, our communities should more clearly disentangle them.</p>
+<p>In this article, we examine many examples of how consistency is used across three computer science disci- plines: distributed systems, database systems, and computer architecture. We find that the use of consistency varies significantly across these disciplines. To bring some clarity, we identify two fundamentally different types of consistency: <font color="red">state consistency and operation consistency</font>&gt;. State consistency concerns the state of the system and establishes constraints on the allowable relationships between different data items or different replicas of the same items. For instance, state consistency might require that two replicas store the same value when updates are not outstanding. Operation consistency concerns operations on the system and establishes constraints on what results they may return. For instance, operation consistency might require that a read of a file reflects the contents of the most recent write on that file. State consistency tends to be simpler and application dependent, while operation consistency tends to be more complex and application agnostic. Both types of consistency are important and, in our opinion, our communities should more clearly disentangle them.</p>
 <p>在本文中，我们研究了如何在三个计算机科学学科（分布式系统、数据库系统和计算机体系结构）中使用一致性的许多示例。 我们发现，在这些学科中，一致性的使用存在显着差异。 为了清楚起见，我们确定了两种根本不同类型的一致性：状态一致性和操作一致性。 状态一致性涉及系统的状态，并对不同数据项或相同项的不同副本之间允许的关系建立约束。 例如，状态一致性可能要求两个副本在更新未完成时存储相同的值。 操作一致性涉及系统上的操作，并对它们可能返回的结果建立约束。 例如，操作一致性可能要求文件的读取反映该文件最近写入的内容。 状态一致性往往更简单且依赖于应用程序，而操作一致性往往更复杂且与应用程序无关。 这两种类型的一致性都很重要，我们认为，我们的社区应该更清楚地理清它们。</p>
 <p>While this article discusses different forms of consistency, it focuses on the <em>semantics</em> of consistency rather than the <em>mechanisms</em> of consistency. Semantics refer to what consistency properties the system provides, while mechanisms refer to how the system enforces those properties. Semantics and mechanisms are closely related but it is important to understand the former without needing to understand the latter.</p>
 <p>虽然本文讨论了不同形式的一致性，但它重点关注一致性的语义而不是一致性的机制。 语义是指系统提供哪些一致性属性，而机制是指系统如何强制执行这些属性。 语义和机制密切相关，但重要的是理解前者而不需要理解后者。</p>
@@ -292,7 +292,7 @@
 <h4 id="3-2-1-Sequential-equivalence-顺序等价"><a href="#3-2-1-Sequential-equivalence-顺序等价" class="headerlink" title="3.2.1 Sequential equivalence 顺序等价"></a>3.2.1 Sequential equivalence 顺序等价</h4><p>This subcategory defines the permitted operation results of a concurrent execution in terms of the permitted oper- ation results in a sequential execution—one in which operations are executed one at a time, without concurrency. More specifically, there must be a way to take the execution of all operations submitted by any subset of clients, and then <em>reduce</em> them to a sequential execution that is correct. The exact nature of the reduction depends on the specific consistency property. Technically, the notion of a correct sequential execution is system dependent, so it needs to be specified as well, but it is often obvious and therefore omitted.</p>
 <p>该子类别根据顺序执行（一次执行一个操作，无并发）中允许的操作结果来定义并发执行的允许操作结果。 更具体地说，必须有一种方法来执行任何客户端子集提交的所有操作，然后将它们简化为正确的顺序执行。 减少的确切性质取决于特定的一致性属性。 从技术上讲，正确顺序执行的概念取决于系统，因此也需要指定它，但它通常是显而易见的，因此被省略。</p>
 <p>We now give some examples of sequential equivalence. 现在我们给出一些顺序等价的例子。</p>
-<p><em>Linearizability [12]</em> is a strong form of consistency. Intuitively, the constraint is that each operation must appear to occur at an instantaneous point between its start and finish times, where execution at these instanta- neous points form a valid sequential execution. More precisely, we define a partial order &lt; from the concurrent execution, as follows: <em>op</em>1 &lt; <em>op</em>2 iff <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a legal total order <em>T</em> of all operations with their results, such that (1) <em>T</em> is consistent with &lt;, meaning that if <em>op</em>1 &lt; <em>op</em>2 then <em>op</em>1 appears before <em>op</em>2 in <em>T</em>, and (2) <em>T</em> defines a correct sequential execution. Linearizability has been traditionally used to define the correct behavior of concurrent data structures; more recently, it has also been used in distributed systems.</p>
+<p><font color="red"><em>Linearizability [12]</em> is a strong form of consistency.</font> Intuitively, the constraint is that each operation must appear to occur at an instantaneous point between its start and finish times, where execution at these instanta- neous points form a valid sequential execution. More precisely, we define a partial order &lt; from the concurrent execution, as follows: <em>op</em>1 &lt; <em>op</em>2 iff <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a legal total order <em>T</em> of all operations with their results, such that (1) <em>T</em> is consistent with &lt;, meaning that if <em>op</em>1 &lt; <em>op</em>2 then <em>op</em>1 appears before <em>op</em>2 in <em>T</em>, and (2) <em>T</em> defines a correct sequential execution. Linearizability has been traditionally used to define the correct behavior of concurrent data structures; more recently, it has also been used in distributed systems.</p>
 <p>线性化[12]是一致性的一种强形式。 直观上，约束是每个操作必须出现在其开始时间和结束时间之间的瞬时点，其中在这些瞬时点的执行形成有效的顺序执行。 更准确地说，我们从并发执行中定义一个偏序 &lt; ，如下所示： op1 &lt; op2 iff op1 在 op2 开始之前完成。 所有操作及其结果必须存在合法的全序 T，使得 (1) T 与 &lt; 一致，这意味着如果 op1 &lt; op2 则 op1 在 T 中出现在 op2 之前，并且 (2) T 定义了正确的顺序执行 。 线性化传统上被用来定义并发数据结构的正确行为。 最近，它也被用于分布式系统。</p>
 <p><em>Sequential consistency [14]</em> is also a strong form of consistency, albeit weaker than linearizability. Intuitively, it requires that operations execute as if they were totally ordered in a way that respects the order in which each client issues operations. More precisely, we define a partial order &lt; as follows: <em>op</em>1 &lt; <em>op</em>2 iff both operations are executed by the same client and <em>op</em>1 finishes before <em>op</em>2 starts. There must exist a total order <em>T</em> such that (1) <em>T</em> is consistent with &lt;, and (2) <em>T</em> defines a correct sequential execution. These conditions are similar to linearizability, except that &lt; reflects just the local order of operations at each client. Sequential consistency is used to define a strongly consistent memory model of a computer, but it could also be used in the context of concurrent data structures.</p>
 <p>顺序一致性[14]也是一致性的一种强形式，尽管比线性化弱。 直观上，它要求操作执行时就好像它们是完全有序的，并且尊重每个客户端发出操作的顺序。 更准确地说，我们定义一个偏序 &lt; 如下： op1 &lt; op2 当且仅当两个操作都由同一客户端执行并且 op1 在 op2 开始之前完成。 必须存在一个全序 T，使得 (1) T 与 &lt; 一致，并且 (2) T 定义了正确的顺序执行。 这些条件类似于线性化能力，除了 &lt; 只反映每个客户端的本地操作顺序。 顺序一致性用于定义计算机的强一致性内存模型，但它也可以用在并发数据结构的上下文中。</p>
@@ -410,7 +410,7 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/A%20Critique%20of%20ANSI%20SQL%20Isolation%20Levels/" rel="next" title="A Critique of ANSI SQL Isolation Levels">
+                <a href="/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-A%20Critique%20of%20ANSI%20SQL%20Isolation%20Levels/" rel="next" title="A Critique of ANSI SQL Isolation Levels">
                   A Critique of ANSI SQL Isolation Levels <i class="fa fa-angle-right"></i>
                 </a>
             </div>

@@ -123,7 +123,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -134,7 +134,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -156,6 +156,296 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/" class="post-title-link" itemprop="url">Linearizability versus Serializability</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-25 14:44:57" itemprop="dateCreated datePublished" datetime="2023-10-25T14:44:57+08:00">2023-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-03 14:34:37" itemprop="dateModified" datetime="2023-11-03T14:34:37+08:00">2023-11-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Linearizability-versus-Serializability"><a href="#Linearizability-versus-Serializability" class="headerlink" title="[Linearizability versus Serializability]"></a>[Linearizability versus Serializability]</h2><p>线性化与串行化</p>
+<p>原文链接</p>
+<p>(<a target="_blank" rel="noopener" href="http://www.bailis.org/blog/linearizability-versus-serializability/">http://www.bailis.org/blog/linearizability-versus-serializability/</a>)</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/00-Linearizability%20versus%20Serializability/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/" class="post-title-link" itemprop="url">CockroachDB's consistency model</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-25 14:44:57" itemprop="dateCreated datePublished" datetime="2023-10-25T14:44:57+08:00">2023-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-03 18:01:37" itemprop="dateModified" datetime="2023-11-03T18:01:37+08:00">2023-11-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>原文链接 <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/consistency-model/">https://www.cockroachlabs.com/blog/consistency-model/</a></p>
+<p>A few days ago, prompted by a Hacker News post, my friend Ivo texted me saying “<em>Does your head ever explode when you’re thinking about databases and consistency semantics and whatever models? It just sounds like pointless taxonomy stuff. We are &lt;N, K&gt;-serializable whereas QuinoaDB is only ü-serializable</em>”. The answer is yes — my head does explode. I don’t think it’s pointless, though, although I agree that the discussions are generally unproductive.</p>
+<p>几天前，在黑客新闻帖子的推动下，我的朋友 Ivo 给我发短信说：“当你思考数据库、一致性语义和任何模型时，你的头是否曾经爆炸过？ 这听起来像是毫无意义的分类学东西。 我们是&lt;N, K&gt;-可序列化的，而QuinoaDB仅是ü-可序列化的”。 答案是肯定的——我的头确实爆炸了。 不过，我不认为这是毫无意义的，尽管我同意讨论通常没有成果。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-CockroachDB's%20consistency%20model/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/" class="post-title-link" itemprop="url">15445</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-08 14:44:57" itemprop="dateCreated datePublished" datetime="2023-10-08T14:44:57+08:00">2023-10-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-14 11:16:45" itemprop="dateModified" datetime="2023-11-14T11:16:45+08:00">2023-11-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>15445 是 一门 数据库管理系统的设计与实现 的课程。</p>
+<p>课程大纲：</p>
+<ul>
+<li>Relational Databases</li>
+<li>Storage</li>
+<li>Execution</li>
+<li>Concurrency Control</li>
+<li>Recovery</li>
+<li>Distributed Databases</li>
+<li>Potpourri</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/10/08/2-%E6%95%B0%E6%8D%AE%E5%BA%93/5-%E7%AC%94%E8%AE%B0/15445-01/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -525,7 +815,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -543,7 +833,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/" class="post-title-link" itemprop="url">Volcano</a>
+          <a href="/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/" class="post-title-link" itemprop="url">Volcano</a>
         </h2>
 
         <div class="post-meta-container">
@@ -589,7 +879,7 @@
 <p>摘要：为了研究数据库查询处理中可扩展性和并行性的相互作用，我们开发了一种新的数据流查询执行系统，称为 Volcano。 Volcano 的工作为数据库系统设计、查询优化启发式、并行查询执行和资源分配方面的研究和教育提供了丰富的环境。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/volcano/#more" rel="contents">
+              <a class="btn" href="/2023/08/15/2-%E6%95%B0%E6%8D%AE%E5%BA%93/4-%E8%AE%BA%E6%96%87/0-volcano/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -781,270 +1071,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/" class="post-title-link" itemprop="url">c++ 模版元编程</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-05-26 14:44:57" itemprop="dateCreated datePublished" datetime="2023-05-26T14:44:57+08:00">2023-05-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-06-05 16:26:36" itemprop="dateModified" datetime="2023-06-05T16:26:36+08:00">2023-06-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">语言</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本系列文章从零开始介绍C++模版元编程，需要有C++基础。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/05/26/3-c++/00-%E6%A8%A1%E7%89%88%E5%85%83%E7%BC%96%E7%A8%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B02-scanner/" class="post-title-link" itemprop="url">从零写数据库系列-scanner</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-04 10:43:34" itemprop="dateModified" datetime="2023-02-04T10:43:34+08:00">2023-02-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <span id="more"></span>
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/3-%E6%89%8B%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BB%8E%E9%9B%B6%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B9%8B03-parser/" class="post-title-link" itemprop="url">从零写数据库系列-parser</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-02-01 10:44:57" itemprop="dateCreated datePublished" datetime="2023-02-01T10:44:57+08:00">2023-02-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-04 10:43:51" itemprop="dateModified" datetime="2023-02-04T10:43:51+08:00">2023-02-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id=""><a href="#" class="headerlink" title=""></a></h2>
       
     </div>
 
