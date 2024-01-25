@@ -21,26 +21,26 @@
     <meta name="description" content="https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;scaling-raft&#x2F; Scaling RaftIn CockroachDB, we use the Raft consensus algorithm to ensure that your data remains consistent even when machines fail. In most systems th">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Scaling Raft">
-<meta property="og:url" content="http://heoric.github.io/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/index.html">
+<meta property="og:url" content="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/index.html">
 <meta property="og:site_name" content="Leoirc&#39;s Blogs">
 <meta property="og:description" content="https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;scaling-raft&#x2F; Scaling RaftIn CockroachDB, we use the Raft consensus algorithm to ensure that your data remains consistent even when machines fail. In most systems th">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/multinode1-300x216.png?auto=format,compress&max-w=700">
 <meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/multinode2-300x216.png?auto=format,compress&max-w=700">
 <meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/multinode3-300x212.png?auto=format,compress&max-w=700">
-<meta property="article:published_time" content="2023-01-25T07:44:57.000Z">
-<meta property="article:modified_time" content="2024-01-25T03:29:43.449Z">
+<meta property="article:published_time" content="2024-01-25T06:44:57.000Z">
+<meta property="article:modified_time" content="2024-01-25T06:42:55.571Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="分布式">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/multinode1-300x216.png?auto=format,compress&max-w=700">
 
 
-<link rel="canonical" href="http://heoric.github.io/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/">
+<link rel="canonical" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/","path":"2023/01/25/2-数据库/1-cockroachdb/cockroach-blogs/07-Scaling Raft/","title":"Scaling Raft"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/","path":"2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/07-Scaling Raft/","title":"Scaling Raft"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Scaling Raft | Leoirc's Blogs</title>
@@ -173,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -201,15 +201,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-01-25 15:44:57" itemprop="dateCreated datePublished" datetime="2023-01-25T15:44:57+08:00">2023-01-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-25 11:29:43" itemprop="dateModified" datetime="2024-01-25T11:29:43+08:00">2024-01-25</time>
+      <time title="创建时间：2024-01-25 14:44:57 / 修改时间：14:42:55" itemprop="dateCreated datePublished" datetime="2024-01-25T14:44:57+08:00">2024-01-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -272,7 +266,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://heoric.github.io/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/" title="Scaling Raft">http://heoric.github.io/2023/01/25/2-数据库/1-cockroachdb/cockroach-blogs/07-Scaling Raft/</a>
+      <a href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/" title="Scaling Raft">http://heoric.github.io/2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/07-Scaling Raft/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -288,14 +282,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/02/13/5-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="prev" title="">
-                  <i class="fa fa-angle-left"></i> 
+                <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/" rel="prev" title="How we built a serverless SQL database">
+                  <i class="fa fa-angle-left"></i> How we built a serverless SQL database
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/01/31/4-go/go%20%E7%B3%BB%E5%88%97%E4%B9%8B%E9%97%AD%E5%8C%85/" rel="next" title="go 闭包现象和原理">
-                  go 闭包现象和原理 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -377,7 +368,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"3e0d2d15882b01b5ddbcb77b405e236e"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"aa40acb86c3789fcf4d52379bd6ff709"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

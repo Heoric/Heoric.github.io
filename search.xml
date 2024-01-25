@@ -3823,7 +3823,7 @@
   </entry>
   <entry>
     <title>Scaling Raft</title>
-    <url>/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/</url>
+    <url>/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/</url>
     <content><![CDATA[<p><a href="https://www.cockroachlabs.com/blog/scaling-raft/">https://www.cockroachlabs.com/blog/scaling-raft/</a></p>
 <h1 id="Scaling-Raft"><a href="#Scaling-Raft" class="headerlink" title="Scaling Raft"></a>Scaling Raft</h1><p>In <a href="https://github.com/cockroachdb/cockroach">CockroachDB</a>, we use the <a href="https://raftconsensus.github.io/">Raft consensus algorithm</a> to ensure that your data remains consistent even when machines fail. In most systems that use Raft, such as <a href="https://github.com/coreos/etcd">etcd</a> and <a href="https://www.consul.io/">Consul</a>, the entire system is one Raft consensus group. In CockroachDB, however, the data is divided into <em>ranges</em>, each with its own consensus group. This means that each node may be participating in hundreds of thousands of consensus groups. This presents some unique challenges, which we have addressed by introducing a layer on top of Raft that we call <a href="https://github.com/cockroachdb/cockroach/blob/8187c2551352a6c28eba021effaebcbfe523d78c/docs/RFCS/20151213_dismantle_multiraft.md">MultiRaft</a>.</p>
 <p>在 CockroachDB 中，我们使用 Raft 共识算法来确保即使机器出现故障，您的数据也保持一致。 在大多数使用 Raft 的系统中，例如 etcd、Consul，整个系统就是一个 Raft 共识组。 然而，在 CockroachDB 中，数据被分为多个范围，每个范围都有自己的共识组。 这意味着每个节点可能参与数十万个共识组。 这带来了一些独特的挑战，我们通过在 Raft 之上引入一个称为 MultiRaft 的层来解决这些挑战。</p>
@@ -3963,7 +3963,8 @@
   <entry>
     <title>How CockroachDB checks replication</title>
     <url>/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/</url>
-    <content><![CDATA[<h1 id="Trust-but-verify-How-CockroachDB-checks-replication"><a href="#Trust-but-verify-How-CockroachDB-checks-replication" class="headerlink" title="Trust, but verify: How CockroachDB checks replication"></a>Trust, but verify: How CockroachDB checks replication</h1><p>We built survivability into the DNA of CockroachDB. And while we had a lot of fun doing so, and are confident that we have built a solution on a firm foundation, we felt a nagging concern: Does CockroachDB really survive? When data is written to the database, will a failure really not end up in data loss? So to assuage those concerns, we adopted a Russian maxim: <em>“Dovorey, no provorey – Trust, but Verify.”</em></p>
+    <content><![CDATA[<p><a href="https://www.cockroachlabs.com/blog/trust-but-verify-cockroachdb-checks-replication/">https://www.cockroachlabs.com/blog/trust-but-verify-cockroachdb-checks-replication/</a></p>
+<h1 id="Trust-but-verify-How-CockroachDB-checks-replication"><a href="#Trust-but-verify-How-CockroachDB-checks-replication" class="headerlink" title="Trust, but verify: How CockroachDB checks replication"></a>Trust, but verify: How CockroachDB checks replication</h1><p>We built survivability into the DNA of CockroachDB. And while we had a lot of fun doing so, and are confident that we have built a solution on a firm foundation, we felt a nagging concern: Does CockroachDB really survive? When data is written to the database, will a failure really not end up in data loss? So to assuage those concerns, we adopted a Russian maxim: <em>“Dovorey, no provorey – Trust, but Verify.”</em></p>
 <p>我们将生存能力融入了 CockroachDB 的 DNA 中。 虽然我们这样做很有趣，并且相信我们已经在坚实的基础上构建了一个解决方案，但我们感到一个挥之不去的担忧：CockroachDB 真的能生存下来吗？ 当数据写入数据库时，失败真的不会导致数据丢失吗？ 因此，为了缓解这些担忧，我们采用了一句俄罗斯格言：“Dovorey，no provorey – 信任，但验证。”</p>
 <span id="more"></span>
 
