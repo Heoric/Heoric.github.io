@@ -123,7 +123,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -156,6 +156,93 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/" class="post-title-link" itemprop="url">Joint consensus in CockroachDB</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-01-25 15:45:57 / 修改时间：17:15:37" itemprop="dateCreated datePublished" datetime="2024-01-25T15:45:57+08:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Availability-and-region-failure-Joint-consensus-in-CockroachDB"><a href="#Availability-and-region-failure-Joint-consensus-in-CockroachDB" class="headerlink" title="Availability and region failure: Joint consensus in CockroachDB"></a>Availability and region failure: Joint consensus in CockroachDB</h1><p>At Cockroach Labs, we <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/raft-is-so-fetch/">write</a> <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/scaling-raft/">quite</a> <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/consensus-made-thrive/">a bit</a> about consensus algorithms. They are a critical component of CockroachDB and we rely on them in the lower layers of our transactional, scalable, distributed key-value store. In fact, large clusters can contain tens of thousands of consensus groups because in CockroachDB, every Range (similar to a shard) is an independent consensus group. Under the hood, we run a large number of instances of <a target="_blank" rel="noopener" href="https://raft.github.io/">Raft</a> (a consensus algorithm), which has come with interesting engineering challenges. This post dives into one that we’ve tackled recently: adding support for atomic replication changes (“Joint Quorums”) to <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/blob/master/raft/README.md">etcd&#x2F;raft</a> and using them in CockroachDB to improve resilience against region failures.</p>
+<p>在 Cockroach Labs，我们写了很多关于共识算法的文章。 它们是 CockroachDB 的关键组件，我们在事务性、可扩展、分布式键值存储的较低层中依赖它们。 事实上，大型集群可以包含数万个共识组，因为在 CockroachDB 中，每个 Range（类似于分片）都是一个独立的共识组。 在幕后，我们运行了大量 Raft（一种共识算法）实例，这带来了有趣的工程挑战。 这篇文章深入探讨了我们最近解决的一个问题：向 etcd&#x2F;raft 添加对原子复制更改（“联合仲裁”）的支持，并在 CockroachDB 中使用它们来提高针对区域故障的恢复能力。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -223,94 +310,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/" class="post-title-link" itemprop="url">How we built a serverless SQL database</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-01-25 14:44:57 / 修改时间：09:46:26" itemprop="dateCreated datePublished" datetime="2024-01-25T14:44:57+08:00">2024-01-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>原文 <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/how-we-built-cockroachdb-serverless/">https://www.cockroachlabs.com/blog/how-we-built-cockroachdb-serverless/</a></p>
-<p>We recently announced <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/announcing-cockroachdb-serverless/">general availability (GA) for Serverless</a>, with support for change data capture (CDC), backup and restore, and a 99.99% uptime SLA. Read on to learn how CockroachDB Serverless works from the inside out, and why we can give it away for free – not free for some limited period, but free. It required some significant and fascinating engineering to get us there. I think you’ll enjoy reading about it in this blog or watching the recent presentation I gave with my colleague Emily Horing:</p>
-<p>我们最近宣布了无服务器的全面可用性 (GA)，支持变更数据捕获 (CDC)、备份和恢复以及 99.99% 的正常运行时间 SLA。 请继续阅读，了解 CockroachDB Serverless 从内到外的工作原理，以及为什么我们可以免费赠送它——不是在有限的时间内免费，而是免费。 我们需要一些重要且令人着迷的工程才能实现这一目标。 我想您会喜欢在这个博客中阅读相关内容或观看我最近与同事 Emily Horing 进行的演示：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -489,6 +488,100 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/01/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/" class="post-title-link" itemprop="url">How we built a serverless SQL database</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-01-01 14:44:57" itemprop="dateCreated datePublished" datetime="2024-01-01T14:44:57+08:00">2024-01-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-25 15:06:06" itemprop="dateModified" datetime="2024-01-25T15:06:06+08:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>原文 <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/how-we-built-cockroachdb-serverless/">https://www.cockroachlabs.com/blog/how-we-built-cockroachdb-serverless/</a></p>
+<p>We recently announced <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/announcing-cockroachdb-serverless/">general availability (GA) for Serverless</a>, with support for change data capture (CDC), backup and restore, and a 99.99% uptime SLA. Read on to learn how CockroachDB Serverless works from the inside out, and why we can give it away for free – not free for some limited period, but free. It required some significant and fascinating engineering to get us there. I think you’ll enjoy reading about it in this blog or watching the recent presentation I gave with my colleague Emily Horing:</p>
+<p>我们最近宣布了无服务器的全面可用性 (GA)，支持变更数据捕获 (CDC)、备份和恢复以及 99.99% 的正常运行时间 SLA。 请继续阅读，了解 CockroachDB Serverless 从内到外的工作原理，以及为什么我们可以免费赠送它——不是在有限的时间内免费，而是免费。 我们需要一些重要且令人着迷的工程才能实现这一目标。 我想您会喜欢在这个博客中阅读相关内容或观看我最近与同事 Emily Horing 进行的演示：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -941,94 +1034,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/10/31/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/02-distributed_atomic%20transactions/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Leoric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leoirc's Blogs">
-      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Leoirc's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/" class="post-title-link" itemprop="url">Isolation in CockroachDB</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2023-10-27 14:44:57 / 修改时间：18:24:03" itemprop="dateCreated datePublished" datetime="2023-10-27T14:44:57+08:00">2023-10-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>原文：<a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/">https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/</a></p>
-<p><em><strong>Editor’s Note*</strong></em>: This post was originally authored when CockroachDB was pre-1.0. CockroachDB’s architecture has undergone many changes since then. One of the most significant, as it relates to this post which focuses on our previous “lockless” design, is that we now use more locking and lock-like structures to provide <code>SERIALIZABLE</code> isolation. For more current details about CockroachDB’s transaction model, read our <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer">transaction layer architecture documentation</a>.*</p>
-<p>编者注：这篇文章最初是在 CockroachDB 1.0 版本之前撰写的。 从那时起，CockroachDB 的架构经历了许多变化。 最重要的一个，因为它与这篇文章相关，重点关注我们之前的“无锁”设计，我们现在使用更多的锁定和类似锁的结构来提供可串行化的隔离。 有关 CockroachDB 事务模型的更多最新详细信息，请阅读我们的事务层架构文档。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/10/27/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/03-Isolation%20in%20CockroachDB/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

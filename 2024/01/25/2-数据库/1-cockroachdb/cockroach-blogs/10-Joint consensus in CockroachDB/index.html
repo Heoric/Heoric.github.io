@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Availability and region failure: Joint consensus in CockroachDBAt Cockroach Labs, we write quite a bit about consensus algorithms. They are a critical component of CockroachDB and we rely on them in t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Joint consensus in CockroachDB">
+<meta property="og:url" content="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Availability and region failure: Joint consensus in CockroachDBAt Cockroach Labs, we write quite a bit about consensus algorithms. They are a critical component of CockroachDB and we rely on them in t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.31.10-PM.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/T01P-1.gif?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/T02P-1.gif?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.39.12-PM.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/T04P.gif?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/T03P.gif?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.40.21-PM.png?auto=format,compress&max-w=700">
+<meta property="article:published_time" content="2024-01-25T07:45:57.000Z">
+<meta property="article:modified_time" content="2024-01-25T09:15:37.554Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.31.10-PM.png?auto=format,compress&max-w=700">
+
+
+<link rel="canonical" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/","path":"2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/10-Joint consensus in CockroachDB/","title":"Joint consensus in CockroachDB"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Joint consensus in CockroachDB | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Availability-and-region-failure-Joint-consensus-in-CockroachDB"><span class="nav-number">1.</span> <span class="nav-text">Availability and region failure: Joint consensus in CockroachDB</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Joint consensus in CockroachDB | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Joint consensus in CockroachDB
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-01-25 15:45:57 / 修改时间：17:15:37" itemprop="dateCreated datePublished" datetime="2024-01-25T15:45:57+08:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Availability-and-region-failure-Joint-consensus-in-CockroachDB"><a href="#Availability-and-region-failure-Joint-consensus-in-CockroachDB" class="headerlink" title="Availability and region failure: Joint consensus in CockroachDB"></a>Availability and region failure: Joint consensus in CockroachDB</h1><p>At Cockroach Labs, we <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/raft-is-so-fetch/">write</a> <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/scaling-raft/">quite</a> <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/consensus-made-thrive/">a bit</a> about consensus algorithms. They are a critical component of CockroachDB and we rely on them in the lower layers of our transactional, scalable, distributed key-value store. In fact, large clusters can contain tens of thousands of consensus groups because in CockroachDB, every Range (similar to a shard) is an independent consensus group. Under the hood, we run a large number of instances of <a target="_blank" rel="noopener" href="https://raft.github.io/">Raft</a> (a consensus algorithm), which has come with interesting engineering challenges. This post dives into one that we’ve tackled recently: adding support for atomic replication changes (“Joint Quorums”) to <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/blob/master/raft/README.md">etcd&#x2F;raft</a> and using them in CockroachDB to improve resilience against region failures.</p>
+<p>在 Cockroach Labs，我们写了很多关于共识算法的文章。 它们是 CockroachDB 的关键组件，我们在事务性、可扩展、分布式键值存储的较低层中依赖它们。 事实上，大型集群可以包含数万个共识组，因为在 CockroachDB 中，每个 Range（类似于分片）都是一个独立的共识组。 在幕后，我们运行了大量 Raft（一种共识算法）实例，这带来了有趣的工程挑战。 这篇文章深入探讨了我们最近解决的一个问题：向 etcd&#x2F;raft 添加对原子复制更改（“联合仲裁”）的支持，并在 CockroachDB 中使用它们来提高针对区域故障的恢复能力。</p>
+<span id="more"></span>
+
+<p>A replication change is a configuration change of a Range, that is, a change in where the consistent copies of that Range should be stored. Let’s use a standard deployment topology to illustrate this.</p>
+<p>复制更改是 Range 的配置更改，即该 Range 的一致副本的存储位置的更改。 让我们使用标准部署拓扑来说明这一点。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.31.10-PM.png?auto=format,compress&max-w=700"></p>
+<p>The above deployment has three regions (i.e. data centers). CockroachDB enables globally deployed applications, so these regions may well be placed across the globe. We see that there are two nodes in each of the regions X, Y and Z, and we see a Range which has one replica (“copy”) in each of the regions. This deployment survives the failure of a single region: consensus replication will continue to work as long as a majority of replicas are available. If a region fails, we lose at most one replica and two - a majority - remain, so the database will continue to operate normally after a short timeout. If we placed two replicas in, say, Z and the third replica in Y, a failure of region X would take two of the replicas with it, leaving only a single replica available; this single survivor would not be able to serve requests:</p>
+<p>上述部署具有三个区域（即数据中心）。 CockroachDB 支持全球部署应用程序，因此这些区域很可能位于全球各地。 我们看到 X、Y 和 Z 区域中的每个区域都有两个节点，并且我们看到一个 Range，每个区域中都有一个副本（“副本”）。 此部署可以在单个区域出现故障时继续运行：只要大多数副本可用，共识复制就会继续工作。 如果一个区域发生故障，我们最多会丢失一个副本，并保留两个（大多数）副本，因此数据库将在短暂超时后继续正常运行。 如果我们在 Z 中放置两个副本，在 Y 中放置第三个副本，则区域 X 的故障将带走其中两个副本，仅留下一个副本可用； 该幸存者将无法满足请求：</p>
+<img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/T01P-1.gif?auto=format,compress&max-w=700" style="zoom: 67%;" />
+
+<p>CockroachDB dynamically adjusts the data placement to account for shifts in node utilization. As a result, it may want to laterally move the replica from one node to another within, say, region X. To make it concrete, let’s say we want to move it from <em>X</em>2 to <em>X</em>1. We may want to do this because the operator has specified that <em>X</em>2 should go down for maintenance, or <em>X</em>2 has much higher CPU usage than <em>X</em>1.</p>
+<p>CockroachDB 动态调整数据放置以适应节点利用率的变化。 因此，它可能希望将副本从一个节点横向移动到区域 X 内的另一个节点。为了具体起见，假设我们希望将其从 <em>X</em>2 移动到 <em>X</em>1。 我们可能想要这样做，因为操作员已指定 <em>X</em>2 应停机进行维护，或者 <em>X</em>2 的 CPU 使用率比 <em>X</em>1 高得多。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/T02P-1.gif?auto=format,compress&max-w=700"></p>
+<p>As the diagram shows, the Raft group under consideration is initially located on <em>X</em>2,<em>Y</em>1,<em>Z</em>2. The active configuration of this group will be the majority configuration <em>X</em>2,<em>Y</em>1,<em>Z</em>2, meaning two out of these three are required to make a decision (such as electing a leader, or committing a log entry).</p>
+<p>如图所示，所考虑的 Raft 组最初位于<em>X</em>2、<em>Y</em>1、<em>Z</em>2 上。 该组的活动配置将是多数配置<em>X</em>2、<em>Y</em>1、<em>Z</em>2，这意味着需要这三个配置中的两个来做出决定（例如选举领导者或提交日志条目） ）</p>
+<p>We want to laterally move from <em>X</em>2 to <em>X</em>1, that is, we’d like to end up with replicas on <em>X</em>1,<em>Y</em>1, and <em>Z</em>2 in the corresponding configuration (<em>X</em>1,<em>Y</em>1,<em>Z</em>2). But how does that actually happen?</p>
+<p>我们希望从 <em>X</em>2 横向移动到 <em>X</em>1，也就是说，我们希望最终在相应配置中的 <em>X</em>1、<em>Y</em>1 和 <em>Z</em>2 上获得副本 (* X<em>1、</em>Y<em>1、</em>Z*2)。 但这实际上是如何发生的呢？</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.39.12-PM.png?auto=format,compress&max-w=700"></p>
+<p>In Raft, a configuration change is initiated by proposing a special log entry which, when received by a replica, switches it over to the new configuration. Since the replicas forming the Range receive this command at different points in time, they do not switch over in a coordinated fashion and care must be taken to avoid the dreaded “split brain” scenario, in which two distinct groups of peers both think they have the right to make decisions. Here’s how this could happen in our particular example:</p>
+<p>在 Raft 中，配置更改是通过提出一个特殊的日志条目来启动的，当副本收到该日志条目时，会将其切换到新配置。 由于形成范围的副本在不同的时间点接收到此命令，因此它们不会以协调的方式进行切换，并且必须小心避免可怕的“裂脑”场景，在这种情况下，两个不同的对等组都认为它们拥有 做出决定的权利。 在我们的特定示例中，这是如何发生的：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/T04P.gif?auto=format,compress&max-w=700"></p>
+<p><em>Y</em>1 is the first node to receive the configuration change in its log, and it immediately switches to <em>C</em>2&#x3D;<em>X</em>1, <em>Y</em>1, <em>Z</em>2. It catches up <em>X</em>1, which consequently also switches to <em>C</em>2. <em>X</em>1 and <em>Y</em>1 form a quorum of <em>C</em>2, so they can now append log entries without consulting with either <em>X</em>2 or <em>Z</em>2. But - both <em>X</em>2 and <em>Z</em>2 are still using <em>C</em>1&#x3D;(<em>X</em>2, <em>Y</em>1, <em>Z</em>2) and have no idea a new configuration is active elsewhere. If they happen to not learn about this in a timely manner from <em>Y</em>1 - imagine a well-placed network disruption - they might decide to elect a leader between themselves and may start appending their own entries at conflicting log positions - split brain. Membership changes are tricky!</p>
+<p><em>Y</em>1 是第一个在其日志中接收配置更改的节点，它立即切换到 <em>C</em>2&#x3D;<em>X</em>1, <em>Y</em>1, <em>Z</em>2。 它赶上<em>X</em>1，因此也切换到<em>C</em>2。 <em>X</em>1 和 <em>Y</em>1 形成 <em>C</em>2 的法定人数，因此它们现在可以附加日志条目，而无需咨询 <em>X</em>2 或 <em>Z</em>2。 但是 - <em>X</em>2 和 <em>Z</em>2 仍在使用 <em>C</em>1&#x3D;(<em>X</em>2, <em>Y</em>1, <em>Z</em>2) 并且不知道新配置在其他地方处于活动状态。 如果他们碰巧没有及时从 <em>Y</em>1 处了解到这一点 - 想象一下适当的网络中断 - 他们可能会决定在他们之间选举一个领导者，并可能开始在冲突的日志位置附加自己的条目 - 脑裂。 会员变更很棘手！</p>
+<p>One way to look at the above is that we were trying to “change too much at once”: we effectively added a node (<em>X</em>1) and removed a node (<em>X</em>2) at the same time. Maybe things would turn out OK if we carried these changes out individually, waiting for a majority to have received the first change before starting the second?</p>
+<p>看待上述情况的一种方法是，我们试图“一次改变太多”：我们有效地添加了一个节点（<em>X</em>1）并同时删除了一个节点（<em>X</em>2）。 如果我们单独进行这些更改，等待大多数人收到第一个更改后再开始第二个更改，也许事情会好起来？</p>
+<p>It turns out that this is true. Let’s add <em>X</em>1 first before removing <em>X</em>2. This means that in the above illustration we’ll have <em>C</em>2&#x3D;(<em>X</em>1, <em>X</em>2, <em>Y</em>1, <em>Z</em>2). Note that now that there are four nodes, there are three nodes required for majority consensus. This means that when <em>X</em>1 and <em>Y</em>1 have both switched to the new configuration, they can’t make their own decisions just yet - they need to loop in one additional peer (and tell it about <em>C</em>2), that is, either <em>X</em>2 or <em>Z</em>2. Whichever one they pick effectively leaves a single replica using <em>C</em>1, but without a friend to form a separate quorum with. Similarly, we can convince ourselves that removing one node at a time is safe, too.</p>
+<p>事实证明这是真的。 我们先添加<em>X</em>1，然后再删除<em>X</em>2。 这意味着在上图中我们将有 <em>C</em>2&#x3D;(<em>X</em>1, <em>X</em>2, <em>Y</em>1, <em>Z</em>2)。 请注意，现在有四个节点，需要三个节点才能达成多数共识。 这意味着当 <em>X</em>1 和 <em>Y</em>1 都切换到新配置时，它们还不能做出自己的决定 - 它们需要循环一个额外的对等点（并告诉它有关 <em>C</em>2 的信息） ，即 <em>X</em>2 或 <em>Z</em>2。 无论他们选择哪一个，都会使用 <em>C</em>1 有效地留下一个副本，但没有朋友可以与之形成单独的仲裁。 同样，我们可以说服自己，一次删除一个节点也是安全的。</p>
+<p>Breaking complex configuration changes such as lateral moves into “safer” individual parts is how CockroachDB worked for a long time. However, does it work with our deployment above? Let’s take another look at the intermediate state we’re in after adding <em>X</em>1, but before removing <em>X</em>2 (similar problems occur if we remove <em>X</em>2 first, then add <em>X</em>1):</p>
+<p>打破复杂的配置更改（例如横向移动）到“更安全”的单独部分是 CockroachDB 长期以来的工作方式。 但是，它适用于我们上面的部署吗？ 我们再看一下添加<em>X</em>1之后、删除<em>X</em>2之前的中间状态（如果我们先删除<em>X</em>2，然后添加<em>X</em>1，也会出现类似的问题）：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/T03P.gif?auto=format,compress&max-w=700"></p>
+<p>Remember how we realized earlier that by placing two replicas in a single region, we could run into trouble? This is exactly what we were forced to do here. If region X fails, we’re in trouble: we lose two replicas at once, leaving two survivors unable to muster up the third replica required for a healthy majority (recall that a group of size four needs three replicas to make progress). As a result, this Range will stop accepting traffic until region X comes back up - violating the guarantees we were expecting from this deployment topology. We might try to argue that configuration changes are rare enough to make this a non-issue, but we’ve found that this does not hold. A CockroachDB cluster maintains many thousands of Ranges; at any given time, there might be a configuration change going on on some Range. But even without taking that into account, compromising availability in ways not transparent to the user is deeply unsatisfying to us.</p>
+<p>还记得我们之前如何意识到，通过将两个副本放在一个区域中，我们可能会遇到麻烦吗？ 这正是我们被迫在这里做的事情。 如果区域 X 发生故障，我们就会遇到麻烦：我们同时丢失两个副本，导致两个幸存者无法召集健康多数所需的第三个副本（回想一下，一个规模为 4 的小组需要三个副本才能取得进展）。 因此，该范围将停止接受流量，直到区域 X 恢复正常 - 这违反了我们对此部署拓扑的预期保证。 我们可能会试图争辩说，配置更改非常罕见，因此这不是问题，但我们发现这并不成立。 一个 CockroachDB 集群维护着数千个 Range； 在任何给定时间，某些 Range 上可能会发生配置更改。 但即使不考虑这一点，以对用户不透明的方式损害可用性也让我们非常不满意。</p>
+<p>Until recently, CockroachDB mitigated this problem by carrying out the two adjacent membership changes as fast as possible, to minimize the time spent in the vulnerable configuration. However, it was clear that we couldn’t accept this state of affairs permanently and set out to address the issue in the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/cockroachdb-19dot2-release/">19.2 release of CockroachDB</a>.</p>
+<p>直到最近，CockroachDB 通过尽快执行两个相邻的成员资格更改来缓解此问题，以最大限度地减少在易受攻击的配置中花费的时间。 然而，很明显我们不能永远接受这种状况，并着手在 CockroachDB 19.2 版本中解决这个问题。</p>
+<p>The solution to our problem is outlined in the dissertation in which the Raft consensus algorithm was first introduced, and is named Joint Consensus. The idea is to pick a better intermediate configuration than we did in our example above - one that doesn’t force us to put two replicas into a single region.</p>
+<p>我们问题的解决方案在首次引入 Raft 共识算法的论文中概述，并被命名为“联合共识”。 我们的想法是选择一个比我们在上面的示例中更好的中间配置 - 该配置不会强迫我们将两个副本放入一个区域中。</p>
+<p>What if our intermediate configuration instead “joined” the initial and final configuration together, requiring agreement of both? This is exactly what Joint Consensus does. Sticking to our example, we would go from our initial configuration C<em>1&#x3D;<em>X</em>2,<em>Y</em>1,<em>Z</em>2 to the “joint configuration” <em>C</em>1 &amp;&amp; <em>C</em>2 &#x3D; (X</em>2,<em>Y</em>,<em>Z</em>2) &amp;&amp; (<em>X</em>1,<em>Y</em>1,<em>Z</em>2):</p>
+<p>如果我们的中间配置将初始配置和最终配置“连接”在一起，需要两者达成一致，该怎么办？ 这正是联合共识所做的。 坚持我们的示例，我们将从初始配置 C<em>1&#x3D;<em>X</em>2,<em>Y</em>1,<em>Z</em>2 变为“联合配置”</em>C<em>1 &amp;&amp; <em>C</em>2 &#x3D; (X</em>2 ,<em>Y</em>,<em>Z</em>2) &amp;&amp; (<em>X</em>1,<em>Y</em>1,<em>Z</em>2):</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/11/Screen-Shot-2019-11-26-at-12.40.21-PM.png?auto=format,compress&max-w=700"></p>
+<p>In this configuration, making a decision requires agreement of a majority of <em>C</em>1 as well as a majority of <em>C</em>2. Revisiting our earlier counter-example in which <em>X</em>2and <em>Z</em>2 had not received the old configuration yet, we find that the split-brain is impossible: <em>X</em>1 and <em>Y</em>1 (who are using the joint configuration) can’t make a decision without contacting either <em>X</em>2 or <em>Z</em>2, preventing split-brain. At the same time, the joint configuration survives a region outage just fine, since both <em>C</em>1 and <em>C</em>2 do so individually!</p>
+<p>在此配置中，做出决定需要 <em>C</em>1 的多数以及 <em>C</em>2 的多数同意。 回顾我们之前的反例，其中<em>X</em>2和<em>Z</em>2尚未收到旧配置，我们发现裂脑是不可能的：<em>X</em>1和<em>Y</em>1（正在使用联合配置） ）在不联系 <em>X</em>2 或 <em>Z</em>2 的情况下无法做出决定，从而防止脑裂。 同时，联合配置能够很好地承受区域中断，因为 <em>C</em>1 和 <em>C</em>2 都是单独执行的！</p>
+<p>Hence, the plan was clear: implement joint configuration changes, and use them. This provided a welcome opportunity to contribute back to the community, as we share a Raft implementation with the <a target="_blank" rel="noopener" href="https://etcd.io/">etcd project</a>. etcd is a distributed key-value store commonly used for configuration management (notably, it backs <a target="_blank" rel="noopener" href="https://kubernetes.io/">Kubernetes</a>), and we’ve been an active maintainer (and user) of its <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/tree/master/raft#raft-library">etcd&#x2F;raft</a> library well before Cockroach Labs even sprung into existence in 2015.</p>
+<p>因此，计划很明确：实施联合配置更改并使用它们。 这提供了一个回馈社区的好机会，因为我们与 etcd 项目共享 Raft 实现。 etcd 是一种常用于配置管理的分布式键值存储（值得注意的是，它支持 Kubernetes），早在 Cockroach Labs 于 2015 年出现之前，我们就一直是其 etcd&#x2F;raft 库的积极维护者（和用户）。</p>
+<p>At this point, it’s time for a juicy confession:</p>
+<p>此时此刻，是时候进行一次多汁的坦白了：</p>
+<p>etcd&#x2F;raft doesn’t actually <em>really implement</em> the Raft consensus algorithm.</p>
+<p>etcd&#x2F;raft 实际上并没有真正实现 Raft 共识算法。</p>
+<p>It does closely follow the specification for the most part, but with one marked difference: configuration changes. We’ve explained above that in Raft, a peer should switch to the new configuration the moment it is appended to its log. In etcd&#x2F;raft, the peer switches to the new configuration the moment is committed and applied to the state machine.</p>
+<p>它在很大程度上确实严格遵循规范，但有一个明显的区别：配置更改。 我们上面已经解释过，在 Raft 中，对等点应该在新配置追加到其日志时立即切换到新配置。 在 etcd&#x2F;raft 中，对等方在提交并应用于状态机时切换到新配置。</p>
+<p>The difference may seem small, but it carries weight. Briefly put,</p>
+<p>差异看似很小，但意义重大。 简而言之，</p>
+<ul>
+<li><p>the “Raft way” is proven correct in the paper, but more awkward use from the app, while</p>
+<p>“Raft 方式”在论文中被证明是正确的，但在应用程序中使用起来比较尴尬，而</p>
+</li>
+<li><p>the “etcd&#x2F;raft way” comes with subtle problems that require subtle fixes, but has a more natural external API.</p>
+<p>“etcd&#x2F;raft 方式”存在一些微妙的问题，需要微妙的修复，但具有更自然的外部 API。</p>
+</li>
+</ul>
+<p>We took the opportunity to discuss with the other maintainers whether etcd&#x2F;raft should fall in line with the spec. In the process, we uncovered some previously unknown potential correctness problems. A little later, <a target="_blank" rel="noopener" href="https://github.com/hicqu">Peng Qu</a> over from <a target="_blank" rel="noopener" href="https://pingcap.com/en/">PingCap</a> (they’re using a <a target="_blank" rel="noopener" href="https://www.rust-lang.org/">Rust</a> implementation of Raft very similar to etcd&#x2F;raft) alerted us to <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/issues/7625#issuecomment-551041747">yet another problem</a>.</p>
+<p>我们借此机会与其他维护者讨论 etcd&#x2F;raft 是否应该符合规范。 在此过程中，我们发现了一些以前未知的潜在正确性问题。 过了一会儿，来自 PingCap 的 Peng Qu（他们正在使用与 etcd&#x2F;raft 非常相似的 Raft 的 Rust 实现）提醒我们注意另一个问题。</p>
+<p>After we found and implemented <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/issues/7625#issuecomment-489232411">solutions</a> for both problems, we arrived at a good understanding about the additional invariants that truly make etcd&#x2F;raft’s approach safe. At this point, neither we nor the maintainer community felt that changing to the “Raft way” now provided a good return on what would have been a very large investment in etcd&#x2F;raft and all of its implementers (!). In this particular case, it seemed better to be more complicated internally, remain easy to use externally (though with a wart or two), while keeping the battle-tested code we had in place mostly intact.</p>
+<p>在我们找到并实施这两个问题的解决方案之后，我们对真正使 etcd&#x2F;raft 方法安全的额外不变量有了很好的理解。 在这一点上，我们和维护者社区都认为，改变为“Raft 方式”现在可以为 etcd&#x2F;raft 及其所有实现者带来巨大的投资带来良好的回报（！）。 在这种特殊情况下，最好在内部变得更复杂，在外部保持易于使用（尽管有一两个缺点），同时保持我们现有的经过实战测试的代码基本完整。</p>
+<p>With this detour out of the way, we went ahead and implemented joint configuration changes. Now, a few months and 22 pull requests later, anyone using <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/tree/master/raft#raft-library">etcd&#x2F;raft</a> can enjoy the well-maintained fruits of our work. Additionally, we <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/blob/master/raft/rafttest/interaction_env.go#L42">added</a> <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/datadriven">datadriven</a> testing machinery that significantly simplifies testing complex interactions within Raft peers (see <a target="_blank" rel="noopener" href="https://github.com/etcd-io/etcd/blob/master/raft/testdata/confchange_v2_add_double_auto.txt">here</a> for a sample). This significantly simplifies testing and provides fertile grounds for future work or even just explorations.</p>
+<p>绕过这个弯路后，我们继续实施联合配置更改。 现在，几个月和 22 个 Pull 请求之后，任何使用 etcd&#x2F;raft 的人都可以享受我们维护良好的工作成果。 此外，我们添加了数据驱动的测试机制，显着简化了 Raft 对等体中复杂交互的测试（请参阅此处的示例）。 这极大地简化了测试，并为未来的工作甚至探索提供了肥沃的基础。</p>
+<p>Naturally we also started using this new functionality in CockroachDB’s recent <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/cockroachdb-19dot2-release/">19.2 release</a>. If you haven’t given us a try yet, it’s easy to do so either <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/get-cockroachdb/">locally or in the cloud</a>.</p>
+<p>当然，我们也在 CockroachDB 最近的 19.2 版本中开始使用这个新功能。 如果您还没有尝试过，可以在本地或云端轻松尝试。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/10-Joint%20consensus%20in%20CockroachDB/" title="Joint consensus in CockroachDB">http://heoric.github.io/2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/10-Joint consensus in CockroachDB/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/07-Scaling%20Raft/" rel="prev" title="Scaling Raft">
+                  <i class="fa fa-angle-left"></i> Scaling Raft
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"bf330ddf2547a9292343692a380c4c95"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
