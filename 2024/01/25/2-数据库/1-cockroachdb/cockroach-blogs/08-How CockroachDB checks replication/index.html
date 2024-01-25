@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Trust, but verify: How CockroachDB checks replicationWe built survivability into the DNA of CockroachDB. And while we had a lot of fun doing so, and are confident that we have built a solution on a fi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How CockroachDB checks replication">
+<meta property="og:url" content="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Trust, but verify: How CockroachDB checks replicationWe built survivability into the DNA of CockroachDB. And while we had a lot of fun doing so, and are confident that we have built a solution on a fi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-25T06:44:57.000Z">
+<meta property="article:modified_time" content="2024-01-25T06:22:46.343Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="cockroach">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/","path":"2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/08-How CockroachDB checks replication/","title":"How CockroachDB checks replication"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>How CockroachDB checks replication | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Trust-but-verify-How-CockroachDB-checks-replication"><span class="nav-number">1.</span> <span class="nav-text">Trust, but verify: How CockroachDB checks replication</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-CockroachDB-Checks-Replication"><span class="nav-number">1.1.</span> <span class="nav-text">How CockroachDB Checks Replication</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bugs-and-Fixes"><span class="nav-number">1.2.</span> <span class="nav-text">Bugs and Fixes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">1.3.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="How CockroachDB checks replication | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How CockroachDB checks replication
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-01-25 14:44:57 / 修改时间：14:22:46" itemprop="dateCreated datePublished" datetime="2024-01-25T14:44:57+08:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Trust-but-verify-How-CockroachDB-checks-replication"><a href="#Trust-but-verify-How-CockroachDB-checks-replication" class="headerlink" title="Trust, but verify: How CockroachDB checks replication"></a>Trust, but verify: How CockroachDB checks replication</h1><p>We built survivability into the DNA of CockroachDB. And while we had a lot of fun doing so, and are confident that we have built a solution on a firm foundation, we felt a nagging concern: Does CockroachDB really survive? When data is written to the database, will a failure really not end up in data loss? So to assuage those concerns, we adopted a Russian maxim: <em>“Dovorey, no provorey – Trust, but Verify.”</em></p>
+<p>我们将生存能力融入了 CockroachDB 的 DNA 中。 虽然我们这样做很有趣，并且相信我们已经在坚实的基础上构建了一个解决方案，但我们感到一个挥之不去的担忧：CockroachDB 真的能生存下来吗？ 当数据写入数据库时，失败真的不会导致数据丢失吗？ 因此，为了缓解这些担忧，我们采用了一句俄罗斯格言：“Dovorey，no provorey – 信任，但验证。”</p>
+<span id="more"></span>
+
+<p>To understand CockroachDB’s survivability promise, you must first understand our key-value store and replication model, as they form the foundation for survivability.</p>
+<p>要了解 CockroachDB 的生存性承诺，您必须首先了解我们的键值存储和复制模型，因为它们构成了生存性的基础。</p>
+<p>CockroachDB is a SQL database built on top of a distributed consistent key-value store. The entire key-value space is split into multiple contiguous key-value ranges spread across many nodes. CockroachDB uses Raft for consensus-based replicated writes, guaranteeing that a write to any key is durable, or in other words, that it survives. On each write to a key-value range, the range is synchronously replicated from a Raft leader to multiple replicas residing on different nodes. Database writes are replayed on all replicas in the same order as on the leader, guaranteeing consistent replication. This model forms the basis of CockroachDB survivability: if a node dies, a few others have an exact copy of the data that is lost.</p>
+<p>CockroachDB 是一个构建在分布式一致键值存储之上的 SQL 数据库。 整个键值空间被分成多个连续的键值范围，分布在许多节点上。 CockroachDB 使用 Raft 进行基于共识的复制写入，保证对任何键的写入都是持久的，或者换句话说，它能够存活。 每次写入键值范围时，该范围都会从 Raft 领导者同步复制到驻留在不同节点上的多个副本。 数据库写入会按照与领导者相同的顺序在所有副本上重播，从而保证复制的一致性。 该模型构成了 CockroachDB 生存能力的基础：如果一个节点死亡，其他一些节点将拥有丢失数据的精确副本。</p>
+<p>While we’d like to trust our survivability model, we went one step further: we added verification. We built a subsystem that periodically verifies that all replicas of a range have identical data, so that when one of them has to step up to replace a lost node, the data served is what is expected.</p>
+<p>虽然我们希望相信我们的生存模型，但我们更进一步：我们添加了验证。 我们构建了一个子系统，定期验证某个范围的所有副本是否具有相同的数据，以便当其中一个副本必须取代丢失的节点时，所提供的数据就是预期的。</p>
+<h2 id="How-CockroachDB-Checks-Replication"><a href="#How-CockroachDB-Checks-Replication" class="headerlink" title="How CockroachDB Checks Replication"></a>How CockroachDB Checks Replication</h2><p>Every node in the cluster runs an independent consistency checker. The checker scans through all the local replicas in a continuous loop over a 24 hour cycle, and runs a consistency check on each range for which it is the Raft leader:</p>
+<p>集群中的每个节点都运行一个独立的一致性检查器。 检查器以 24 小时为周期连续循环扫描所有本地副本，并对它作为 Raft 领导者的每个范围运行一致性检查：</p>
+<ol>
+<li><p>The leader and replicas agree on the snapshot of the data to verify and assign a unique ID to it.</p>
+<p>领导者和副本就数据快照达成一致，以验证数据并为其分配唯一的 ID。</p>
+</li>
+<li><p>A SHA-512 based checksum on the selected snapshot is computed in parallel on the leader and all replicas.</p>
+<p>在领导者和所有副本上并行计算所选快照的基于 SHA-512 的校验和。</p>
+</li>
+<li><p>The leader shares its checksum and the unique snapshot ID with all replicas. A replica compares the supplied checksum with the one it has computed on its own. On seeing a different checksum, it declares a failure in replication.</p>
+<p>领导者与所有副本共享其校验和和唯一快照 ID。 副本将提供的校验和与它自己计算的校验和进行比较。 当看到不同的校验和时，它声明复制失败。</p>
+</li>
+</ol>
+<p>In the rare circumstance that it finds a replication problem, the checker logs an error or panics. Unfortunately, it is not possible for the system to identify whether the Raft leader or its replica is responsible for a faulty replication, and a replication problem cannot be repaired.</p>
+<p>在极少数情况下，检查程序发现复制问题，会记录错误或出现紧急情况。 不幸的是，系统无法识别Raft领导者或其副本是否对错误的复制负责，并且复制问题无法修复。</p>
+<p>Logging or panicking on detecting an inconsistency problem is great, but how does one debug such problems? To aid the user in debugging, on seeing a checksum mismatch, a second consistency check with an advanced diff setting is triggered on the range. The second consistency check publishes the entire range snapshot from the leader to all replicas, so that they can diff the entire snapshot against their own version and log a diff of the keys that are inconsistent. We were able to use this second consistency check mechanism to debug and fix many problems in replication.</p>
+<p>在检测到不一致问题时进行记录或恐慌固然很好，但如何调试此类问题呢？ 为了帮助用户进行调试，在看到校验和不匹配时，会在范围上触发使用高级差异设置的第二次一致性检查。 第二次一致性检查将整个范围快照从领导者发布到所有副本，以便它们可以将整个快照与自己的版本进行比较，并记录不一致的键的差异。 我们能够使用第二种一致性检查机制来调试和修复复制中的许多问题。</p>
+<p>While we had hoped we had built the perfect system, the verifier uncovered a few bugs!</p>
+<p>虽然我们希望我们已经构建了完美的系统，但验证者发现了一些错误！</p>
+<h2 id="Bugs-and-Fixes"><a href="#Bugs-and-Fixes" class="headerlink" title="Bugs and Fixes"></a>Bugs and Fixes</h2><p>We fixed a number of hairy bugs:</p>
+<ol>
+<li><p><strong>The same data can look different:</strong> The order of entries in protocol buffer maps is undefined in the standard. For some cockroach internal data, we were using protocol buffer maps and replicating it via Raft. All the replicas would separately convert the protocol buffers into a wire format while writing them to disk. Since the wire format is non-deterministic in the standard and implementation, we saw the same data with <strong>a different wire encoding</strong> on different replicas (fixed via gogo&#x2F;protobuf <a target="_blank" rel="noopener" href="https://github.com/gogo/protobuf/pull/156">#156</a>).</p>
+<p>相同的数据可能看起来不同：协议缓冲区映射中的条目顺序在标准中未定义。 对于一些 cockroach 内部数据，我们使用协议缓冲区映射并通过 Raft 复制它。 所有副本都会将协议缓冲区分别转换为有线格式，同时将其写入磁盘。 由于有线格式在标准和实现中是不确定的，我们在不同的副本上看到相同的数据具有不同的有线编码（通过 gogo&#x2F;protobuf #156 修复）。</p>
+</li>
+<li><p><strong>Backdoor writes on the replicas (<a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/issues/5090">#5090</a>):</strong> We collect statistics on every range in the system and replicate them. Writes to the statistics are allowed only on the leader, with replicas simply replaying the operations. We were occasionally updating the statistics on the replicas outside of Raft consensus (fixed via <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/5133">#5133</a>).</p>
+<p>后门写入副本（#5090）：我们收集系统中每个范围的统计信息并复制它们。 仅允许在领导者上写入统计信息，而副本仅重播操作。 我们偶尔会更新 Raft 共识之外的副本的统计信息（通过 #5133 修复）。</p>
+</li>
+<li><p><strong>Internal time series data was being merged incorrectly:</strong> The CockroachDB UI keeps track of monitoring time series data which is replicated. The replicas merge the time series data when read, but an occasional legitimate read would creep in on the leader, causing a bug in the merge functionality (fixed via <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/5515">#5515</a>).</p>
+<p>内部时间序列数据合并不正确：CockroachDB UI 跟踪监视复制的时间序列数据。 副本在读取时合并时间序列数据，但偶尔的合法读取会悄悄进入领导者，导致合并功能出现错误（通过＃5515修复）。</p>
+</li>
+<li><p><strong>Floating point addition might be non-deterministic:</strong> While fixing the above time series issue, we got super paranoid and as a defensive measure decided to not depend on the replica replay of floating point addition. We were aware of floating point addition being <a target="_blank" rel="noopener" href="http://www.walkingrandomly.com/?p=5380">non-associative</a>, and although we knew our floating point additions were being replayed in a definite order and didn’t depend on the associativity property, we adhered to the mantra, “only the paranoid survive,” and got rid of them (fixed via <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/5905">#5905</a>).</p>
+<p>浮点加法可能是不确定的：在解决上述时间序列问题时，我们变得超级偏执，作为一种防御措施，决定不依赖于浮点加法的副本重放。 我们知道浮点加法是非关联性的，尽管我们知道我们的浮点加法是以明确的顺序重播并且不依赖于关联性属性，但我们坚持这样的口头禅：“只有偏执狂才能生存” 并摆脱了它们（通过#5905修复）。</p>
+</li>
+</ol>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>We’ve built a new database that you can trust to survive. With trust comes verification, and we built that into CockroachDB. CockroachDB offers other features like indexes, unique columns, and foreign keys, that you can trust to work properly. We plan on building automatic online verification mechanisms for them, too. We look forward to discussing them in the future.</p>
+<p>我们建立了一个值得您信赖的新数据库。 信任带来验证，我们将其内置到 CockroachDB 中。 CockroachDB 提供其他功能，如索引、唯一列和外键，您可以相信它们可以正常工作。 我们也计划为他们建立自动在线验证机制。 我们期待将来讨论它们。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/" title="How CockroachDB checks replication">http://heoric.github.io/2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/08-How CockroachDB checks replication/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cockroach/" rel="tag"># cockroach</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/" rel="prev" title="Consensus, made thrive">
+                  <i class="fa fa-angle-left"></i> Consensus, made thrive
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/05-How%20we%20built%20a%20serverless%20SQL%20database/" rel="next" title="How we built a serverless SQL database">
+                  How we built a serverless SQL database <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"eabc01f8e728a9707052638264831265"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

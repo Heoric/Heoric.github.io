@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;consensus-made-thrive&#x2F; Consensus, made thriveWhen you write data to CockroachDB (for example, if you insert a row into a table through the SQL client), we take care">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Consensus, made thrive">
+<meta property="og:url" content="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="https:&#x2F;&#x2F;www.cockroachlabs.com&#x2F;blog&#x2F;consensus-made-thrive&#x2F; Consensus, made thriveWhen you write data to CockroachDB (for example, if you insert a row into a table through the SQL client), we take care">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-25T02:44:57.000Z">
+<meta property="article:modified_time" content="2024-01-25T03:10:43.181Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="cockroach">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/","path":"2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/06-Consensus, made thrive/","title":"Consensus, made thrive"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Consensus, made thrive | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Consensus-made-thrive"><span class="nav-number">1.</span> <span class="nav-text">Consensus, made thrive</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Consensus-Algorithms-Applied"><span class="nav-number">1.1.</span> <span class="nav-text">Consensus Algorithms Applied</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9CRaft-Made-Live%E2%80%9D"><span class="nav-number">1.2.</span> <span class="nav-text">“Raft Made Live”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consensus-is-like-caviar-too-expensive-to-splurge-on"><span class="nav-number">1.3.</span> <span class="nav-text">Consensus is like caviar: too expensive to splurge on</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Can-we-make-reads-cheaper"><span class="nav-number">1.4.</span> <span class="nav-text">Can we make reads cheaper?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">1.5.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Consensus, made thrive | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Consensus, made thrive
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-01-25 10:44:57 / 修改时间：11:10:43" itemprop="dateCreated datePublished" datetime="2024-01-25T10:44:57+08:00">2024-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/consensus-made-thrive/">https://www.cockroachlabs.com/blog/consensus-made-thrive/</a></p>
+<h1 id="Consensus-made-thrive"><a href="#Consensus-made-thrive" class="headerlink" title="Consensus, made thrive"></a>Consensus, made thrive</h1><p>When you write data to CockroachDB (for example, if you insert a row into a table through the SQL client), we take care of replication for you. To do this, we use a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Consensus_(computer_science)">consensus protocol</a> – an algorithm which makes sure that your data is safely stored on multiple machines, and that those machines agree on the current state even if some of them are temporarily disconnected.</p>
+<p>当您将数据写入 CockroachDB 时（例如，如果您通过 SQL 客户端向表中插入一行），我们会为您处理复制。 为此，我们使用共识协议——一种确保您的数据安全存储在多台机器上的算法，并且即使其中一些机器暂时断开连接，这些机器也能就当前状态达成一致。</p>
+<p>In this post, I will give an overview of common implementation concerns and how we address these concerns in CockroachDB. Then I will abandon these earthly constraints and explore how we could improve consensus algorithms. Specifically, what would it take to make them faster?</p>
+<p>在这篇文章中，我将概述常见的实施问题以及我们如何在 CockroachDB 中解决这些问题。 然后我将放弃这些现实的限制并探索如何改进共识算法。 具体来说，怎样才能让它们更快？</p>
+<span id="more"></span>
+
+<h2 id="Consensus-Algorithms-Applied"><a href="#Consensus-Algorithms-Applied" class="headerlink" title="Consensus Algorithms Applied"></a>Consensus Algorithms Applied</h2><p>Consensus algorithms are inherently distributed, and the problem they solve is fundamental to any piece of software which wants to keep a consistent state across multiple machines. After several decades, the body of research on them seemingly presents you with a variety of implementations options to choose from. However, as pointed out in <a target="_blank" rel="noopener" href="http://research.google.com/archive/paxos_made_live.html">Google’s “Paxos Made Live,”</a> <strong>using consensus algorithms in the real world is not quite as simple:</strong> the things that matter most for real implementations are often mere side notes in their respective papers.</p>
+<p>共识算法本质上是分布式的，它们解决的问题对于任何想要在多台机器上保持一致状态的软件来说都是基础。 几十年后，对它们的研究似乎为您提供了多种实现选项可供选择。 然而，正如 Google 的“Paxos Made Live”中指出的那样，在现实世界中使用共识算法并不那么简单：对于实际实现来说最重要的事情通常只是各自论文中的旁注。</p>
+<p>A typical consensus algorithm accepts operations from a client, and puts them in an ordered log (which in turn is kept on each of the replicas), acknowledging an operation as successful to the client once it is known that the operation has been persisted in a majority of the replicas’ logs. Each of the replicas in turn execute operations from that log in order, advancing their state. This means that at a fixed point in time, the replicas may not be identical, but they are advancing through the same log (meaning that if you give them time to all catch up, they will be in the same state) – the best you can hope for in a distributed system.</p>
+<p>典型的共识算法接受来自客户端的操作，并将它们放入有序日志中（该日志又保存在每个副本上），一旦知道该操作已保存在一个副本中，则向客户端确认操作成功。 大多数副本的日志。 每个副本依次按顺序执行该日志中的操作，从而推进其状态。 这意味着在某个固定的时间点，副本可能不相同，但它们通过相同的日志前进（这意味着如果你给它们时间全部赶上，它们将处于相同的状态）——最好的 可以希望在分布式系统中。</p>
+<p><strong>Typical Concerns When Implementing a Consensus Algorithm:</strong></p>
+<p>实施共识算法时的典型问题：</p>
+<ul>
+<li><p><strong>Log Truncation</strong>: Having all of the operations in an ordered log is fine, but that log can’t grow forever! When all replicas have caught up, older log entries should be discarded.</p>
+<p>日志截断：将所有操作放在有序日志中很好，但该日志不能永远增长！ 当所有副本都赶上时，应丢弃较旧的日志条目。</p>
+</li>
+<li><p><strong>Snapshotting</strong>: Since the log can’t be kept forever, after an extended period of downtime of a replica, there must be an alternative way of catching it up. The only option is transferring a snapshot of the data and a log position from which to resume.</p>
+<p>快照：由于日志无法永久保留，因此在副本长时间停机后，必须有其他方法来捕获它。 唯一的选择是传输数据快照和要恢复的日志位置。</p>
+</li>
+<li><p><strong>Membership Changes</strong>: These are very tricky to get right. As we add a replica to the group, the size of a majority changes. A lot of decisions have to be made: which majority size is active while the membership changes? Does the new replica have any say in the group while it’s being added? When does it receive a snapshot? Can a snapshot be sent before the membership change is carried out, to minimize the impact of the change? Removal is similarly iffy, and the consensus group is typically more vulnerable while the process is ongoing.</p>
+<p>会员变更：这些是非常棘手的。 当我们向组中添加副本时，多数副本的大小会发生变化。 必须做出很多决定：当成员发生变化时，哪个多数规模是活跃的？ 新副本在添加时在组中是否有发言权？ 它什么时候收到快照？ 是否可以在成员资格更改之前发送快照，以尽量减少更改的影响？ 删除也同样存在不确定性，并且在该过程正在进行时，共识小组通常更容易受到攻击。</p>
+</li>
+<li><p><strong>Replay Protection</strong>: commands proposed by a client may be executed multiple times (or never, depending on the implementation). While one client proposal ideally leads to exactly one executed command in almost all cases, <a target="_blank" rel="noopener" href="http://bravenewgeek.com/you-cannot-have-exactly-once-delivery/">general exactly-once delivery is impossible in a distributed system</a>. In practice, this means keeping state about already executed commands, or even better, using only idempotent commands.</p>
+<p>重播保护：客户端提出的命令可能会执行多次（或永远不会执行，具体取决于实现）。 虽然在几乎所有情况下，理想情况下，一个客户端提案都会导致恰好执行一个命令，但在分布式系统中，一般的一次性交付是不可能的。 实际上，这意味着保留已执行命令的状态，或者更好的是，仅使用幂等命令。</p>
+</li>
+<li><p><strong>Read Leases</strong>: when using a vanilla consensus protocol, all read operations of the replicated state have to go through that consensus protocol, or they may read stale data[1], which is a consistency violation. In many applications, the vast majority of operations <em>are</em> reads, and going through consensus for those can be prohibitively expensive.</p>
+<p>读租约：当使用普通共识协议时，复制状态的所有读取操作都必须经过该共识协议，否则它们可能会读取过时的数据[1]，这是违反一致性的。 在许多应用程序中，绝大多数操作都是读取，而对这些操作达成共识可能会非常昂贵。</p>
+</li>
+</ul>
+<p>These and many others (which aren’t as readily summarized) make it hard to work an instance of a consensus protocol into a real application, let alone <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/scaling-raft/">thousands of them</a>.</p>
+<p>这些和许多其他问题（不容易概括）使得将共识协议实例应用到实际应用程序中变得困难，更不用说数千个应用程序了。</p>
+<h2 id="“Raft-Made-Live”"><a href="#“Raft-Made-Live”" class="headerlink" title="“Raft Made Live”"></a>“Raft Made Live”</h2><p>At CockroachDB, we have most of the above concerns sufficiently covered. The author of <a target="_blank" rel="noopener" href="https://raft.github.io/">Raft</a>, our consensus protocol of choice, did a pretty good job at providing comprehensive instructions for much of the above. We truncate our log appropriately, regardless of whether all replicas <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/7438">are up or not</a>. We send snapshots when appropriate, and soon we will also send <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/7468">pre-emptive snapshots</a> during membership changes. We implement replay protection using <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC</a> and a <a target="_blank" rel="noopener" href="https://github.com/cockroachdb/cockroach/pull/6961">consensus-level component</a>. And, last but not least, we have a stable leading replica which gets to serve reads locally.</p>
+<p>在 CockroachDB，我们已经充分解决了上述大部分问题。 我们选择的共识协议 Raft 的作者在为上述大部分内容提供全面的说明方面做得非常好。 无论所有副本是否已启动，我们都会适当地截断日志。 我们会在适当的时候发送快照，很快我们还将在成员资格变更期间发送抢先快照。 我们使用 MVCC 和共识级组件实现重放保护。 最后但并非最不重要的一点是，我们有一个稳定的领先副本，可以在本地提供读取服务。</p>
+<p>That’s all fine and well, but there are various areas of improvement. Let’s leave behind the realm of what’s been implemented (at least in CockroachDB, and probably almost everywhere else) and talk about <strong>what should be possible in an ideal world.</strong></p>
+<p>这一切都很好，但还有很多需要改进的地方。 让我们抛开已经实现的领域（至少在 CockroachDB 中，可能几乎在其他地方），来讨论一下理想世界中应该实现什么。</p>
+<h2 id="Consensus-is-like-caviar-too-expensive-to-splurge-on"><a href="#Consensus-is-like-caviar-too-expensive-to-splurge-on" class="headerlink" title="Consensus is like caviar: too expensive to splurge on"></a>Consensus is like caviar: too expensive to splurge on</h2><p>The most obvious problem with distributed consensus is that it’s inherently slow. A typical consensus operation goes as follows:</p>
+<p>分布式共识最明显的问题是它本质上很慢。 典型的共识操作如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">               CLIENT</span><br><span class="line">                 |  ʌ</span><br><span class="line">             (1) |  | (4)</span><br><span class="line">                 v  |</span><br><span class="line">                LEADER</span><br><span class="line">            [node1, Oregon]</span><br><span class="line">              /  ʌ    \</span><br><span class="line">       (2)  /  / (3)    \ (5)</span><br><span class="line">          /  /            \</span><br><span class="line">        v  /                v</span><br><span class="line">     FOLLOWER            FOLLOWER</span><br><span class="line">[node2, California]  [node3, Virginia]</span><br><span class="line">                      (responds later)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>A client sends a request to the leader. In turn, the leader must talk to a majority of nodes (including itself), i.e. in the picture it would have to wait for one of the followers (for simplicity we assume that node three is always last). In simple math, assuming that actual message processing takes no time, we get</p>
+<p>客户端向领导者发送请求。 反过来，领导者必须与大多数节点（包括其自身）通信，即在图中，它必须等待追随者之一（为简单起见，我们假设节点 3 始终是最后一个）。 在简单的数学中，假设实际的消息处理不需要时间，我们得到</p>
+<blockquote>
+<p>commit_latency &#x3D; round_trip(client, leader) + round_trip(leader, follower)</p>
+</blockquote>
+<p>This internal coordination is expensive, and while it’s unavoidable, we can see that the price tag depends heavily on the location of the client. For example, with a client in Oregon, we have <em>roughly</em> zero latency from the client to the leader, and ~30ms round-trip between the leader and the follower in Virginia, for a total commit latency of about 30ms. That doesn’t sound so bad, but let’s look at a client on the east coast instead – it would presumably be close to our Virginia data center, but that doesn’t matter – the leader is in Oregon, and we pay perhaps an 80ms round trip to it, plus the same 30ms as before, adding up to a hefty 110ms.</p>
+<p>这种内部协调成本高昂，虽然这是不可避免的，但我们可以看到价格很大程度上取决于客户的位置。 例如，对于俄勒冈州的客户端，从客户端到领导者的延迟大致为零，而弗吉尼亚州的领导者和追随者之间的往返时间约为 30 毫秒，总提交延迟约为 30 毫秒。 这听起来并没有那么糟糕，但让我们看看东海岸的一个客户 - 它可能靠近我们的弗吉尼亚数据中心，但这并不重要 - 领先者在俄勒冈州，我们可能支付 80 毫秒 往返，再加上与之前相同的 30 毫秒，加起来高达 110 毫秒。</p>
+<p>This goes to show that once you have consensus, you will do all you can to reduce the time you wait for those transcontinental (or even transmundial) TCP packets. For example, you could ask yourself why in that last example the client couldn’t talk directly to the node in Virginia.</p>
+<p>这表明，一旦达成共识，您将尽一切努力减少等待那些跨大陆（甚至跨世界）的 TCP 数据包的时间。 例如，您可以问自己为什么在最后一个示例中客户端无法直接与弗吉尼亚州的节点通信。</p>
+<p>There is a relatively recent consensus protocol called EPaxos which allows this[2], though we’ll save it for another blog post. Today, we’re going to deal with a more modest question:</p>
+<p>有一个相对较新的共识协议，称为 EPaxos，它允许这样做[2]，尽管我们将把它保存到另一篇博客文章中。 今天，我们要解决一个更温和的问题：</p>
+<h2 id="Can-we-make-reads-cheaper"><a href="#Can-we-make-reads-cheaper" class="headerlink" title="Can we make reads cheaper?"></a>Can we make reads cheaper?</h2><p>Read operations may seem innocuous at first. They get served from the leader because that replica is the only one that can guarantee that it’s not reading stale data (since it decides when write operations commit), but read operations don’t have to go through consensus themselves. This means that for our example, we shave 30ms of the commit latency if we only read data. However, <strong>reads are still expensive when you’re far away</strong> from the leader. It seems silly that the client in Virginia can’t read from its local node; sure would be nice to do better, right? And you can! (At least in the literature.)</p>
+<p>读取操作乍一看似乎无害。 它们从领导者处获得服务，因为该副本是唯一可以保证它不会读取过时数据的副本（因为它决定何时提交写入操作），但读取操作本身不必经过共识。 这意味着，对于我们的示例，如果仅读取数据，则可以减少 30 毫秒的提交延迟。 然而，当你远离领导者时，读取仍然很昂贵。 弗吉尼亚州的客户端无法从其本地节点读取数据，这似乎很愚蠢； 如果能做得更好当然会很好，对吧？ 你可以！ （至少在文献中是这样。）</p>
+<p>The idea is simple:</p>
+<blockquote>
+<p><strong>By letting the consensus group agree that commands must be committed by a *special majority* of the nodes as opposed to any majority, the nodes in that special majority can be sure to be informed about the latest state of the system.</strong></p>
+<p>通过让共识组同意命令必须由特殊多数节点而不是任何多数节点提交，确保该特殊多数节点能够了解系统的最新状态。</p>
+</blockquote>
+<p>For example, in the above picture, we could set things up so that all nodes agree that nodes one and two are to be included in any majority when committing commands (regardless of who the leader is), and then these replicas could serve reads which are consistent with the consensus log. The resulting algorithm is investigated (in higher generality) in <a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~dga/papers/leases-socc2014.pdf">Paxos Quorum Leases: Fast Reads Without Sacrificing Writes</a>.</p>
+<p>例如，在上图中，我们可以进行设置，以便所有节点都同意在提交命令时节点一和节点二将包含在任何多数中（无论领导者是谁），然后这些副本可以提供读取服务 与共识日志一致。 在 Paxos Quorum Leases: Fast Reads Without Sacrificing Writes 中研究了生成的算法（具有更高的通用性）。</p>
+<p>In a simpler world, modulo the usual implementation headaches, that could be the end of the story – but there’s an additional bit of complexity hidden here: the fact that CockroachDB is not a simple replicated log, but a full-fledged <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC</a> database. This means that the key-value pairs we store have a logical timestamp attached to them, and the one invariant that we must uphold is the following:</p>
+<p>在一个更简单的世界中，对常见的实现难题进行取模，这可能是故事的结局 - 但这里还隐藏着额外的复杂性：事实上，CockroachDB 不是一个简单的复制日志，而是一个成熟的 MVCC 数据库。 这意味着我们存储的键值对附加了一个逻辑时间戳，并且我们必须遵守的一个不变量如下：</p>
+<blockquote>
+<p><strong>If a value was ever read at some timestamp, it can only be mutated at higher timestamps.</strong></p>
+<p>如果某个值在某个时间戳被读取过，那么它只能在更高的时间戳发生变化。</p>
+</blockquote>
+<p>That makes perfect sense if you think about it – if you read a certain value at some timestamp, then I should not be able to perform a write that changes the value you already observed.</p>
+<p>如果你仔细想想，这是完全有道理的——如果你在某个时间戳读取某个值，那么我应该无法执行更改你已经观察到的值的写入操作。</p>
+<p>On the leader, this is achieved by keeping an in-memory <em>timestamp cache</em> – a data structure which given a key and a timestamp will tell you whether the key was read at a higher timestamp previously. This structure must be consulted before proposing a write to consensus to guard us against the scenario described above – if there was such a read, we can’t perform the write.</p>
+<p>在领导者上，这是通过保留内存中时间戳缓存来实现的 - 给定密钥和时间戳的数据结构将告诉您之前是否以更高的时间戳读取了该密钥。 在提出写入共识之前必须查阅此结构，以防止出现上述情况——如果存在这样的读取，我们将无法执行写入。</p>
+<p>If local reads were served at another replica, naively the leader would have to be notified about that synchronously (in order to write to the timestamp cache) before returning the result of the read to the client – the very thing we wanted to avoid! Or, somewhat better, we could let reads remain cheap for the most part and shift complexity onto writes, requiring them to contact the special majority <em>before</em> proposing to confirm that writing at this timestamp is still possible, and prompting the special majority to not serve reads with conflicting timestamps (at least until they see our command pop out of the consensus protocol).</p>
+<p>如果在另一个副本上提供本地读取，则在将读取结果返回给客户端之前，必须天真地同步通知领导者（以便写入时间戳缓存）——这正是我们想要避免的事情！ 或者，更好的是，我们可以让读取在大多数情况下保持便宜，并将复杂性转移到写入上，要求他们在提议确认在此时间戳写入仍然可能之前联系特殊多数，并提示特殊多数不提供读取服务 时间戳冲突（至少在他们看到我们的命令从共识协议中弹出之前）。</p>
+<p>Another (much more complicated) option is to incorporate that feature at the consensus level by allowing replicas to <em>reject</em> commands before the commit. In that scenario, roughly the following would occur:</p>
+<p>另一个（更复杂的）选项是通过允许副本在提交之前拒绝命令，在共识级别合并该功能。 在这种情况下，大致会发生以下情况：</p>
+<ol>
+<li><p>Follower 1 serves a local read at timestamp, say, <code>ts=15</code>.</p>
+<p>Follower 1 在时间戳处提供本地读取，例如 ts&#x3D;15。</p>
+</li>
+<li><p>A client asks the leader to write that same key at timestamp <code>ts=9</code>.</p>
+<p>客户端要求领导者在时间戳 ts&#x3D;9 处写入相同的密钥。</p>
+</li>
+<li><p>The leader proposes a corresponding command to consensus.</p>
+<p>领导者提出相应的命令以达成共识。</p>
+</li>
+<li><p>The consensus algorithm on the leader tries to replicate this command to a majority of followers (including the <em>special majority</em>).</p>
+<p>领导者的共识算法尝试将此命令复制给大多数追随者（包括特殊多数）。</p>
+</li>
+<li><p>Each follower checks the command for timestamp cache violations. Some followers may acknowledge the proposal, but on Follower 1, it is rejected due to already having served a read for <code>ts=15</code> prior to the write at <code>ts=9</code>.</p>
+<p>每个关注者都会检查命令是否有时间戳缓存违规。 一些追随者可能会认可该提案，但在追随者 1 上，该提案被拒绝，因为在 ts&#x3D;9 写入之前已经提供了 ts&#x3D;15 的读取服务。</p>
+</li>
+<li><p>The leader, upon receiving the rejection, informs the client and cancels replication of the command suitably (either by turning it into a no-op or by unregistering it completely, depending on what’s possible).</p>
+<p>领导者在收到拒绝后，通知客户端并适当取消命令的复制（通过将其变为无操作或完全取消注册，具体取决于可能的情况）。</p>
+</li>
+</ol>
+<p>To the best of my knowledge, such an addition has not been considered for any consensus protocol (and in particular not for the one of most interest to us, Raft). Allowing individual replicas to reject certain commands ad-hoc (i.e. basing their decision on auxiliary unreplicated state) must be considered very carefully and adds considerable complexity (in particular when leadership changes as these commands are in flight).</p>
+<p>据我所知，任何共识协议都没有考虑过这样的添加（特别是我们最感兴趣的协议之一，Raft）。 允许各个副本临时拒绝某些命令（即，根据辅助未复制状态做出决定）必须非常仔细地考虑，并且会增加相当大的复杂性（特别是当这些命令正在运行时领导层发生变化时）。</p>
+<p>Performing that work is likely a small research paper and a bunch of implementation, but in contrast to many other more complicated endeavor, it seems within reach (and with it, serving local reads from some replicas).</p>
+<p>执行这项工作可能只是一篇小型研究论文和一堆实现，但与许多其他更复杂的工作相比，它似乎触手可及（并且可以从某些副本提供本地读取）。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Our usage of consensus algorithms in CockroachDB is fairly standard and covers all the basic needs – but taking a step up is something we’ll be working on in the future. While the likely next step is serving reads from (some) followers, techniques which save round-trips on writes are also appealing, but those go extremely deep down the rabbit hole (and have new, much deeper challenges with respect to serving local reads). As usual, distributed consensus is hard. And if that’s just your cup of tea, <a target="_blank" rel="noopener" href="https://cockroa.ch/eng_hiring">you could have that tea every day</a>.</p>
+<p>我们在 CockroachDB 中对共识算法的使用相当标准，涵盖了所有基本需求 - 但我们未来将致力于更进一步。 虽然下一步可能是为（某些）关注者提供读取服务，但节省写入往返次数的技术也很有吸引力，但这些技术非常深入兔子洞（并且在服务本地读取方面存在新的、更深层次的挑战） 。 像往常一样，分布式共识很难。 如果这只是你喜欢的茶，那么你可以每天喝这种茶。</p>
+<p>[1] Even if the client attempts to talk to the master node, the node it talks to may not be the actual master (though it may think it is), and so commands which have already committed and influenced the outcome of our read may not yet have been executed on the node we’re reading from yet – this violates linearizability on a single register.</p>
+<p>即使客户端尝试与主节点通信，它所通信的节点也可能不是实际的主节点（尽管它可能认为是），因此已经提交并影响我们读取结果的命令可能会 尚未在我们正在读取的节点上执行 - 这违反了单个寄存器的线性化能力。</p>
+<p>[2] Egalitarian Paxos (<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~dga/papers/epaxos-sosp2013.pdf">There Is More Consensus In Egalitarian Parliaments</a>)</p>
+<p>平等主义Paxos（平等主义议会有更多共识）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/06-Consensus,%20made%20thrive/" title="Consensus, made thrive">http://heoric.github.io/2024/01/25/2-数据库/1-cockroachdb/cockroach-blogs/06-Consensus, made thrive/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/cockroach/" rel="tag"># cockroach</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/07/7-%E5%88%86%E5%B8%83%E5%BC%8F/raft/" rel="prev" title="深入理解raft">
+                  <i class="fa fa-angle-left"></i> 深入理解raft
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/08-How%20CockroachDB%20checks%20replication/" rel="next" title="How CockroachDB checks replication">
+                  How CockroachDB checks replication <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"84d38cd841c1512e503dbdeb99e84ee8"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
