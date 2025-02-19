@@ -1587,7 +1587,7 @@
 <span id="more"></span>
 
 <h2 id="关系模型关系代数"><a href="#关系模型关系代数" class="headerlink" title="关系模型关系代数"></a>关系模型关系代数</h2><h2 id="存储1"><a href="#存储1" class="headerlink" title="存储1"></a>存储1</h2><p>面向磁盘的数据库，所有数据都存储在磁盘中。</p>
-<p>mmap 不要用在数据库存储种。</p>
+<p>mmap 不要用在数据库存储中。</p>
 <p>如何将数据存储在磁盘上 ？</p>
 <p>需要暴露那些 API ？</p>
 <hr>
@@ -1609,7 +1609,7 @@
 
 
 
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page(oracle)</span><br><span class="line">indirection 层 运行将 page <span class="built_in">id</span> 映射到文件中的某一个位置。</span><br><span class="line">page directory 记录page 在哪里</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br><span class="line">对磁盘进行 write 和 flush 只能保证 4kb 是原子的。</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page(oracle)</span><br><span class="line">indirection 层 运行将 page <span class="built_in">id</span> 映射到文件中的某一个位置。</span><br><span class="line">page directory 记录page 在哪里</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br><span class="line">对磁盘进行 write 和 flush 只能保证 4kb 是原子的。</span><br></pre></td></tr></table></figure>
 
 
 
@@ -4000,7 +4000,7 @@
   </entry>
   <entry>
     <title>CockroachDB stability post-mortem From 1 node to 100 nodes</title>
-    <url>/2023/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/09-CockroachDB%20stability%20post-mortem%20From%201%20node%20to%20100%20nodes/</url>
+    <url>/2024/01/25/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/09-CockroachDB%20stability%20post-mortem%20From%201%20node%20to%20100%20nodes/</url>
     <content><![CDATA[<p><a href="https://www.cockroachlabs.com/blog/cockroachdb-stability-from-1-node-to-100-nodes/">https://www.cockroachlabs.com/blog/cockroachdb-stability-from-1-node-to-100-nodes/</a></p>
 <p>In August, we published a blog post entitled “<a href="https://www.cockroachlabs.com/blog/cant-run-100-node-cockroachdb-cluster/">Why Can’t I Run a 100-Node CockroachDB Cluster?</a>”. The post outlined difficulties we encountered stabilizing CockroachDB. CockroachDB stability (or the lack of) had become significant enough that we designated it a “code yellow” issue, a concept borrowed from Google that means a problem is so pressing that it merits promotion to a primary concern of the company. For us, the code yellow was more than warranted; a database program isn’t worth the bytes to store its binary if it lacks stability.</p>
 <p>8 月份，我们发表了一篇题为“为什么我不能运行 100 节点 CockroachDB 集群？”的博客文章。 这篇文章概述了我们在稳定 CockroachDB 时遇到的困难。 CockroachDB 稳定性（或缺乏稳定性）已经变得足够严重，以至于我们将其指定为“黄色代码”问题，这是一个借用自 Google 的概念，意味着问题非常紧迫，值得提升为公司的首要关注点。 对我们来说，黄色代码是值得的； 如果数据库程序缺乏稳定性，那么它就不值得用字节来存储其二进制文件。</p>
@@ -4222,6 +4222,812 @@
       </categories>
       <tags>
         <tag>SQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>How we built a cost-based SQL optimizer</title>
+    <url>/2024/01/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/11-How%20we%20built%20a%20cost-based%20SQL%20optimizer/</url>
+    <content><![CDATA[<p>Here at Cockroach Labs, we’ve had a continual focus on improving performance and scalability. To that end, our 2.1 release includes a brand-new, built-from-scratch, cost-based SQL optimizer. Besides enabling SQL features like correlated subqueries for the first time, it provides us with a flexible optimization framework that will yield significant performance improvements in upcoming releases, especially in more complex reporting queries. If you have queries that you think should be faster, send them our way! We’re building up libraries of queries that we use to tune the performance of the optimizer and prioritize future work.</p>
+<p>在 Cockroach Labs，我们一直致力于提高性能和可扩展性。 为此，我们的 2.1 版本包含一个全新的、从头开始构建的、基于成本的 SQL 优化器。 除了首次启用相关子查询等 SQL 功能外，它还为我们提供了一个灵活的优化框架，该框架将在即将发布的版本中带来显着的性能改进，尤其是在更复杂的报告查询中。 如果您有任何您认为应该更快的查询，请发送给我们！ 我们正在构建查询库，用于调整优化器的性能并确定未来工作的优先级。</p>
+<p>While as an engineer, I’m eager to dive right into the details of how our new optimizer works (TL;DR - it’s very cool stuff), I need to first set the stage. I’ll start by explaining what a cost-based SQL optimizer is, and then tell you the story of how we decided we really, really needed one of those. Enough that we took 4 engineers, shut them into a windowless Slack room, and gave them carte blanche to rewrite a major component of CockroachDB. After story time, I’ll move onto the really interesting stuff, giving you a peek “under the hood” of the new optimizer. A peek will have to suffice, though, as digging deeper will require more words than one blog entry can provide. But do not despair; future articles will delve further into optimizer internals, so stay tuned.</p>
+<p>作为一名工程师，我渴望深入了解我们的新优化器如何工作的细节（TL；DR - 这是非常酷的东西），我需要首先做好准备。 我将首先解释什么是基于成本的 SQL 优化器，然后告诉您我们如何决定我们真的非常需要其中一个的故事。 我们把 4 名工程师关在一个没有窗户的 Slack 房间里，全权让他们重写 CockroachDB 的一个主要组件。 故事时间结束后，我将转向真正有趣的内容，让您一睹新优化器的“幕后花絮”。 不过，浏览一下就足够了，因为深入挖掘需要的文字比一篇博客文章所能提供的还要多。 但不要绝望； 未来的文章将进一步深入探讨优化器的内部结构，敬请期待。</p>
+<span id="more"></span>
+
+<h2 id="What-is-a-SQL-optimizer-anyway"><a href="#What-is-a-SQL-optimizer-anyway" class="headerlink" title="What is a SQL optimizer anyway?"></a>What is a SQL optimizer anyway?</h2><p>A SQL optimizer analyzes a SQL query and chooses the most efficient way to execute it. While the simplest queries might have only one way to execute, more complex queries can have thousands, or even <em>millions</em>, of ways. The better the optimizer, the closer it gets to choosing the <strong>optimal execution plan</strong>, which is the most efficient way to execute a query.</p>
+<p>SQL 优化器分析 SQL 查询并选择最有效的方法来执行它。 虽然最简单的查询可能只有一种执行方式，但更复杂的查询可能有数千甚至数百万种执行方式。 优化器越好，就越接近选择最佳执行计划，这是执行查询的最有效方式。</p>
+<p>Here’s a query that looks deceptively simple:</p>
+<p>这是一个看起来看似简单的查询：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> customers c, orders o</span><br><span class="line"><span class="keyword">WHERE</span> c.id<span class="operator">=</span>o.cust_id <span class="keyword">AND</span> c.name <span class="operator">&lt;</span> ’John Doe’</span><br></pre></td></tr></table></figure>
+
+<p>I won’t bore you (or me) with the exhaustive list of questions that the optimizer must answer about this query, but here are a few to make my point:</p>
+<p>我不会向您（或我）提供优化器必须回答的有关此查询的详尽问题列表，但这里有一些问题可以阐明我的观点：</p>
+<ol>
+<li><p>Should we evaluate the name filter before the join or after the join?</p>
+<p>我们应该在连接之前还是连接之后评估名称过滤器？</p>
+</li>
+<li><p>Should we use a hash join, merge join, or a nested loop join with an index (called a “lookup join” in CockroachDB)?</p>
+<p>我们应该使用哈希连接、合并连接还是带有索引的嵌套循环连接（在 CockroachDB 中称为“查找连接”）？</p>
+</li>
+<li><p>If a lookup or hash join, should we enumerate customers and then lookup orders? Or enumerate orders and then lookup customers?</p>
+<p>如果是查找或散列连接，我们是否应该枚举客户，然后查找订单？ 或者枚举订单然后查找客户？</p>
+</li>
+<li><p>If there’s a secondary index on “name”, should we use that to find matching names, or is it better to use the primary index to find matching ids?</p>
+<p>如果“name”上有二级索引，我们应该使用它来查找匹配的名称，还是使用主索引来查找匹配的 id 更好？</p>
+</li>
+</ol>
+<p>Furthermore, it’s not enough for the optimizer to answer each of these questions in isolation. To find the best plan, it needs to look at <em>combinations</em> of answers. Maybe it’s best to use the secondary index when choosing the lookup join. But, if a merge join is used instead, the primary index may be better. The optimal execution plan depends on row counts, relative performance of the various physical operators, the location and frequency of data values, and … a lot of other stuff.</p>
+<p>此外，优化器单独回答这些问题是不够的。 为了找到最佳计划，需要考虑答案的组合。 也许在选择查找连接时最好使用二级索引。 但是，如果使用合并连接，主索引可能会更好。 最佳执行计划取决于行数、各种物理运算符的相对性能、数据值的位置和频率，以及……许多其他因素。</p>
+<h2 id="Heuristic-vs-cost-based"><a href="#Heuristic-vs-cost-based" class="headerlink" title="Heuristic vs. cost-based"></a>Heuristic vs. cost-based</h2><p>So how do optimizers choose among so many possible execution plans? People have been thinking and writing about that longer than I’ve been alive, so any answer’s going to be inadequate. But, it’s still valuable to discuss two common approaches to the problem.</p>
+<p>那么优化器如何在这么多可能的执行计划中进行选择呢？ 人们思考和撰写这个问题的时间比我还活着的时间还要长，所以任何答案都是不够的。 但是，讨论解决该问题的两种常见方法仍然很有价值。</p>
+<p>The first approach is what everyone who builds an optimizer for the first time takes. They come up with preset heuristic rules based on general principles. For example, there might be a heuristic rule to always use a hash join instead of a nested loop join if an equality condition is present. In most situations, that will result in a better execution plan, and so it’s a good heuristic. An optimizer based on rules like this is called a <strong>heuristic optimizer</strong>.</p>
+<p>第一种方法是每个第一次构建优化器的人都会采用的方法。 他们根据一般原则提出预设的启发式规则。 例如，如果存在相等条件，则可能存在始终使用散列连接而不是嵌套循环连接的启发式规则。 在大多数情况下，这会产生更好的执行计划，因此这是一个很好的启发式方法。 基于此类规则的优化器称为启发式优化器。</p>
+<p>However, static heuristic rules have a downside. They work well in most cases, but they can fail to find the best plan in other cases. For example, a lookup join loops over rows from an outer relation and looks for inner rows that match by repeatedly probing into an index over the inner relation. This works well when the number of outer rows is small, but degrades as that number rises and the overhead of probing for every row begins to dominate execution time. At some cross-over point, a hash or merge join would have been better. But it’s difficult to devise heuristics that capture these subtleties.</p>
+<p>然而，静态启发式规则有一个缺点。 它们在大多数情况下工作良好，但在其他情况下可能无法找到最佳计划。 例如，查找连接循环遍历外部关系中的行，并通过重复探测内部关系上的索引来查找匹配的内部行。 当外部行数较少时，这种方法效果很好，但随着外部行数的增加，并且每行探测的开销开始主导执行时间，这种方法就会降低。 在某些交叉点，散列或合并连接会更好。 但很难设计出启发式方法来捕捉这些微妙之处。</p>
+<p>Enter the <strong>cost-based optimizer</strong>. A cost-based optimizer will enumerate possible execution plans and assign a cost to each plan, which is an estimate of the time and resources required to execute that plan. Once the possibilities have been enumerated, the optimizer picks the lowest cost plan and hands it off for execution. While a cost model is typically designed to maximize throughput (i.e. queries per second), it can be designed to favor other desirable query behavior, such as minimizing latency (i.e. time to retrieve first row) or minimizing memory usage.</p>
+<p>输入基于成本的优化器。 基于成本的优化器将枚举可能的执行计划，并为每个计划分配一个成本，这是执行该计划所需的时间和资源的估计。 一旦列举了可能性，优化器就会选择成本最低的计划并将其交付执行。 虽然成本模型通常设计为最大化吞吐量（即每秒查询），但它可以设计为有利于其他所需的查询行为，例如最小化延迟（即检索第一行的时间）或最小化内存使用。</p>
+<p>At this point, you may be thinking, “but what if that cost model turns out to be wrong?”. That’s a good question, and it’s true that a cost-based optimizer is only as good as the costs it assigns. Furthermore, it turns out that the accuracy of the costs are highly dependent on the accuracy of the <em>row count estimates</em> made by the optimizer. These are exactly what they sound like: the optimizer estimates how many rows will be returned by each stage of the query plan. This brings us to another subject of decades of research: <strong>database statistics</strong>.</p>
+<p>此时，您可能会想，“但是如果该成本模型被证明是错误的怎么办？”。 这是一个很好的问题，而且确实基于成本的优化器的好坏取决于它分配的成本。 此外，事实证明，成本的准确性很大程度上取决于优化器所做的行计数估计的准确性。 正如它们听起来的那样：优化器估计查询计划的每个阶段将返回多少行。 这给我们带来了另一个数十年研究的主题：数据库统计。</p>
+<p>The goal of gathering database statistics is to provide information to the optimizer so that it can make more accurate row count estimates. Useful statistics include row counts for tables, distinct and null value counts for columns, and histograms for understanding the distribution of values. This information feeds into the cost model and helps decide questions of join type, join ordering, index selection, and more.</p>
+<p>收集数据库统计信息的目的是向优化器提供信息，以便优化器可以做出更准确的行计数估计。 有用的统计信息包括表的行计数、列的非重复值和空值计数以及用于了解值分布的直方图。 这些信息将输入到成本模型中，并帮助决定连接类型、连接顺序、索引选择等问题。</p>
+<h2 id="Re-birth-of-an-optimizer"><a href="#Re-birth-of-an-optimizer" class="headerlink" title="(Re)birth of an optimizer"></a>(Re)birth of an optimizer</h2><p>CockroachDB started with a simple heuristic optimizer that grew more complicated over time, as optimizers tend to do. By our 2.0 release, we had started running into limitations of the heuristic design that we could not easily circumvent. Carefully-tuned heuristic rules were beginning to conflict with one another, with no clear way to decide between them. A simple heuristic like:</p>
+<p>CockroachDB 从一个简单的启发式优化器开始，随着时间的推移，它变得越来越复杂，正如优化器往往会做的那样。 在我们的 2.0 版本中，我们已经开始遇到我们无法轻易规避的启发式设计的局限性。 精心调整的启发式规则开始相互冲突，并且没有明确的方法在它们之间做出决定。 一个简单的启发式，例如：</p>
+<blockquote>
+<p>“use hash join when an equality condition is present” </p>
+<p>“当存在相等条件时使用哈希连接”</p>
+</blockquote>
+<p>became:</p>
+<blockquote>
+<p>“use hash join when an equality condition is present, unless both inputs are sorted on the join key, in which case use a merge join”</p>
+<p>“当存在相等条件时使用散列连接，除非两个输入都在连接键上排序，在这种情况下使用合并连接”</p>
+</blockquote>
+<p>near the end, we contemplated heuristics like:</p>
+<blockquote>
+<p>“use hash join when an equality condition is present, unless both inputs are sorted on the join key, in which case use a merge join; that is, except if one join input has a small number of rows and there’s an index available for the other input, in which case use a lookup join”</p>
+<p>“当存在相等条件时使用散列连接，除非两个输入都在连接键上排序，在这种情况下使用合并连接； 也就是说，除非一个连接输入的行数较少，并且另一个输入有可用的索引，在这种情况下使用查找连接”</p>
+</blockquote>
+<p>Every new heuristic rule we added had to be examined with respect to every heuristic rule already in place, to make sure that they played nicely with one another. And while even cost-based optimizers sometimes behave like a delicately balanced Jenga tower, heuristic optimizers fall over at much lower heights.</p>
+<p>我们添加的每一条新的启发式规则都必须根据现有的每条启发式规则进行检查，以确保它们能够很好地配合。 尽管基于成本的优化器有时也会表现得像一座微妙平衡的 Jenga 塔，但启发式优化器却会在低得多的高度上倒塌。</p>
+<p>By the last half of 2017, momentum was growing within Cockroach Labs to replace the heuristic optimizer that was showing its age. Peter Mattis, one of our co-founders, arranged to have an outside expert on database optimizers run a months-long bootcamp, with the goal of teaching our developers how state-of-the-art optimizers work, complete with homework assignments to read seminal papers on the subject. In order to kickstart discussion and momentum, Peter created a <a href="https://github.com/petermattis/opttoy">cost-based optimizer prototype called “opttoy”</a>, that demonstrated some of the important concepts, and informed the production work that followed.</p>
+<p>到 2017 年下半年，Cockroach Labs 内部取代已经过时的启发式优化器的势头不断增强。 我们的联合创始人之一 Peter Mattis 安排了一位数据库优化器方面的外部专家来举办为期数月的训练营，目的是教我们的开发人员如何最先进的优化器工作，并完成需要阅读的家庭作业 关于该主题的开创性论文。 为了启动讨论和推动势头，Peter 创建了一个名为“opttoy”的基于成本的优化器原型，它演示了一些重要概念，并为后续的生产工作提供了信息。</p>
+<p>By the time I joined the company in early 2018, the company had come to the collective decision that it was now time to take the next step forward. Given my background and interest in the subject, I was tasked with leading a small (but highly motivated) team to build a cost-based optimizer from scratch. After 9 months of intense effort, our team is releasing the first version of the new optimizer as part of the CockroachDB 2.1 release. While there’s still much more we can (and will) do, this first release represents an important step forward. Here are a couple of important new capabilities that the 2.1 cost-based optimizer supports:</p>
+<p>当我于 2018 年初加入公司时，公司集体决定现在是采取下一步行动的时候了。 鉴于我的背景和对该主题的兴趣，我的任务是领导一个小型（但积极性很高）团队从头开始构建基于成本的优化器。 经过 9 个月的紧张努力，我们的团队发布了新优化器的第一个版本，作为 CockroachDB 2.1 版本的一部分。 虽然我们还可以（并且将会）做更多的事情，但第一个版本代表了向前迈出的重要一步。 以下是 2.1 基于成本的优化器支持的几个重要的新功能：</p>
+<ul>
+<li><p>Correlated subqueries 相关子查询</p>
+<p>- these are queries that contain an inner subquery that references a column from an outer query, such as in this example:</p>
+<p>这些查询包含引用外部查询中的列的内部子查询，例如本例中：</p>
+<figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> customers c</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (</span><br><span class="line">     <span class="keyword">SELECT</span> *</span><br><span class="line">     <span class="keyword">FROM</span> orders o</span><br><span class="line">     <span class="keyword">WHERE</span> o.cust_id = c.id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>Optimizing correlated subqueries is another blog post all on its own, which I hope to cover in the future.</p>
+<p>优化相关子查询是另一篇单独的博文，我希望将来能够介绍。</p>
+</li>
+<li><p>Automatic planning of lookup joins 自动规划查找连接</p>
+<p>: When deciding how to execute a join, the optimizer now considers lookup joins, in addition to merge and hash joins. Lookup joins are important for fast execution of equality joins, where one input has a small number of rows and the other has an index on the equality condition:</p>
+<p>在决定如何执行连接时，优化器现在除了合并和散列连接之外还考虑查找连接。 查找连接对于快速执行相等连接非常重要，其中一个输入具有少量行，另一个输入具有相等条件的索引：</p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> COUNT(*)</span><br><span class="line"><span class="keyword">FROM</span> customers c, orders o</span><br><span class="line"><span class="keyword">WHERE</span> c.id=o.cust_id <span class="keyword">AND</span> c.zip=<span class="string">&#x27;12345&#x27;</span> <span class="keyword">AND</span> c.name=<span class="string">&#x27;John Doe&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Here, the optimizer would consider a plan that first finds customers named “John Doe” who live in zip code “12345” (likely to be a small number of rows), and then probes into the orders table to count rows.</p>
+<p>在这里，优化器将考虑一个计划，首先找到居住在邮政编码“12345”（可能只有少量行）的名为“John Doe”的客户，然后探测订单表以计算行数。</p>
+<h2 id="Under-the-Hood"><a href="#Under-the-Hood" class="headerlink" title="Under the Hood"></a>Under the Hood</h2><p>As promised, I want to give you a quick peek under the hood of the new optimizer. To start, it’s useful to think of a query plan as a tree, with each node in the tree representing a step in the execution plan. In fact, that’s how the <a href="https://www.cockroachlabs.com/docs/stable/explain">SQL EXPLAIN</a> statement shows an execution plan:</p>
+<p>正如所承诺的，我想让您快速浏览一下新优化器的幕后花絮。 首先，将查询计划视为一棵树很有用，树中的每个节点代表执行计划中的一个步骤。 事实上，这就是 SQL EXPLAIN 语句显示执行计划的方式：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/unoptimized-execution-plan.png?auto=format,compress&max-w=700"></p>
+<p>This output shows how the <em>unoptimized</em> plan would execute: first compute a full cross-product of the customers and orders tables, then filter the resulting rows based on the <code>WHERE</code> conditions, and finally compute the <code>count_rows</code> aggregate. But that would be a terrible plan! If there were 10,000 customers and 100,000 orders, then the cross-product would generate 1 <em>billion</em> rows, almost all of which would simply be filtered away. What a waste.</p>
+<p>此输出显示了未优化计划的执行方式：首先计算客户表和订单表的完整叉积，然后根据 WHERE 条件过滤结果行，最后计算 count_rows 聚合。 但这将是一个糟糕的计划！ 如果有 10,000 个客户和 100,000 个订单，那么叉积将生成 10 亿行，几乎所有这些行都会被简单地过滤掉。 真是浪费啊。</p>
+<p>Here’s where the optimizer proves its worth. Its job is to <em>transform</em> that starting plan tree into a series of <em>logically equivalent</em> plan trees, and then pick the tree that has the lowest cost. So what does “logically equivalent” mean? Two plan trees are logically equivalent if they both return the same data when executed (though rows can be ordered differently if there is no <code>ORDER BY</code> clause). In other words, from a correctness point of view, it doesn’t matter which plan the optimizer picks; its choice is purely about maximizing performance.</p>
+<p>这就是优化器证明其价值的地方。 它的工作是将起始计划树转换为一系列逻辑上等效的计划树，然后选择成本最低的树。 那么“逻辑上等价”是什么意思呢？ 如果两个计划树在执行时都返回相同的数据，那么它们在逻辑上是等效的（尽管如果没有 ORDER BY 子句，行的排序可以不同）。 换句话说，从正确性的角度来看，优化器选择哪个计划并不重要；重要的是。 它的选择纯粹是为了最大化性能。</p>
+<h2 id="Transformations"><a href="#Transformations" class="headerlink" title="Transformations"></a>Transformations</h2><p>The optimizer does not generate the complete set of equivalent plan trees in one step. Instead, it starts with the initial tree and performs a series of incremental transformations to generate alternative trees. Each individual transformation tends to be relatively simple on its own; it is the combination of many such transformations that can solve complex optimization challenges. Watching an optimizer in action can be magical; even if you understand each individual transformation it uses, often it will find surprising combinations that yield unexpected plans. Even for the relatively simple query shown above, the optimizer applies 12 transformations to reach the final plan. Below is a diagram showing 4 of the key transformations.</p>
+<p>优化器不会一步生成完整的一组等效计划树。 相反，它从初始树开始并执行一系列增量转换以生成替代树。 每个单独的转换本身往往相对简单； 它是许多此类转换的组合，可以解决复杂的优化挑战。 观看优化器的运行过程可能会很神奇； 即使您了解它使用的每个单独的转换，通常也会发现令人惊讶的组合，从而产生意想不到的计划。 即使对于上面显示的相对简单的查询，优化器也会应用 12 次转换来达到最终计划。 下图显示了其中 4 个关键转换。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/cost-based-optimizer.png?auto=format,compress&max-w=700"></p>
+</li>
+</ul>
+<p>You can see that the filter conditions get “pushed down” into the join and then become part of the scan operator for maximum performance. During the final transformation, the optimizer decides to use a lookup join with a secondary index to satisfy the query.</p>
+<p>您可以看到过滤条件被“下推”到连接中，然后成为扫描运算符的一部分以获得最大性能。 在最终转换期间，优化器决定使用具有辅助索引的查找连接来满足查询。</p>
+<p>As of this writing, the cost-based optimizer implements over 160 different transformations, and we expect to add many more in future releases. And because transformations lie at the heart of the new optimizer, we spent a lot of time making them as easy as possible to define, understand, and maintain. To that end, we created a domain specific language (DSL) called Optgen to express the structure of transformations, along with a tool that generates production Go code from that DSL. Here is an example of a transformation expressed in the Optgen language:</p>
+<p>截至撰写本文时，基于成本的优化器实现了 160 多种不同的转换，我们预计在未来的版本中添加更多转换。 由于转换是新优化器的核心，我们花了很多时间让它们尽可能容易定义、理解和维护。 为此，我们创建了一种名为 Optgen 的领域特定语言 (DSL) 来表达转换结构，以及一个从该 DSL 生成生产 Go 代码的工具。 以下是用 Optgen 语言表达的转换示例：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">[<span class="title class_">MergeSelectInnerJoin</span>, <span class="title class_">Normalize</span>]</span><br><span class="line">(<span class="title class_">Select</span></span><br><span class="line">	<span class="variable">$input</span><span class="symbol">:</span>(<span class="title class_">InnerJoin</span> <span class="variable">$left</span><span class="symbol">:*</span> <span class="variable">$right</span><span class="symbol">:*</span> <span class="variable">$on</span><span class="symbol">:*</span>)</span><br><span class="line">	<span class="variable">$filter</span><span class="symbol">:*</span></span><br><span class="line">)</span><br><span class="line">=&gt;</span><br><span class="line">(<span class="title class_">InnerJoin</span></span><br><span class="line">	<span class="variable">$left</span></span><br><span class="line">	<span class="variable">$right</span></span><br><span class="line">	(<span class="title class_">ConcatFilters</span> <span class="variable">$on</span> <span class="variable">$filter</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>This transformation merges conditions from a <code>WHERE</code> clause with conditions from the ON clause of an <code>INNER JOIN</code>. It generates ~25 lines of Go code, including code to ensure that transitively matching transformations are applied. A future blog post will delve into more Optgen specifics, as there’s a lot there to cover. If you can’t wait for that, take a look at the <a href="https://github.com/cockroachdb/cockroach/blob/master/pkg/sql/opt/optgen/lang/doc.go">documentation for Optgen</a>. You might also take a look at some of our <a href="https://github.com/cockroachdb/cockroach/tree/master/pkg/sql/opt/norm/rules">transformation definition files</a>. If you’re especially ambitious, try your hand at crafting a new transformation that we’re missing; we always welcome community contributions.</p>
+<p>此转换将 WHERE 子句中的条件与 INNER JOIN 的 ON 子句中的条件合并。 它生成约 25 行 Go 代码，包括确保应用传递匹配转换的代码。 未来的博客文章将深入探讨 Optgen 的更多细节，因为有很多内容需要介绍。 如果您等不及，请查看 Optgen 的文档。 您还可以查看我们的一些转换定义文件。 如果您特别雄心勃勃，请尝试亲手打造我们所缺少的新转型； 我们始终欢迎社区贡献。</p>
+<h2 id="The-Memo"><a href="#The-Memo" class="headerlink" title="The Memo"></a>The Memo</h2><p>I’ve explained how the optimizer generates many equivalent plans and uses a cost estimate to choose from among them. That sounds good in theory, but what about the practical side of things? Doesn’t it take a potentially exponential amount of memory to store all those plans? The answer involves an ingenious data structure called a <em>memo</em>.</p>
+<p>我已经解释了优化器如何生成许多等效计划并使用成本估算从其中进行选择。 这在理论上听起来不错，但实际情况又如何呢？ 存储所有这些计划是否需要潜在指数级的内存量？ 答案涉及一种巧妙的数据结构，称为备忘录。</p>
+<p>A memo is designed to efficiently store a forest of plan trees for a given query by exploiting the significant redundancies across the plans. For example, a join query could have several logically equivalent plans that are identical in all ways, except that one plan uses a hash join, another uses a merge join, and the third uses a lookup join. Furthermore, each of those plans could in turn have several variants: in one variant, the left join input uses the primary index to scan rows, and in another variant it uses a secondary index to do the equivalent work. Encoded naively, the resulting exponential explosion of plans would require exponential memory to store.</p>
+<p>备忘录旨在通过利用计划中的显着冗余来有效地存储给定查询的计划树森林。 例如，连接查询可以有多个逻辑上等效的计划，这些计划在所有方面都相同，只是一个计划使用散列连接，另一个使用合并连接，第三个使用查找连接。 此外，每个计划又可以有多种变体：在一种变体中，左连接输入使用主索引来扫描行，在另一种变体中，它使用辅助索引来完成等效的工作。 如果简单地编码，计划的指数级爆炸将需要指数级内存来存储。</p>
+<p>The memo tackles this problem by defining a set of equivalence classes called memo groups, where each group contains a set of logically equivalent expressions. Here is an illustration:</p>
+<p>备忘录通过定义一组称为备忘录组的等价类来解决这个问题，其中每个组包含一组逻辑上等效的表达式。 这是一个例子：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/cost-based-optimizer_memo.png?auto=format,compress&max-w=700"></p>
+<p>To build a plan, pick any operator from group #1, then pick its left input from group #2 and its right input from group #3. No matter which you pick, you have a legal plan, since operators in the same group are guaranteed to be logically equivalent. Simple arithmetic reveals that there are 12 possible plans (3 * 2 * 2) encoded in this memo. Now imagine a complex reporting query with a 6-way join, complex aggregation, and lots of filter conditions. The number of plans might number in the thousands, and yet would be encoded in much less space than you would expect if you weren’t aware of the memo structure.</p>
+<p>要构建计划，请从第 1 组中选择任意运算符，然后从第 2 组中选择其左侧输入，从第 3 组中选择其右侧输入。 无论您选择哪一个，您都有一个合法的计划，因为同一组中的运算符保证在逻辑上是等效的。 简单的算术表明，这份备忘录中编码了 12 种可能的计划 (3 * 2 * 2)。 现在想象一个具有 6 路联接、复杂聚合和大量过滤条件的复杂报告查询。 计划的数量可能有数千个，但如果您不知道备忘录结构，那么编码的空间会比您预期的要少得多。</p>
+<p>Of course the optimizer does not just randomly pick one of the possible plan trees from the memo. Instead, it tracks the lowest cost expression in each memo group, and then recursively constructs the final plan from those expressions. Indeed, the memo is a beautiful data structure, reminding me of the <a href="http://www.johnlangdon.net/works/earth-air-fire-water/">illuminati diamond</a> ambigram from Dan Brown’s novel “Angels and Demons”. Both encode more information than seems possible.</p>
+<p>当然，优化器不仅仅从备忘录中随机选择一种可能的计划树。 相反，它跟踪每个备忘录组中的最低成本表达式，然后从这些表达式递归地构造最终计划。 事实上，这份备忘录是一个漂亮的数据结构，让我想起了丹·布朗小说《天使与魔鬼》中的光明会钻石图。 两者都编码了比看起来可能更多的信息。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Our team plans to make future blog posts on the internals of the cost-based optimizer in CockroachDB. I’ve only scratched the surface in this post. Let us know if you’d like us to cover specific topics of interest to you. Or even better, <a href="https://www.cockroachlabs.com/careers/#jobs">come join Cockroach Labs</a>, and help us build a planet-scale ACID database.</p>
+<p>我们的团队计划在未来发表有关 CockroachDB 中基于成本的优化器内部结构的博客文章。 我在这篇文章中只触及了表面。 如果您希望我们涵盖您感兴趣的特定主题，请告诉我们。 或者更好的是，加入 Cockroach Labs，帮助我们建立一个全球规模的 ACID 数据库。</p>
+<p>And if building a <a href="https://www.cockroachlabs.com/blog/what-is-distributed-sql/">distributed SQL</a> engine is your jam, then good news — we’re hiring! Check out our open positions <a href="https://cockroa.ch/eng_hiring">here</a>.</p>
+<p>如果您热衷于构建分布式 SQL 引擎，那么好消息 — 我们正在招聘！ 在这里查看我们的空缺职位。</p>
+]]></content>
+      <categories>
+        <category>cockroach</category>
+      </categories>
+      <tags>
+        <tag>优化器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Automatic table statistics in CockroachDB</title>
+    <url>/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/</url>
+    <content><![CDATA[<h1 id="Automatic-table-statistics-in-CockroachDB"><a href="#Automatic-table-statistics-in-CockroachDB" class="headerlink" title="Automatic table statistics in CockroachDB"></a>Automatic table statistics in CockroachDB</h1><p>Last year, we rebuilt our <a href="https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/">cost-based optimizer from scratch</a> for CockroachDB’s 2.1 release. We’ve been continuing to improve the optimizer since then, and we’ve added a number of new features for the <a href="https://www.cockroachlabs.com/blog/cockroachdb-19dot1-release/">CockroachDB 19.1 release</a>. One of the new features is automatic collection of table statistics. Automatic statistics enables the optimizer to make better decisions when choosing query plans.</p>
+<p>去年，我们为 CockroachDB 2.1 版本从头开始重建了基于成本的优化器。 从那时起，我们一直在不断改进优化器，并为 CockroachDB 19.1 版本添加了许多新功能。 新功能之一是自动收集表统计信息。 自动统计信息使优化器能够在选择查询计划时做出更好的决策。</p>
+<p>This post explains why statistics are important for the optimizer and describes some of the challenges we overcame when implementing automatic collection.</p>
+<p>这篇文章解释了为什么统计信息对于优化器很重要，并描述了我们在实现自动收集时克服的一些挑战。</p>
+<span id="more"></span>
+
+<h2 id="A-Tale-of-Two-Queries"><a href="#A-Tale-of-Two-Queries" class="headerlink" title="A Tale of Two Queries"></a>A Tale of Two Queries</h2><p>Consider the following two SQL queries, used by an imaginary kitchen supplies company to count the number of toaster ovens purchased by customers in New York City, grouped by the date of purchase:</p>
+<p>考虑以下两个 SQL 查询，一家虚构的厨房用品公司使用它来统计纽约市客户购买的烤面包机数量，并按购买日期分组：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- query A</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">count</span>(<span class="operator">*</span>), o.purchased</span><br><span class="line">    <span class="keyword">FROM</span> products <span class="keyword">AS</span> p,</span><br><span class="line">         orders <span class="keyword">AS</span> o,</span><br><span class="line">         customers <span class="keyword">AS</span> c</span><br><span class="line">    <span class="keyword">WHERE</span> c.id <span class="operator">=</span> o.cust_id</span><br><span class="line">         <span class="keyword">AND</span> p.id <span class="operator">=</span> o.prod_id</span><br><span class="line">         <span class="keyword">AND</span> c.city <span class="operator">=</span> <span class="string">&#x27;New York&#x27;</span></span><br><span class="line">         <span class="keyword">AND</span> p.type <span class="operator">=</span> <span class="string">&#x27;toaster oven&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> o.purchased;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- query B</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">count</span>(<span class="operator">*</span>), o.purchased</span><br><span class="line">    <span class="keyword">FROM</span> customers <span class="keyword">AS</span> c,</span><br><span class="line">         orders <span class="keyword">AS</span> o,</span><br><span class="line">         products <span class="keyword">AS</span> p</span><br><span class="line">    <span class="keyword">WHERE</span> c.id <span class="operator">=</span> o.cust_id</span><br><span class="line">         <span class="keyword">AND</span> p.id <span class="operator">=</span> o.prod_id</span><br><span class="line">         <span class="keyword">AND</span> c.city <span class="operator">=</span> <span class="string">&#x27;New York&#x27;</span></span><br><span class="line">         <span class="keyword">AND</span> p.type <span class="operator">=</span> <span class="string">&#x27;toaster oven&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> o.purchased;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>With minimal optimization, these queries correspond to the following logical query plans:</p>
+<p>通过最少的优化，这些查询对应于以下逻辑查询计划：</p>
+<p>query A：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryAstats.png"></p>
+<p>query B：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanB.png"></p>
+<p>These queries compute the same result, but one query is vastly more expensive than the other. Can you tell which one? (scroll down to see the answer…)</p>
+<p>这些查询计算相同的结果，但一个查询比另一个查询要昂贵得多。 你能说出是哪一个吗？ （向下滚动查看答案…）</p>
+<p>Spoiler alert: it’s not possible to determine which query is faster without more information. So suppose I give you the following statistics:</p>
+<p>剧透警告：如果没有更多信息，就不可能确定哪个查询更快。 假设我给你以下统计数据：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/Screen-Shot-2019-06-24-at-2.55.00-PM.png"></p>
+<p>Now can you tell?</p>
+<p>现在你能说出来吗？</p>
+<p>Before I give the answer, let’s discuss what makes a query expensive in the first place, and why you should care. The “cost” of a query roughly translates to the total amount of computing resources required to execute the query plan, including CPU, I&#x2F;O and network. Lower-cost plans tend to execute faster (i.e., they have lower latency), and also enable the system to maintain a higher throughput, since more resources are available for executing other queries simultaneously. That means less money spent on extra hardware, and less time waiting for results!</p>
+<p>在给出答案之前，让我们首先讨论一下是什么让查询变得昂贵，以及为什么您应该关心。 查询的“成本”大致翻译为执行查询计划所需的计算资源总量，包括 CPU、I&#x2F;O 和网络。 成本较低的计划往往执行速度更快（即，延迟较低），并且还使系统能够保持较高的吞吐量，因为有更多的资源可用于同时执行其他查询。 这意味着花在额外硬件上的钱更少，等待结果的时间也更少！</p>
+<h2 id="How-do-you-estimate-the-cost-of-a-query"><a href="#How-do-you-estimate-the-cost-of-a-query" class="headerlink" title="How do you estimate the cost of a query?"></a>How do you estimate the cost of a query?</h2><p>We can estimate the cost of a particular query plan by estimating the cost of each operation in the plan and adding them together. For example, consider Query Plan A. You can think of data as flowing through the plan from bottom to top. First we scan table <code>customers</code> and apply a filter, then we scan table <code>orders</code> and join the two together, etc. Each stage in the plan costs a certain amount depending on the type of operation and the amount of data that must be processed. Operations involving I&#x2F;O are generally more expensive than operations involving only CPU, so reading 10,000 rows from disk (e.g., as part of a scan) is much more expensive than applying a filter to those rows. The actual cost formula varies for each operator and is beyond the scope of this blog entry, but the important thing to know is that <em>the cost of each operation is directly proportional to the number of rows processed</em>.</p>
+<p>我们可以通过估计计划中每个操作的成本并将它们加在一起来估计特定查询计划的成本。 例如，考虑查询计划 A。您可以将数据视为从下到上流过该计划。 首先，我们扫描客户表并应用过滤器，然后扫描订单表并将两者连接在一起，等等。计划中的每个阶段都会花费一定的费用，具体取决于操作类型和必须处理的数据量。 涉及 I&#x2F;O 的操作通常比仅涉及 CPU 的操作更昂贵，因此从磁盘读取 10,000 行（例如，作为扫描的一部分）比对这些行应用过滤器要昂贵得多。 每个操作符的实际成本公式各不相同，超出了本博客条目的范围，但需要了解的重要一点是每个操作的成本与处理的行数成正比。</p>
+<p>So how do we estimate the number of rows processed by each operator? With statistics, of course!</p>
+<p>那么我们如何估计每个算子处理的行数呢？ 当然是统计数据！</p>
+<p>Similar to how data propagates from the bottom to the top of a query plan, we can also propagate statistics from the bottom to the top to estimate the number of rows at each step.</p>
+<p>与数据从查询计划的底部传播到顶部的方式类似，我们也可以从底部到顶部传播统计信息来估计每个步骤的行数。</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanAstats.png"></p>
+<p>Let’s look at the example of query plan A. Given the stats from Table 1, we know that <code>customers</code> has 100,000 rows. Since in this simple example we don’t have any indexes on <code>customers</code>, the scan must process all of the rows. Similarly, the filter operator must process all rows produced by the scan to test the filter predicate <code>city=&#39;New York&#39;</code> on each row. But this is where it gets interesting. To estimate the number of rows that match the filter predicate and pass on to the join operator, we need to calculate the <em>selectivity</em> of the filter, or the percentage of rows that are likely to match. For this calculation, we make the simplifying assumption that all values are uniformly distributed in each column. For example, we assume that a column with 30 rows and 3 distinct values will have 10 of each value.</p>
+<p>让我们看一下查询计划 A 的示例。根据表 1 中的统计信息，我们知道客户有 100,000 行。 由于在这个简单的示例中我们没有任何客户索引，因此扫描必须处理所有行。 同样，过滤运算符必须处理扫描生成的所有行，以测试每行上的过滤谓词 city&#x3D;’New York’。 但这就是有趣的地方。 为了估计与过滤谓词匹配并传递给连接运算符的行数，我们需要计算过滤器的选择性，或者可能匹配的行的百分比。 对于此计算，我们做出简化假设，即所有值均匀分布在每列中。 例如，我们假设一列包含 30 行和 3 个不同的值，每个值有 10 个。</p>
+<p>In our running example, we can see from Table 1 that column <code>city</code> has only two distinct values (it turns out our imaginary kitchen supply company only has two locations). After we apply the predicate <code>city=&#39;New York&#39;</code>, there is at most one distinct value, the value <code>&#39;New York&#39;</code>. Utilizing the assumption of uniformity, we can estimate the selectivity of the predicate as 1⁄2. With 100,000 input rows, we estimate that after the predicate is applied there will be 100,000 * 1⁄2 &#x3D; 50,000 rows.</p>
+<p>在我们的运行示例中，我们可以从表 1 中看到，列 city 只有两个不同的值（事实证明，我们假想的厨房供应公司只有两个地点）。 在我们应用谓词 city&#x3D;’New York’ 后，最多有一个不同的值，即值“New York”。 利用均匀性假设，我们可以估计谓词的选择性为 1⁄2。 对于 100,000 个输入行，我们估计应用谓词后将有 100,000 * 1⁄2 &#x3D; 50,000 行。</p>
+<p>Note that this result of 50,000 rows is just an <em>estimate</em>, since the assumption of uniformity is not always correct. It’s possible that the data is skewed and nearly all of all rows match <code>city=&#39;New York&#39;</code>. It’s also possible that almost none of the rows match <code>city=&#39;New York&#39;</code>. In the next release we will incorporate histograms into our estimates to handle such cases. But in practice, the uniformity assumption works reasonably well for query optimization.</p>
+<p>请注意，50,000 行的结果只是一个估计值，因为均匀性的假设并不总是正确的。 数据可能存在偏差，几乎所有行都匹配 city&#x3D;’New York’。 也有可能几乎没有行与 city&#x3D;’New York’ 匹配。 在下一个版本中，我们将把直方图纳入我们的估计中以处理此类情况。 但实际上，一致性假设对于查询优化来说相当有效。</p>
+<p>The cost-based optimizer does not need to know the exact cost of a query plan; it just needs a good enough estimate that it can compare two plans and select the relatively cheaper plan.</p>
+<p>基于成本的优化器不需要知道查询计划的确切成本； 它只需要一个足够好的估计，就可以比较两个计划并选择相对便宜的计划。</p>
+<p>Given that we estimate 50,000 rows from the filter, how do we propagate the statistics up the tree? We can’t directly apply the 0.5 filter selectivity to the distinct count, since that would be statistically incorrect. Suppose that there is another column in <code>customers</code> that tracks the customer’s <code>gender</code>. Assuming that <code>gender</code> is <em>independent</em> of <code>city</code> (which is true, last time I checked…), it is likely that <code>gender</code> will still have (at least) two distinct values after half of the rows are removed that don’t match <code>city=&#39;New York&#39;</code>. If we were to blindly apply the selectivity to distinct counts (similar to how we applied it to the row count), we would estimate that <code>gender</code> had only one distinct value, which is clearly incorrect given the assumption of independence. Instead, we use the following formula:</p>
+<p>鉴于我们估计过滤器中有 50,000 行，我们如何将统计信息传播到树上？ 我们不能直接将 0.5 过滤器选择性应用于非重复计数，因为这在统计上是不正确的。 假设客户中有另一列跟踪客户的性别。 假设性别与城市无关（这是真的，我上次检查过……），在删除与 city&#x3D;’New 不匹配的一半行后，性别可能仍然有（至少）两个不同的值 约克’。 如果我们盲目地将选择性应用于不同的计数（类似于我们将其应用于行计数的方式），我们会估计性别只有一个不同的值，考虑到独立性的假设，这显然是不正确的。 相反，我们使用以下公式：</p>
+<p><em>d</em>′&#x3D;<em>d</em>−<em>d</em>∗(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em></p>
+<p>Where n is the number of input rows, �<em>d</em> is the distinct count before the selectivity is applied, and �’<em>d</em>’ is the distinct count after. It can be derived as follows: If each distinct value appears �&#x2F;�<em>n</em>&#x2F;<em>d</em> times, and the probability of a row being filtered out is (1−�����������)(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>), the probability that all �&#x2F;�<em>n</em>&#x2F;<em>d</em> rows are filtered out is (1−�����������)�&#x2F;�(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em>. So the expected number of values that are filtered out is �∗(1−�����������)�&#x2F;�<em>d</em>∗(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em>. This formula has the nice property that it returns �∗�����������<em>d</em>∗<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em> when �&#x3D;�<em>d</em>&#x3D;<em>n</em> but it’s closer to �<em>d</em> when �&lt;&lt;�<em>d</em>&lt;&lt;<em>n</em>.</p>
+<p>Similar to the uniformity assumption, the independence assumption is not always correct, but it makes calculations significantly simpler. We’ll likely relax the independence assumption in future releases of the optimizer.</p>
+<p>与均匀性假设类似，独立性假设并不总是正确的，但它使计算变得更加简单。 我们可能会在优化器的未来版本中放宽独立性假设。</p>
+<p>Moving further up the query plan, we must next calculate the number of rows produced by the join. This is a notoriously difficult problem, and remains an open area of research<a href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:1">1</a>. For equi-joins such as the ones in queries A and B, we make the simplifying assumption that we have a primary key-foreign key join, so the output cardinality will be equal to the larger of the two inputs multiplied by the selectivity of any filters that have been applied. Distinct counts are not affected significantly by joins.</p>
+<p>继续执行查询计划，接下来我们必须计算连接产生的行数。 这是一个众所周知的难题，并且仍然是一个开放的研究领域。 对于等连接，例如查询 A 和 B 中的连接，我们做出简化的假设，即我们有一个主键-外键连接，因此输出基数将等于两个输入中较大的一个乘以任意输入的选择性 已应用的过滤器。 不同计数不会受到连接的显着影响。</p>
+<p>As the last step in both query plans, we apply a <code>GROUP BY</code> operation which calculates the number of matching orders grouped by <code>purchased</code> date. Luckily, calculating the number of output rows of a <code>GROUP BY</code> operator is easy: it’s equal to the number of distinct values of the grouping column(s).</p>
+<p>作为两个查询计划的最后一步，我们应用 GROUP BY 操作来计算按购买日期分组的匹配订单数。 幸运的是，计算 GROUP BY 运算符的输出行数很容易：它等于分组列的不同值的数量。</p>
+<p>Although this example only covers a subset of all SQL operators, it gives a good flavor for how we use statistics to estimate the cost of different query plans. Hopefully now you can see that query A is significantly more expensive than query B. The CockroachDB optimizer will always transform query A so that it uses the same query plan as B. And for good reason: when we execute the two plans, we see that query A takes 1.9 seconds while query B takes 16 ms: over a 100X difference!</p>
+<p>尽管此示例仅涵盖所有 SQL 运算符的子集，但它很好地说明了我们如何使用统计信息来估计不同查询计划的成本。 希望现在您可以看到查询 A 比查询 B 昂贵得多。CockroachDB 优化器将始终转换查询 A，以便它使用与 B 相同的查询计划。并且有充分的理由：当我们执行这两个计划时，我们会看到 查询 A 需要 1.9 秒，而查询 B 需要 16 毫秒：相差超过 100 倍！</p>
+<h2 id="How-CockroachDB-Collects-Table-Statistics"><a href="#How-CockroachDB-Collects-Table-Statistics" class="headerlink" title="How CockroachDB Collects Table Statistics"></a>How CockroachDB Collects Table Statistics</h2><p>So how do we get statistics such as the ones shown in Table 1 that are used by the optimizer to calculate the cost of candidate query plans? In CockroachDB, we collect statistics using the command <code>CREATE STATISTICS</code>. <code>CREATE STATISTICS</code> performs a distributed, full table scan of the specified table, and calculates statistics in parallel on each node before a final merge (see Figure 1). After collection, statistics are stored in the system table <code>system.table_statistics</code>, and are cached on each node for fast access by the optimizer.</p>
+<p>那么我们如何获得如表 1 所示的统计信息，优化器使用这些统计信息来计算候选查询计划的成本呢？ 在 CockroachDB 中，我们使用命令 CREATE STATISTICS 收集统计信息。 CREATE STATISTICS 对指定表执行分布式全表扫描，并在最终合并之前在每个节点上并行计算统计信息（参见图 1）。 收集后，统计信息存储在系统表system.table_statistics中，并缓存在每个节点上，以便优化器快速访问。</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/image15.png"></p>
+<p>Figure 1: The <a href="https://www.cockroachlabs.com/blog/what-is-distributed-sql/">distributed SQL</a> plan of a CREATE STATISTICS statement on 5 nodes</p>
+<p>The statistics we currently support are:</p>
+<p>我们目前支持的统计数据有：</p>
+<h3 id="Row-Count"><a href="#Row-Count" class="headerlink" title="Row Count"></a>Row Count</h3><p>This is an exact row count as of the time of the table scan. Although this is the simplest statistic, it’s also the most important. As you learned in the previous section, row count is the primary input to our cost model for determining the cost of each candidate query plan.</p>
+<p>这是截至表扫描时的精确行计数。 虽然这是最简单的统计数据，但也是最重要的。 正如您在上一节中了解到的，行计数是成本模型的主要输入，用于确定每个候选查询计划的成本。</p>
+<h3 id="Distinct-Count"><a href="#Distinct-Count" class="headerlink" title="Distinct Count"></a>Distinct Count</h3><p>For each index column and a subset of other columns in each table, we estimate the number of distinct values. As described above, distinct counts are useful for estimating the selectivity of filter predicates and estimating the number of rows output by <code>GROUP BY</code> and other relational SQL operators. We don’t calculate exact distinct counts, because for columns with many distinct values, the calculation could require nearly as much memory and disk space as the entire table itself! Instead, we use a variant of the well-known HyperLogLog algorithm called HLL-TailCut+<a href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:2">2</a> and the excellent golang implementation by Axiom, Inc<a href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:3">3</a>. HyperLogLog estimates distinct counts with high accuracy and very low memory overhead. It can also be calculated in parallel across several nodes and efficiently merged to produce a distinct count estimate for the full table.</p>
+<p>对于每个表中的每个索引列和其他列的子集，我们估计不同值的数量。 如上所述，非重复计数对于估计过滤谓词的选择性以及估计 GROUP BY 和其他关系 SQL 运算符输出的行数非常有用。 我们不计算精确的不同计数，因为对于具有许多不同值的列，计算可能需要几乎与整个表本身一样多的内存和磁盘空间！ 相反，我们使用著名的 HyperLogLog 算法的变体（称为 HLL-TailCut+2）以及 Axiom, Inc3 出色的 golang 实现。 HyperLogLog 以高精度和极低的内存开销来估计不同计数。 它还可以跨多个节点并行计算并有效合并以生成整个表的不同计数估计。</p>
+<h3 id="Null-Count"><a href="#Null-Count" class="headerlink" title="Null Count"></a>Null Count</h3><p>We calculate null counts explicitly, as <code>NULL</code> is a value that can appear quite often in some workloads. We can get better cardinality estimates for certain queries by tracking this count separately.</p>
+<p>我们显式计算 null 计数，因为 NULL 是在某些工作负载中经常出现的值。 通过单独跟踪此计数，我们可以为某些查询获得更好的基数估计。</p>
+<p>In the future, we plan to support more statistics, including multi-column distinct counts and histograms.</p>
+<p>未来，我们计划支持更多统计数据，包括多列非重复计数和直方图。</p>
+<h2 id="Changes-to-Table-Statistics-in-CockroachDB-19-1"><a href="#Changes-to-Table-Statistics-in-CockroachDB-19-1" class="headerlink" title="Changes to Table Statistics in CockroachDB 19.1"></a>Changes to Table Statistics in CockroachDB 19.1</h2><p>The <code>CREATE STATISTICS</code> command existed in the 2.1 release, but we found that most customers were not taking advantage of it, and the few that knew about it were not using it effectively. There were a few reasons for this:</p>
+<p>CREATE STATISTICS 命令存在于 2.1 版本中，但我们发现大多数客户都没有利用它，而且少数了解它的客户也没有有效地使用它。 造成这种情况的原因有以下几个：</p>
+<ul>
+<li><p><strong>We did not advertise the feature, so many customers were not aware of it.</strong> We did this purposefully, since as described below, <code>CREATE STATISTICS</code> is difficult to use correctly.</p>
+<p>我们没有宣传该功能，因此很多客户不知道。 我们故意这样做，因为如下所述，CREATE STATISTICS 很难正确使用。</p>
+</li>
+<li><p><strong>Even if they discovered the command on their own, they might have run it once and forgotten to run it again.</strong> This is a problem because statistics can quickly become stale for tables that are modified frequently. Running <code>CREATE STATISTICS</code> once can be worse than never running it at all, since we have some reasonable defaults in the optimizer if there are no stats. But we’ll always use whatever stats are available, so suppose you create a table, add one row, and then run <code>CREATE STATISTICS</code>. And then you add 1 million rows but forget to refresh the stats. The optimizer will choose a plan optimized for the case of one row, even though that may be an awful plan for the case of one million rows.</p>
+<p>即使他们自己发现了该命令，他们也可能运行过一次并忘记再次运行它。 这是一个问题，因为对于频繁修改的表，统计信息很快就会变得过时。 运行一次 CREATE STATISTICS 可能比根本不运行它更糟糕，因为如果没有统计信息，我们在优化器中有一些合理的默认值。 但我们将始终使用任何可用的统计信息，因此假设您创建一个表，添加一行，然后运行 CREATE STATISTICS。 然后您添加 100 万行，但忘记刷新统计数据。 优化器将选择针对一行的情况进行优化的计划，即使对于一百万行的情况这可能是一个糟糕的计划。</p>
+</li>
+<li><p><strong>A savvy user might have realized that they needed to refresh stats periodically, but then it was not clear how often to perform a refresh.</strong> The optimal frequency may be different for every table, since some tables are updated frequently and others are updated less frequently. Furthermore, some tables are large, and even a lot of updates don’t change the stats much, while some tables are small and a few updates can drastically change the stats.</p>
+<p>精明的用户可能已经意识到他们需要定期刷新统计数据，但不清楚多久执行一次刷新。 每个表的最佳频率可能不同，因为有些表更新频繁，而另一些表更新频率较低。 此外，有些表很大，即使很多更新也不会改变统计数据太多，而有些表很小，一些更新就可以极大地改变统计数据。</p>
+</li>
+</ul>
+<p>Even if a user managed to overcome all of these hurdles, we were not satisfied with the status quo. Our mission at Cockroach Labs is to “make data easy”, and forcing users to perform their own periodic stats refreshes did not fit with this mission.</p>
+<p>即使用户设法克服所有这些障碍，我们也不满足于现状。 我们 Cockroach Labs 的使命是“让数据变得简单”，强迫用户定期刷新统计数据并不符合这一使命。</p>
+<h2 id="The-Solution-Automatic-Statistics-Collection"><a href="#The-Solution-Automatic-Statistics-Collection" class="headerlink" title="The Solution: Automatic Statistics Collection"></a>The Solution: Automatic Statistics Collection</h2><p>The solution, of course, is for CockroachDB to perform statistics collection automatically. Our idea at the beginning of the release was to detect when some significant portion of the data in a table had changed, and then automatically trigger statistics collection by having the system call <code>CREATE STATISTICS</code>. This introduced two key challenges:</p>
+<p>解决方案当然是让CockroachDB自动进行统计收集。 我们在发布之初的想法是检测表中数据的某些重要部分何时发生更改，然后通过系统调用 CREATE STATISTICS 自动触发统计信息收集。 这带来了两个关键挑战：</p>
+<ol>
+<li><p>We want to detect when a significant amount of data has changed, but there should be negligible impact on the performance of <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> transactions.</p>
+<p>我们希望检测大量数据何时发生变化，但对 INSERT、UPDATE 和 DELETE 事务的性能影响应该可以忽略不计。</p>
+</li>
+<li><p>Once we’ve decided to trigger a statistics refresh, the collection of statistics should have negligible impact on the performance of concurrent transactions.</p>
+<p>一旦我们决定触发统计数据刷新，统计数据的收集对并发事务的性能的影响应该可以忽略不计。</p>
+</li>
+</ol>
+<p>Let’s examine each of these challenges:</p>
+<p>让我们逐一分析一下这些挑战：</p>
+<h3 id="Deciding-to-Trigger-a-Refresh"><a href="#Deciding-to-Trigger-a-Refresh" class="headerlink" title="Deciding to Trigger a Refresh"></a>Deciding to Trigger a Refresh</h3><p>In order to decide when to trigger a refresh, we want to know when a “significant” portion of a table has changed. To make this concrete, let’s say that we want to update stats after approximately 20% of the rows in a table have been inserted, updated or deleted. The advantage of using a percentage instead of an absolute row count is that it allows the frequency of refreshes to scale inversely with the size of the table.</p>
+<p>为了决定何时触发刷新，我们想知道表的“重要”部分何时发生更改。 为了具体说明这一点，假设我们希望在表中大约 20% 的行被插入、更新或删除后更新统计信息。 使用百分比而不是绝对行计数的优点是，它允许刷新频率与表的大小成反比。</p>
+<p>So the challenge is to determine when 20% of rows have changed. Perhaps you’re thinking, “this doesn’t seem very hard…”. At first glance, it does seem straightforward; we know how many rows are affected by each mutation operation on each node. But the problem is that we can have many mutation operations happening simultaneously to the same table on different nodes, and we’d like to avoid having a central counter somewhere that could be a source of contention. The only way a geo-distributed system like CockroachDB scales is if nodes are largely independent.</p>
+<p>因此，挑战在于确定 20% 的行何时发生更改。 也许你在想，“这看起来并不难……”。 乍一看，这似乎很简单； 我们知道每个节点上的每个突变操作会影响多少行。 但问题是，我们可以在不同节点上的同一张表上同时发生许多突变操作，并且我们希望避免在可能成为争用源的地方设置中央计数器。 像 CockroachDB 这样的地理分布式系统扩展的唯一方法是节点在很大程度上是独立的。</p>
+<p>Luckily, the decision to refresh a table after some percentage of rows have changed does not need to be exact. There is a tradeoff between more frequent refreshes (which add overhead to the cluster), and less frequent refreshes (which could result in suboptimal query plans). We have found that refreshing with 20% of rows “stale” provides a good balance, but 10% or 30% would also be perfectly fine in most cases.</p>
+<p>幸运的是，在一定百分比的行发生更改后刷新表的决定不需要精确。 更频繁的刷新（这会增加集群的开销）和不太频繁的刷新（这可能会导致查询计划不理想）之间需要进行权衡。 我们发现刷新 20% 的“陈旧”行可以提供良好的平衡，但在大多数情况下 10% 或 30% 也完全没问题。</p>
+<p>Given this flexibility, we decided to solve the problem by using the following statistical approach: after every mutation operation (e.g., <code>INSERT</code>, <code>UPDATE</code> or <code>DELETE</code>), there is a small chance of statistics getting refreshed. In particular, the probability of a refresh is:</p>
+<p>鉴于这种灵活性，我们决定使用以下统计方法来解决问题：在每次突变操作（例如插入、更新或删除）之后，统计数据刷新的机会很小。 特别地，刷新的概率为：</p>
+<p><em>P</em>(<em>r<strong>e</strong>f<strong>r</strong>e<strong>s</strong>h</em>)&#x3D;<em>n<strong>u</strong>m<strong>b</strong>e**r</em> <em>o**f</em> <em>r<strong>o</strong>w**s</em> <em>i**n</em> <em>t<strong>a</strong>b<strong>l</strong>e</em>∗0.20<em>n<strong>u</strong>m<strong>b</strong>e**r</em> <em>o**f</em> <em>r<strong>o</strong>w**s</em> <em>u<strong>p</strong>d<strong>a</strong>t<strong>e</strong>d</em>, <em>i<strong>n</strong>s<strong>e</strong>r<strong>t</strong>e**d</em>, <em>d<strong>e</strong>l<strong>e</strong>t<strong>e</strong>d</em></p>
+<p>To implement this statistical approach, we essentially use the following simple algorithm (although there are some complexities discussed in the next section): after each mutation, generate a random number between 0 and 1, and if it falls below this probability value, kick off a <code>CREATE STATISTICS</code> run. What this means is that over time, stats for each table are refreshed after approximately 20% of rows have changed. We also have some guard rails in place in case there are statistical outliers. In particular, we always refresh stats for a table if it has no stats yet or if it has been a long time since the last refresh.</p>
+<p>为了实现这种统计方法，我们本质上使用以下简单的算法（尽管下一节中讨论了一些复杂性）：在每次突变之后，生成一个 0 到 1 之间的随机数，如果它低于这个概率值，则开始 运行创建统计信息。 这意味着随着时间的推移，每个表的统计信息会在大约 20% 的行发生更改后刷新。 我们还设置了一些防护栏，以防出现统计异常值。 特别是，如果表还没有统计信息或者距离上次刷新已经很长时间了，我们总是刷新表的统计信息。</p>
+<h3 id="Running-the-Refresh"><a href="#Running-the-Refresh" class="headerlink" title="Running the Refresh"></a>Running the Refresh</h3><p>The second challenge was ensuring that running a statistics refresh did not significantly impact running workloads. It’s one thing if there is high overhead when a user knowingly runs <code>CREATE STATISTICS</code> on the command line, but it’s another thing if we trigger it without their knowledge and all of a sudden the command is using half the resources in the cluster. Since a statistics refresh can happen at any time, it must have minimal overhead.</p>
+<p>第二个挑战是确保运行统计数据刷新不会显着影响正在运行的工作负载。 如果用户故意在命令行上运行 CREATE STATISTICS 时会产生很高的开销，这是一回事，但如果我们在他们不知情的情况下触发它并且命令突然使用了集群中一半的资源，那就是另一回事了。 由于统计数据刷新可以随时发生，因此它的开销必须最小。</p>
+<p>This requirement forced us to rethink the solution described in the last section for triggering a refresh after 20% of rows changed. In particular, the simple algorithm of possibly triggering a refresh after each mutation was problematic. There can be many updates per second, but each <code>CREATE STATISTICS</code> run can take minutes. As a result, we could have multiple threads scanning the same table to collect statistics at the same time. This is a big problem, since a single full table scan can impact performance. Many table scans at once can actually bring down the cluster.</p>
+<p>这一要求迫使我们重新考虑上一节中描述的在 20% 行更改后触发刷新的解决方案。 特别是，每次突变后可能触发刷新的简单算法是有问题的。 每秒可能有多次更新，但每次 CREATE STATISTICS 运行可能需要几分钟的时间。 因此，我们可以让多个线程扫描同一个表来同时收集统计信息。 这是一个大问题，因为单个全表扫描会影响性能。 同时进行许多表扫描实际上可能会导致集群崩溃。</p>
+<p>The solution we came up with was to have one background “refresher” thread running on each node. Mutation operations such as <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> send messages to that thread with the table and number of rows affected, and the refresher aggregates the counts of rows updated for each table on that node. Periodically, the refresher thread starts up a separate thread that uses the latest counts to possibly kick off a statistics refresh for each table.</p>
+<p>我们提出的解决方案是在每个节点上运行一个后台“刷新”线程。 INSERT、UPDATE 和 DELETE 等突变操作会向该线程发送包含受影响的表和行数的消息，并且刷新器会聚合该节点上每个表更新的行数。 刷新线程会定期启动一个单独的线程，该线程使用最新的计数来可能启动每个表的统计刷新。</p>
+<p>The background refresher thread ensures that at most one statistics refresh is triggered at once per node, but it does not provide any coordination between nodes. To ensure that at most one automatic statistics refresh is running globally on the cluster, we took advantage of the existing “jobs” infrastructure used to run commands like <code>IMPORT</code>, <code>BACKUP</code> and <code>RESTORE</code>. In the last release, <code>CREATE STATISTICS</code> was a normal SQL statement, but we changed it during this release cycle to run as a job. Now, every time <code>CREATE STATISTICS</code> is called, it creates an entry in the <code>system.jobs</code> table. If a node wants to perform a refresh, it first checks the <code>system.jobs</code> table to be sure that there are no other statistics jobs currently running. In this way, we ensure that only one statistics refresh is active at once. The jobs infrastructure ensures that we always make progress, since if a node dies, another node will adopt the job.</p>
+<p>后台刷新线程确保每个节点最多一次触发一次统计刷新，但它不提供节点之间的任何协调。 为了确保集群上全局运行最多一次自动统计刷新，我们利用了现有的“作业”基础设施，用于运行 IMPORT、BACKUP 和 RESTORE 等命令。 在上一个版本中，CREATE STATISTICS 是一个普通的 SQL 语句，但我们在此版本周期中将其更改为作为作业运行。 现在，每次调用 CREATE STATISTICS 时，都会在 system.jobs 表中创建一个条目。 如果节点想要执行刷新，它首先检查system.jobs表以确保当前没有其他统计作业正在运行。 通过这种方式，我们可以确保一次只有一个统计刷新处于活动状态。 作业基础设施确保我们始终取得进展，因为如果一个节点死亡，另一个节点将接管该作业。</p>
+<p>Even with all of this infrastructure in place, we found that the overhead of a single <code>CREATE STATISTICS</code> job was too high for some workloads. Workloads with heavy utilization of resources saw throughput drops and latency spikes each time a statistics refresh started. This observation led us to the final requirement: we needed to limit the overhead of each individual <code>CREATE STATISTICS</code> job. The solution we used was to throttle the execution of statistics collection. Specifically, we insert some idle time (i.e., sleep) after every 10,000 rows are processed. The amount of idle time is adaptive, and depends on the current CPU utilization of the cluster. If utilization is high, we sleep more, and if utilization is low, we turn off throttling altogether.</p>
+<p>即使所有这些基础设施都已到位，我们发现单个 CREATE STATISTICS 作业的开销对于某些工作负载来说仍然太高。 每次统计数据刷新开始时，资源利用率很高的工作负载都会出现吞吐量下降和延迟激增的情况。 这一观察使我们得出了最终的要求：我们需要限制每个单独的 CREATE STATISTICS 作业的开销。 我们使用的解决方案是限制统计信息收集的执行。 具体来说，我们在每处理 10,000 行后插入一些空闲时间（即睡眠）。 空闲时间量是自适应的，并且取决于集群当前的 CPU 利用率。 如果利用率高，我们会睡得更多，如果利用率低，我们会完全关闭节流。</p>
+<h2 id="The-Practical-Stuff"><a href="#The-Practical-Stuff" class="headerlink" title="The Practical Stuff"></a>The Practical Stuff</h2><p>By this point you may be wondering, “How do I actually use this feature?” Consistent with our mission to “make data easy”, you don’t need to do anything other than <a href="https://www.cockroachlabs.com/docs/stable/install-cockroachdb">upgrade to CockroachDB 19.1</a>. Automatic statistics are enabled by default in 19.1, so unless you explicitly disable the feature, the system will trigger statistics refreshes as needed.</p>
+<p>此时您可能想知道“我如何实际使用此功能？” 与我们“让数据变得简单”的使命相一致，除了升级到 CockroachDB 19.1 之外，您无需执行任何操作。 自动统计在 19.1 中默认启用，因此除非您明确禁用该功能，否则系统将根据需要触发统计刷新。</p>
+<p>Although we’ve made every effort to minimize the impact of automatic statistics collection on performance of the system, there will always be overhead due to the cost of performing a full table scan for each refresh. For most workloads, the amortized impact on performance is less than 1%, but we’ve seen some cases with larger performance degradation. If your workload is negatively affected, our <a href="https://www.cockroachlabs.com/docs/stable/cost-based-optimizer#controlling-automatic-statistics">documentation on the automatic statistics in CockroachDB</a> describes how you can adjust the frequency of refreshes or disable automatic collection altogether. It’s still possible to run <code>CREATE STATISTICS</code> manually if you want full control over when stats are refreshed.</p>
+<p>尽管我们已尽一切努力尽量减少自动统计信息收集对系统性能的影响，但由于每次刷新执行全表扫描的成本，总会产生开销。 对于大多数工作负载，对性能的摊销影响小于 1%，但我们已经看到了一些性能下降较大的情况。 如果您的工作负载受到负面影响，我们有关 CockroachDB 中自动统计信息的文档描述了如何调整刷新频率或完全禁用自动收集。 如果您想完全控制统计数据的刷新时间，仍然可以手动运行 CREATE STATISTICS。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>We hope this post has convinced you that statistics are essential for the optimizer to produce good query plans for a wide variety of queries, and we hope it has allowed you to peek inside the optimizer to learn a bit about how it works. CockroachDB 19.1 provides tools to collect statistics both manually and automatically, with the goal of keeping statistics fresh for the optimizer to use with minimal performance impact.</p>
+<p>我们希望这篇文章能让您相信，统计信息对于优化器为各种查询生成良好的查询计划至关重要，并且我们希望它能让您深入了解优化器，了解它的工作原理。 CockroachDB 19.1 提供了手动和自动收集统计信息的工具，目的是使统计信息保持最新状态，供优化器使用，同时对性能影响最小。</p>
+]]></content>
+      <categories>
+        <category>数据库、cockroach</category>
+      </categories>
+      <tags>
+        <tag>SQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库SQL总结</title>
+    <url>/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/</url>
+    <content><![CDATA[<h1 id="An-introduction-to-join-ordering"><a href="#An-introduction-to-join-ordering" class="headerlink" title="An introduction to join ordering"></a>An introduction to join ordering</h1><p>The development of the relational model heralded a big step forward for the world of databases. A few years later, SQL introduced a rich vocabulary for data manipulation: filters, projections, and—most importantly—the mighty join. Joins meant that analysts could construct new reports without having to interact with those eggheads in engineering, but more importantly, the existence of complex join queries meant that theoreticians had an interesting new NP-hard problem to fawn over for the next five decades.</p>
+<p>关系模型的发展预示着数据库世界向前迈出了一大步。 几年后，SQL 引入了丰富的数据操作词汇：过滤器、投影，以及最重要的强大的连接。 连接意味着分析师可以构建新的报告，而无需与工程中的那些书呆子进行交互，但更重要的是，复杂连接查询的存在意味着理论家在接下来的 50 年里将面临一个有趣的新 NP 难题。</p>
+<p>Ever since, the join has been the fundamental operation by which complex queries are constructed out of simpler “relations”. The declarative nature of SQL means that users do not generally specify how their query is to be executed—it’s the job of a separate component of the database called the <strong>optimizer</strong> to figure that out. Since joins are so prevalent in such queries, the optimizer must take special care to handle them intelligently. As we’ll see, this isn’t a trivial task.</p>
+<p>从那时起，连接就成为了从更简单的“关系”构建复杂查询的基本操作。 SQL 的声明性本质意味着用户通常不会指定如何执行查询，而是数据库的一个单独组件（称为优化器）的工作来解决这个问题。 由于连接在此类查询中非常普遍，因此优化器必须特别小心以智能地处理它们。 正如我们将看到的，这不是一项简单的任务。</p>
+<p>In this post, we’ll look at why join ordering is so important and develop a sense of how to think of the problem space. And then, in upcoming posts, we’ll begin discussing ways to implement a fast, reliable algorithm to produce good join orderings.</p>
+<p>在这篇文章中，我们将了解为什么连接顺序如此重要，并培养如何思考问题空间的意识。 然后，在接下来的文章中，我们将开始讨论如何实现快速、可靠的算法来产生良好的连接顺序。</p>
+<span id="more"></span>
+
+<h2 id="A-Refresher-on-SQL-and-Joins"><a href="#A-Refresher-on-SQL-and-Joins" class="headerlink" title="A Refresher on SQL and Joins"></a>A Refresher on SQL and Joins</h2><p>Let’s do a quick refresher in case you don’t work with SQL databases on a regular basis.</p>
+<p>如果您不定期使用 SQL 数据库，让我们快速回顾一下。</p>
+<p>A relation or table is basically a spreadsheet. Say we have the following relations describing a simple retailer:</p>
+<p>关系或表基本上是一个电子表格。 假设我们有以下描述一个简单零售商的关系：</p>
+<ul>
+<li><code>customers</code></li>
+<li><code>products</code></li>
+<li><code>orders</code></li>
+</ul>
+<p>The customers, or <em>C</em> relation looks something like this:</p>
+<table>
+<thead>
+<tr>
+<th>customer_id</th>
+<th>customer_name</th>
+<th>customer_location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Joseph</td>
+<td>Norwalk, CA, USA</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Adam</td>
+<td>Gothenburg, Sweden</td>
+</tr>
+<tr>
+<td>3</td>
+<td>William</td>
+<td>Stockholm, Sweden</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Kevin</td>
+<td>Raleigh, NC, USA</td>
+</tr>
+</tbody></table>
+<p>the <code>products</code>, or <em>P</em> relation looks like this:</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+</tr>
+</tbody></table>
+<p>The orders, or <em>O</em> relation looks like this:</p>
+<table>
+<thead>
+<tr>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>The cross product of the two relations, written <em>P</em>×<em>O</em>, is a new relation which contains every pair of rows from the two input relations. Here’s what <em>P</em>×<em>O</em> looks like:</p>
+<p>两个关系的叉积写为 <em>P</em>×<em>O</em>，是一个新关系，其中包含两个输入关系中的每对行。<em>P</em>×<em>O</em> 看起来像这样：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>However, for most applications, this doesn’t have much meaning, which is where joins come into play.</p>
+<p>然而，对于大多数应用程序来说，这没有多大意义，这就是连接发挥作用的地方。</p>
+<p>A join is when we have a filter (or predicate) applied to the cross product of two relations. If we filter the above table to the rows where <code>product_id = order_product_id</code>, we say we’re “joining <em>P</em> and <em>O</em> on <code>product_id = order_product_id</code>“. The result looks like this:</p>
+<p>连接是指我们将过滤器（或谓词）应用于两个关系的叉积。 如果我们将上表过滤到 <code>product_id = order_product_id</code> 的行，我们就说我们正在“在 <code>product_id = order_product_id</code> 上连接 <em>P</em> 和 <em>O</em>”。 结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>Here we can see all of the orders that contained a given product.</p>
+<p>在这里我们可以看到包含给定产品的所有订单。</p>
+<p>We can then remove some of the columns from the output (this is called <strong>projection</strong>):</p>
+<p>然后我们可以从输出中删除一些列（这称为投影）：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>order_customer_id</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>3</td>
+</tr>
+<tr>
+<td>789</td>
+<td>1</td>
+</tr>
+<tr>
+<td>135</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p>This ends up with a relation describing the products various users ordered. Through pretty basic operations, we built up some non-trivial meaning. This is why joins are such a major part of most query languages (primarily SQL): they’re very conceptually simple (a predicate applied to the cross product) but can express fairly complex operations.</p>
+<p>最终得到一个描述不同用户订购的产品的关系。 通过相当基本的操作，我们建立了一些不平凡的意义。 这就是为什么连接是大多数查询语言（主要是 SQL）的主要部分：它们在概念上非常简单（应用于叉积的谓词），但可以表达相当复杂的操作。</p>
+<p>You might have observed that even though the size of the cross product was quite large (∣<em>P</em>∣×∣<em>O</em>∣), the final output was pretty small. Databases will exploit this fact to perform joins much more efficiently than by producing the entire cross product and then filtering it. This is part of why it’s often useful to think of a join as a single unit, rather than two composed operations.</p>
+<p>您可能已经观察到，尽管叉积的大小非常大 (∣<em>P</em>∣×∣<em>O</em>∣)，但最终输出却非常小。 数据库将利用这一事实来比生成整个叉积然后过滤它更有效地执行连接。 这就是为什么将连接视为单个单元而不是两个组合操作通常很有用的部分原因。</p>
+<h2 id="Some-Vocabulary-一些词汇"><a href="#Some-Vocabulary-一些词汇" class="headerlink" title="Some Vocabulary 一些词汇"></a>Some Vocabulary 一些词汇</h2><p>To make things easier to write, we’re going to introduce a little bit of notation.</p>
+<p>为了使事情更容易编写，我们将引入一些符号。</p>
+<p>We already saw that the cross product of <em>A</em> and <em>B</em> is written <em>A</em>×<em>B</em>. Filtering a relation <em>R</em> on a predicate <em>p</em> is written <em>σ**p</em>(<em>R</em>). That is, ��(�)<em>σ**p</em>(<em>R</em>) is the relation with every row of �<em>R</em> for which �<em>p</em> is true, for example, the rows where <code>product_id = order_product_id</code>. Thus a join of �<em>A</em> and �<em>B</em> on �<em>p</em> could be written ��(�×�)<em>σ**p</em>(<em>A</em>×<em>B</em>). Since we often like to think of joins as single cohesive units, we can also write this as �⋈��<em>A</em>⋈<em>p**B</em>.</p>
+<p>The columns in a relation don’t need to have any particular order (we only care about their names), so we can take the cross product in any order. <em>A</em>×<em>B</em>&#x3D;<em>B</em>×<em>A</em>, and further, A<em>⋈</em>p<strong>B*&#x3D;<em>B</em>⋈*p</strong>A*. You might know this as the <strong>commutative</strong> property. Joins are commutative.</p>
+<p>关系中的列不需要有任何特定的顺序（我们只关心它们的名称），因此我们可以按任何顺序进行叉积。 <em>A</em>×<em>B</em>&#x3D;<em>B</em>×<em>A</em>，进而，A<em>⋈</em>p<strong>B*&#x3D;<em>B</em>⋈*p</strong>A*。 您可能知道这是<strong>可交换</strong>属性。 连接是可交换的。</p>
+<p>We can “pull up” a filter through a cross product: <em>σ**p</em>(<em>A</em>)×<em>B</em>&#x3D;<em>σ**p</em>(<em>A</em>×<em>B</em>). It doesn’t matter if we do the filtering before or after the product is taken. Because of this, it sometimes makes sense to think of a sequence of joins as a sequence of cross products which we filter at the very end:</p>
+<p>我们可以通过叉积“拉起”一个过滤器：<em>σ**p</em>(<em>A</em>)×<em>B</em>&#x3D;<em>σ**p</em>(<em>A</em>×<em>B</em>)。 我们在产品服用之前或之后进行过滤并不重要。 因此，有时将连接序列视为我们在最后进行过滤的叉积序列是有意义的：</p>
+<p>(<em>A</em>⋈<em>p**B</em>)⋈<em>q**C</em>&#x3D;<em>σ**q</em>(<em>σ**p</em>(<em>A</em>×<em>B</em>)×<em>C</em>)&#x3D;<em>σ**p</em>∧<em>q</em>(<em>A</em>×<em>B</em>×<em>C</em>)</p>
+<p>Something that becomes clear when written in this form is that we can join <em>A</em> with <em>B</em> and then join the result of that with <em>C</em>, or we can join <em>B</em> with <em>C</em> and then join the result of that with <em>A</em>. The order in which we apply those joins doesn’t matter, as long as all the necessary filtering happens at some point. You might recognize this as the associative property. Joins are <strong>associative</strong> (with the asterisk that we need to pull up predicates where appropriate).</p>
+<p>当以这种形式编写时，我们可以清楚地看到，我们可以将 <em>A</em> 与 <em>B</em> 连接，然后将其结果与 <em>C</em> 连接，或者我们可以将 <em>B</em> 与 <em>C</em> 连接，然后将其结果连接 与<em>A</em>。 只要所有必要的过滤在某个时刻发生，我们应用这些连接的顺序并不重要。 您可能会将其视为关联属性。 连接是<strong>关联的</strong>（带有星号，我们需要在适当的情况下提取谓词）。</p>
+<h2 id="Optimizing-Joins"><a href="#Optimizing-Joins" class="headerlink" title="Optimizing Joins"></a>Optimizing Joins</h2><p>So we can perform our joins in any order we please. This raises a question: is there some order that’s more preferable than another? Yes. It turns out that the order in which we perform our joins can result in dramatically different amounts of work required.</p>
+<p>因此我们可以按照我们喜欢的任何顺序执行连接。 这就提出了一个问题：是否有某种顺序比另一种更可取？ 是的。 事实证明，我们执行连接的顺序可能会导致所需的工作量显着不同。</p>
+<p>Consider a fairly natural query on the above relations, where we want to get a list of all customers’ names along with the location of each product they’ve ordered. In SQL we could write such a query like this:</p>
+<p>考虑对上述关系的一个相当自然的查询，我们希望获得所有客户姓名的列表以及他们订购的每个产品的位置。 在 SQL 中，我们可以编写这样的查询：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> customer_name, product_location <span class="keyword">FROM</span></span><br><span class="line">  orders</span><br><span class="line">  <span class="keyword">JOIN</span> customers <span class="keyword">ON</span> customer_id <span class="operator">=</span> order_customer_id</span><br><span class="line">  <span class="keyword">JOIN</span> products <span class="keyword">ON</span> product_id <span class="operator">=</span> order_product_id</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>We have two predicates:</p>
+<ul>
+<li><code>customer_id = order_customer_id</code></li>
+<li><code>product_id = order_product_id</code></li>
+</ul>
+<p>Say we first join <code>products</code> and <code>customers</code>. Since neither of the two predicates above relate products with customers, we have no choice but to form the entire cross products between them. This cross product might be very large (the number of customers times the number of products) and we have to compute the entire thing.</p>
+<p>假设我们首先将产品和客户结合起来。 由于上述两个谓词都没有将产品与客户联系起来，因此我们别无选择，只能在它们之间形成整个叉积。 这个叉积可能非常大（客户数量乘以产品数量），我们必须计算整个结果。</p>
+<p>What if we instead first compute the join between <code>orders</code> and <code>customers</code>? The sub-join of orders joined with customers only has an entry for every order placed by a customer - probably much smaller than every pair of customer and product. Since we have a predicate between these two, we can compute the much smaller result of joining them and filtering directly (there are many algorithms to do this efficiently, the three most common being the hash join, merge join, and nested-loop&#x2F;lookup join).</p>
+<p>如果我们首先计算订单和客户之间的连接会怎样？ 与客户连接的订单子连接仅包含客户所下的每个订单的条目 - 可能比每对客户和产品小得多。 由于我们在这两者之间有一个谓词，因此我们可以计算连接它们并直接过滤的小得多的结果（有许多算法可以有效地做到这一点，最常见的三种是散列连接、合并连接和嵌套循环&#x2F;查找 加入）。</p>
+<h2 id="Visualizing-the-Problem-可视化问题"><a href="#Visualizing-the-Problem-可视化问题" class="headerlink" title="Visualizing the Problem 可视化问题"></a>Visualizing the Problem 可视化问题</h2><p>To better understand the structure of a join query, we can look at its query graph. The query graph of a query has a vertex for each relation being joined and an edge between any two relations for which there is a predicate.</p>
+<p>为了更好地理解连接查询的结构，我们可以查看它的查询图。 查询的查询图对于每个被连接的关系都有一个顶点，以及任何两个有谓词的关系之间的边。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_coppngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>Since a predicate filters the result of the cross product, predicates can be given a numeric value that describes how much they filter said result. This value is called their selectivity. The selectivity of a predicate <em>p</em> on <em>A</em> and <em>B</em> is defined as:</p>
+<p>由于谓词过滤叉积的结果，因此可以给谓词一个数值来描述它们过滤所述结果的程度。 这个值称为它们的选择性。 谓词 <em>p</em> 对 <em>A</em> 和 <em>B</em> 的选择性定义为：</p>
+<p><em>s<strong>e</strong>l</em>(<em>p</em>)&#x3D;∣<em>A</em>×<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣&#x3D;∣<em>A</em>∣∣<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣</p>
+<p>In practice, we tend to think about this the other way around; we assume that we can estimate the selectivity of a predicate and use that to estimate the size of a join:</p>
+<p>在实践中，我们倾向于以相反的方式思考这个问题。 我们假设我们可以估计谓词的选择性并使用它来估计连接的大小：</p>
+<p>∣<em>A</em>⋈<em>p**B</em>∣&#x3D;<em>s<strong>e</strong>l</em>(<em>p</em>)∣<em>A</em>∣∣<em>B</em>∣</p>
+<p>So a predicate which filters out half of the rows has selectivity 0.5 and a predicate which only allows one row out of every hundred has selectivity 0.01. Since predicates which are more selective reduce the cardinality of their output more aggressively, a decent general principle is that we want to perform joins over predicates which are very selective first. It’s often assumed for convenience that all the selectivities are independent, that is,</p>
+<p>因此，过滤掉一半行的谓词的选择性为 0.5，而仅允许每一百行中的一行的谓词的选择性为 0.01。 由于更具选择性的谓词会更积极地减少其输出的基数，因此一个不错的一般原则是我们希望首先对选择性很强的谓词执行连接。 为了方便起见，通常假设所有选择性都是独立的，即</p>
+<p>∣<em>A</em>⋈<em>p**B</em>⋈<em>q**C</em>∣&#x3D;<em>s<strong>e</strong>l</em>(<em>p</em>)<em>s<strong>e</strong>l</em>(<em>q</em>)∣<em>A</em>×<em>B</em>×<em>C</em>∣</p>
+<p>Which, while indeed convenient, is rarely an accurate assumption in practice. Check out <a href="http://www.vldb.org/pvldb/vol9/p204-leis.pdf">“How Good Are Query Optimizers, Really?”</a> by Leis et al. for a detailed discussion of the problems with this assumption.</p>
+<p>虽然这确实很方便，但在实践中很少是一个准确的假设。 查看“查询优化器到底有多好？” 莱斯等人。 详细讨论该假设的问题。</p>
+<p>It turns out that the shape of a query graph plays a large part in how difficult it is to optimize a query. There are a handful of canonical archetypes of query graph “shapes”, all with different optimization characteristics.</p>
+<p>事实证明，查询图的形状在很大程度上决定了优化查询的难度。 有一些查询图“形状”的规范原型，它们都具有不同的优化特征。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_chainpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​																		<em>A “chain” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_starpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​															<em>A “star” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cliquepngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​														<em>A “clique” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cyclepngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​													<em>A “cycle” query graph</em></p>
+<p>Note that these shapes aren’t necessarily representative of many real queries, but they represent extremes which exhibit interesting behaviour and which permit interesting analysis.</p>
+<p>请注意，这些形状不一定代表许多实际查询，但它们代表了表现出有趣行为并允许进行有趣分析的极端情况。</p>
+<h2 id="Query-Plans"><a href="#Query-Plans" class="headerlink" title="Query Plans"></a>Query Plans</h2><p>To visualize a particular join ordering, we can look at its query plan diagram. Since most join execution algorithms only perform joins on one pair of relations at a time, these are generally binary trees. The query plan we ended up with for the above query has a diagram that looks something like this:</p>
+<p>为了可视化特定的连接顺序，我们可以查看它的查询计划图。 由于大多数连接执行算法一次仅对一对关系执行连接，因此这些通常是二叉树。 我们最终为上述查询得出的查询计划有一个如下所示的图表：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_coppngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>There are also two main canonical query plan shapes, the less general “left-deep plan”:</p>
+<p>还有两种主要的规范查询计划形状，即不太通用的“左深度计划”：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_deep_leftpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>Where every relation is joined in sequence.</p>
+<p>每个关系都按顺序连接。</p>
+<p>The more general form is the “bushy plan”:</p>
+<p>更通用的形式是“bushy plan”：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_bushypngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>In a left-deep plan, one of the two relations being joined must always be a concrete table, rather than the output of a join. In a bushy plan, such <strong>composite inners</strong> are permitted.</p>
+<p>在左深计划中，连接的两个关系之一必须始终是具体表，而不是连接的输出。 在茂密的规划中，允许使用这种复合材料内部材料。</p>
+<h2 id="Is-this-actually-“hard”"><a href="#Is-this-actually-“hard”" class="headerlink" title="Is this actually “hard”?"></a>Is this actually “hard”?</h2><p>In the examples we’ve seen, there were only a handful of options, but as the number of tables being joined grows, the number of potential query plans grows extremely fast—and in fact, finding the optimal order in which to join a set of tables is NP-hard. This means that when faced with large join ordering problems, databases are generally forced to resort to a collection of heuristics to attempt to find a good execution plan (unless they want to spend more time optimizing than executing!).</p>
+<p>在我们看到的示例中，只有少数选项，但随着要连接的表数量的增长，潜在查询计划的数量增长得非常快，事实上，找到连接集合的最佳顺序 表的数量是 NP 困难的。 这意味着，当面临大型连接顺序问题时，数据库通常被迫求助于一系列启发式方法来尝试找到良好的执行计划（除非它们想花更多的时间进行优化而不是执行！）。</p>
+<p>I think it’s important to first answer the question of why we need to do this at all. Even if some join orderings are orders of magnitude better than others, why can’t we just find a good order once and then use that in the future? Why does a piece of software like a database that’s concerned with going fast need to solve an NP-hard problem every time it receives a query? It’s a fair question, and there’s probably interesting research to be done in sharing optimization work across queries.</p>
+<p>我认为首先回答我们为什么需要这样做的问题很重要。 即使某些连接顺序比其他连接顺序好几个数量级，为什么我们不能一次找到一个好的顺序，然后在将来使用它呢？ 为什么像数据库这样注重速度的软件每次收到查询时都需要解决 NP 难题？ 这是一个公平的问题，在跨查询共享优化工作方面可能需要进行一些有趣的研究。</p>
+<p>The main answer, though, is that you’re going to want different join strategies for a query involving Justin Bieber’s twitter followers versus mine. The scale of various relations being joined will vary dramatically depending on the query parameters and the fact is that we just don’t know the problem we’re solving until we receive the query from the user, at which point the query optimizer will need to consult its statistics to make informed guesses about what join strategies will be good. Since these statistics will be very different for a query over Bieber’s followers, the decisions the optimizer ends up making will be different and we probably won’t be able to reuse a result from before.</p>
+<p>不过，主要的答案是，对于涉及贾斯汀·比伯 (Justin Bieber) 的 Twitter 关注者和我的关注者的查询，您需要不同的连接策略。 连接的各种关系的规模将根据查询参数的不同而显着变化，事实是，我们只是不知道我们正在解决的问题，直到我们收到用户的查询，此时查询优化器将需要 查阅其统计数据，以做出明智的猜测，了解什么是好的连接策略。 由于对于比伯的关注者的查询，这些统计数据将非常不同，因此优化器最终做出的决策将有所不同，我们可能无法重用之前的结果。</p>
+<p>Once you accept that you have to solve the problem, how do you do it? A common characteristic of NP-hard problems is that they’re strikingly non-local. Any type of local reasoning or optimization you attempt to apply to them will generally break down and doom you to look at the entire problem holistically. In the case of join ordering, what this means is that in most cases it’s difficult or impossible to make conclusive statements about how any given pair of relations should be joined - the answer can differ drastically depending on all the tables you don’t happen to be thinking about at this moment.</p>
+<p>一旦你承认必须解决问题，你会怎么做？ NP 难问题的一个共同特征是它们明显是非局部的。 您尝试应用于它们的任何类型的局部推理或优化通常都会失败，并注定您必须从整体上看待整个问题。 在连接顺序的情况下，这意味着在大多数情况下，很难或不可能对任何给定的关系对应该如何连接做出结论性的陈述 - 答案可能会有很大不同，具体取决于您没有碰巧的所有表 此刻正在思考。</p>
+<p>In our example with customers, orders, and products, it might look like our first plan was bad only because we first performed a join for which we had no predicate (such intermediate joins are just referred to as <strong>cross products</strong>), but in fact, there are joins for which the ordering that gives the smallest overall cost involves a cross product (exercise for the reader: find one).</p>
+<p>在我们的客户、订单和产品示例中，我们的第一个计划可能看起来很糟糕，只是因为我们首先执行了没有谓词的连接（此类中间连接仅称为交叉产品），但事实上， 对于某些连接，给出最小总成本的排序涉及叉积（读者练习：找到一个）。</p>
+<p>Despite the fact that optimal plans can contain cross products, it’s very common for query optimizers to assume their inclusion won’t improve the quality of query plans that much, since disallowing them makes the space of query plans much smaller and can make finding decent plans much quicker. This assumption is sometimes called the connectivity heuristic (because it only considers joining relations which are connected in the query graph).</p>
+<p>尽管最佳计划可以包含交叉产品，但查询优化器很常见地认为包含它们不会大大提高查询计划的质量，因为不允许它们会使查询计划的空间变得更小，并且可以找到合适的计划 快得多。 这种假设有时称为连接启发式（因为它只考虑查询图中连接的连接关系）。</p>
+<p>This post has mostly been about the vocabulary with which to speak and think about the problem of ordering joins, and hasn’t really touched on any concrete algorithms with which to find good query plans.</p>
+<p>这篇文章主要是关于谈论和思考连接排序问题的词汇，并没有真正涉及任何用于找到良好查询计划的具体算法。</p>
+<p>Join ordering is, generally, quite resistant to simplification. In the general case—and in fact, almost every case in practice—the problem of finding the optimal order in which to perform a join query is NP-hard. However, if we sufficiently restrict the set of queries we look at, and restrict ourselves to certain resulting query plans, there are some useful situations in which we <em>can</em> find an optimal solution. Those details, though, will come in a follow-up post.</p>
+<p>一般来说，连接顺序非常难以简化。 在一般情况下（事实上，几乎在实践中的每种情况下），找到执行连接查询的最佳顺序的问题是 NP 困难的。 但是，如果我们充分限制所查看的查询集，并将自己限制为某些结果查询计划，则在某些有用的情况下我们可以找到最佳解决方案。 不过，这些细节将在后续帖子中提供。</p>
+<p>If you like this post you can go even deeper on Join Ordering with <a href="https://www.cockroachlabs.com/blog/join-ordering-ii-the-ikkbz-algorithm/">Join Ordering Part II: The SQL</a></p>
+<p>如果您喜欢这篇文章，您可以通过连接排序第二部分：SQL 更深入地了解连接排序</p>
+<h1 id="Join-ordering-part-II-The-‘SQL’"><a href="#Join-ordering-part-II-The-‘SQL’" class="headerlink" title="Join ordering, part II: The ‘SQL’"></a>Join ordering, part II: The ‘SQL’</h1><p>Even in the 80’s, before Facebook knew everything there was to know about us, we as an industry had vast reams of data we needed to be able to answer questions about. To deal with this, data analysts were starting to flex their JOIN muscles in increasingly creative ways. But back in that day and age, we had neither machine learning nor rooms full of underpaid Excel-proficient interns to save us from problems we didn’t understand; we were on our own.</p>
+<p>即使在 80 年代，在 Facebook 了解有关我们的一切之前，我们作为一个行业就拥有大量数据，需要能够回答相关问题。 为了解决这个问题，数据分析师开始以越来越有创意的方式展示他们的 JOIN 力量。 但在那个时代，我们既没有机器学习，也没有满屋子的工资低、精通 Excel 的实习生来帮助我们解决我们不理解的问题； 我们只能靠自己了。</p>
+<p>We saw in the <a href="https://www.cockroachlabs.com/blog/join-ordering-pt1/">previous post</a> how to think about a join ordering problem: as an undirected graph with a vertex for each relation being joined, and an edge for any predicate relating two relations. We also saw the <strong>connectivity heuristic</strong>, which assumed that we wouldn’t miss many good orderings by restricting ourselves to solutions which didn’t perform cross products.</p>
+<p>我们在上一篇文章中看到了如何考虑连接排序问题：作为一个无向图，每个被连接的关系有一个顶点，以及与两个关系相关的任何谓词的边。 我们还看到了连接启发式，它假设通过将自己限制在不执行交叉产品的解决方案中，我们不会错过许多好的订单。</p>
+<p>It was discussed that in a general setting, finding the optimal solution to a join ordering problem is NP-hard for almost any meaningful cost model. Given the complexity of the general problem, an interesting question is, how much do we have to restrict ourselves to a specific subclass of problems and solutions to get instances which are <strong>not</strong> NP-hard?</p>
+<p>讨论了在一般情况下，对于几乎任何有意义的成本模型来说，找到连接排序问题的最佳解决方案都是 NP 困难的。 考虑到一般问题的复杂性，一个有趣的问题是，我们必须在多大程度上将自己限制在问题和解决方案的特定子类上才能获得非 NP 困难的实例？</p>
+<p>The topic of our story is the IKKBZ algorithm, and the heroes are Toshihide Ibaraki and Tiko Kameda. But first, we need to take a detour through a different field. We will eventually find ourselves back in JOIN-land, so don’t fear, this is still a post about databases.</p>
+<p>我们故事的主题是IKKBZ算法，主角是茨木俊秀和龟田提子。 但首先，我们需要绕道进入另一个领域。 我们最终会发现自己回到了 JOIN 领域，所以不要害怕，这仍然是一篇关于数据库的文章。</p>
+<h2 id="Maximize-Revenue-Minimize-Cost-收入最大化，成本最小化"><a href="#Maximize-Revenue-Minimize-Cost-收入最大化，成本最小化" class="headerlink" title="Maximize Revenue, Minimize Cost 收入最大化，成本最小化"></a>Maximize Revenue, Minimize Cost 收入最大化，成本最小化</h2><p><strong>Operations research</strong> is a branch of mathematics concerned with the optimization of business decisions and management, and it has led to such developments as asking employees “what would you say you do here?”.</p>
+<p>运筹学是数学的一个分支，涉及业务决策和管理的优化，它导致了诸如询问员工“你觉得你在这里做什么？”等发展。</p>
+<p>One sub-discipline of operations research is concerned with the somewhat abstract problem of scheduling the order in which jobs in a factory should be performed. For example, if we have some set of tasks that needs to be performed to produce a product, what order will minimize the business’s costs?</p>
+<p>运筹学的一个子学科涉及一个有点抽象的问题，即安排工厂中的工作执行顺序。 例如，如果我们需要执行一组任务来生产产品，那么什么顺序可以最大限度地降低企业成本？</p>
+<p>The 1979 paper <em>Sequencing with Series-Parallel Precedence Constraints</em> by Clyde Monma and Jeffrey Sidney is interested in a particular type of this problem centered around testing a product for deficiencies. They have a sequence of tests to be performed on the product, some of which must be performed before others. The paper gives the example of recording the payments from a customer before sending out their next bill, in order to prevent double billing - the first task must be performed before the second.</p>
+<p>Clyde Monma 和 Jeffrey Sidney 于 1979 年发表的论文《Sequencing with Series-Parallel Precedence Constraints》对这种以测试产品缺陷为中心的特定类型问题感兴趣。 他们要对产品执行一系列测试，其中一些测试必须在其他测试之前执行。 本文给出了在发送下一张账单之前记录客户付款的示例，以防止重复计费 - 第一个任务必须在第二个任务之前执行。</p>
+<p>The kind of problem Monma and Sidney cover is one where these tests (henceforth “jobs”) and the order they must be performed in can be laid out in a series of parallel “chains”:</p>
+<p>Monma 和 Sidney 所解决的问题是，这些测试（此后称为“作业”）以及它们必须执行的顺序可以布置在一系列并行“链”中：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_1.png?auto=format,compress&max-w=700"></p>
+<p>Where a legal order of the jobs is one in which a job’s parent is carried out before it is, so <em>X</em>,<em>A</em>,<em>B</em>,<em>U</em>,<em>C</em>,<em>V</em>,<em>D</em>,<em>Y</em>,<em>Z</em> is a legal execution here, but <em>A</em>,<em>C</em>,… is not, since <em>B</em> must occur before <em>C</em>. Such restrictions are called <strong>sequencing constraints</strong>.</p>
+<p>如果作业的合法顺序是作业的父作业先于它执行的顺序，则 <em>X</em>,<em>A</em>,<em>B</em>,<em>U</em>,<em>C</em>,<em>V</em>,<em>D</em>, <em>Y</em>,<em>Z</em> 在这里是合法的执行，但 <em>A</em>,<em>C</em>,… 不是，因为 <em>B</em> 必须出现在 <em>C</em> 之前。 此类限制称为<strong>排序约束</strong>。</p>
+<p>This is a specific case of the more general concept of a <strong>precedence graph</strong>. A precedence graph can just be any directed acyclic graph, so in the general (non-Monma&#x2F;Sidney) case, such a graph could look like this:</p>
+<p>这是更一般的优先级图概念的一个具体情况。 优先图可以是任何有向无环图，因此在一般（非 Monma&#x2F;Sidney）情况下，这样的图可能如下所示：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_2.png?auto=format,compress&max-w=700"></p>
+<p>In the paper’s setting, each “job” is a test of a component to see if it’s defective or not. If the test fails, the whole process is aborted. If it doesn’t, the process continues. Each test has some fixed probability of failing. Intuitively, the tests we do first should have high probability of detecting a failure, and a low cost: if a test is cheap and has a 99% chance of determining that a component is defective, it would be bad if we did it at the very end of a long, expensive, time-consuming process.</p>
+<p>在论文的设置中，每项“工作”都是对一个组件的测试，看看它是否有缺陷。 如果测试失败，则整个过程将中止。 如果没有，该过程将继续。 每个测试都有一些固定的失败概率。 直观上，我们首先进行的测试应该具有很高的检测到故障的概率，并且成本较低：如果测试成本低廉并且有 99% 的机会确定某个组件有缺陷，如果我们在一个漫长、昂贵、耗时的过程的最后才这样做，那就糟糕了。</p>
+<p>Next, a <strong>job module</strong> in a precedence graph is a set of jobs which all have the same relationship to every job not in the module. That is, a set of jobs <em>J</em> is a job module if every job not in <em>J</em> either</p>
+<p>接下来，优先级图中的<strong>作业模块</strong>是一组作业，它们与模块中之外的每个作业都具有相同的关系。 也就是说，如果每个作业都不在 <em>J</em> 中，则一组作业 <em>J</em> 是一个作业模块</p>
+<ol>
+<li>must come before every job in <em>J</em>, 必须出现在 <em>J</em> 中的每个作业之前，</li>
+<li>must come after every job in J*, or 必须出现在 J* 中的每项工作之后，或者</li>
+<li>is unrestricted with respect to every job in J* J*中的每项工作均不受限制</li>
+</ol>
+<p>according to the problem’s precedence constraints. 根据问题的优先级约束。</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_3.png?auto=format,compress&max-w=700"></p>
+<p>For instance, in this example, {<em>B</em>,<em>C</em>}, {<em>X</em>,<em>Y</em>,<em>Z</em>}, and {<em>V</em>} are job modules, but {<em>X</em>,<em>Z</em>} is not a module because <em>Y</em> must come before <em>Z</em>, but is after <em>X</em>. Similarly, {<em>A</em>,<em>U</em>} is not a module because <em>V</em> must come after <em>U</em> but is unrestricted relative to <em>A</em>.</p>
+<p>例如，在此示例中，{<em>B</em>,<em>C</em>}、{<em>X</em>,<em>Y</em>,<em>Z</em>} 和 {<em>V</em>} 是作业模块，但 {<em>X</em>,<em>Z</em> } 不是模块，因为 <em>Y</em> 必须位于 <em>Z</em> 之前，但位于 <em>X</em> 之后。 同样，{<em>A</em>,<em>U</em>} 不是模块，因为 <em>V</em> 必须位于 <em>U</em> 之后，但相对于 <em>A</em> 不受限制。</p>
+<p>When we use <em>j</em> to represent an object, we’re talking about one single job, and when we use <em>s</em> and <em>t</em>, we’re talking about strings of jobs, as in, <em>s</em>&#x3D;<em>j</em>1<em>j</em>2…<em>j**n</em>, which cannot be further split apart, and are performed in sequence. In general, these are somewhat interchangeable. In this setting, jobs are just strings of length one.</p>
+<p>当我们使用 <em>j</em> 表示一个对象时，我们谈论的是一个作业，而当我们使用 <em>s</em> 和 <em>t</em> 时，我们谈论的是作业字符串，如 <em>s</em>&#x3D;<em>j <em>1</em>j</em>2…<em>j**n</em>，不能再拆分，依次执行。 一般来说，这些在某种程度上是可以互换的。 在这种情况下，作业只是长度为 1 的字符串。</p>
+<p>If two strings are in a module together, we can concatenate them in some order to get a new string. Since the constituent jobs and strings are in a module (and thus have all the same constraints), there’s only one natural choice of constraints for this new string to have. It’s generally easier to reason about a problem with fewer jobs in it, so a desirable thing to be able to do is to concatenate two jobs to get a new, simpler problem that is equivalent to the original one. One of the key challenges we’ll face is how to do this.</p>
+<p>如果两个字符串一起在一个模块中，我们可以按某种顺序连接它们以获得一个新字符串。 由于组成作业和字符串位于一个模块中（因此具有所有相同的约束），因此这个新字符串只有一种自然的约束选择。 通常，推理作业较少的问题会更容易，因此可以做的一件事是将两个作业连接起来以获得一个与原始问题等效的新的、更简单的问题。 我们将面临的主要挑战之一是如何做到这一点。</p>
+<p>We use <em>f</em>(<em>s</em>1,<em>s</em>2,…) to refer to the cost of performing the string <em>s</em>1, followed by the string <em>s</em>2, and so on (think of this function as “flattening” of the sequences of jobs). <em>q</em>(<em>s</em>) is the probability of all of the tests in <em>s</em> succeeding. We assume all the probabilities are independent, and so the probability of all of the jobs in a string succeeding is the product of the probability of success of each individual job. If the sequencing constraints constrain a string <em>s</em> to come before a string <em>t</em>, we write <em>s</em>→<em>t</em> (read “<em>s</em> comes before <em>t</em>”). We’re going to use strings to progressively simplify our problem by concatenating jobs into strings.</p>
+<p>我们使用 <em>f</em>(<em>s</em>1,<em>s</em>2,…) 来指代执行字符串 <em>s</em>1、后跟字符串 <em>s</em>2 的成本，依此类推（将此函数视为 工作序列的“扁平化”）。 <em>q</em>(<em>s</em>) 是 <em>s</em> 中所有测试成功的概率。 我们假设所有概率都是独立的，因此字符串中所有作业成功的概率是每个作业成功概率的乘积。 如果排序约束将字符串 <em>s</em> 限制在字符串 <em>t</em> 之前，则我们编写 <em>s</em>→<em>t</em> （读作“<em>s</em> 在 <em>t</em> 之前”）。 我们将使用字符串通过将作业连接到字符串中来逐步简化我们的问题。</p>
+<p>The expected cost of performing one sequence of jobs followed by another sequence of jobs is the cost of performing the first sequence plus the cost of performing the second sequence, but we only have to actually perform the second sequence if the first sequence didn’t fail. Thus, in expectation, the cost is <em>f</em>(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>).</p>
+<p>执行一个作业序列，然后执行另一个作业序列的预期成本是执行第一个序列的成本加上执行第二个序列的成本，但如果第一个序列没有失败，我们只需实际执行第二个序列 。 因此，预计成本为 <em>f</em>(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>)。</p>
+<p>Since this is recursive, we need a base case, and of course, the cost of performing a single job is simply the cost of the job itself: <em>f</em>(<em>j</em>)&#x3D;<em>c**j</em>. An important property of this definition is that <em>f</em> is well-defined: <em>f</em>(<em>S</em>1,<em>S</em>2)&#x3D;<em>f</em>(<em>S</em>1′,<em>S</em>2′) whenever ′<em>S</em>1<em>S</em>2&#x3D;<em>S</em>1′<em>S</em>2′ (verifying this is left as an exercise).</p>
+<p>由于这是递归的，我们需要一个基本情况，当然，执行单个作业的成本就是作业本身的成本：<em>f</em>(<em>j</em>)&#x3D;<em>c**j</em>。 该定义的一个重要属性是 <em>f</em> 是明确定义的：<em>f</em>(<em>S</em>1,<em>S</em>2)&#x3D;<em>f</em>(<em>S</em>1′,<em>S</em>2′) 每当 ′* S<em>1</em>S<em>2&#x3D;<em>S</em>1′</em>S*2′（验证这一点留作练习）。</p>
+<p>An <strong>adjacent sequence interchange</strong> is a swap of two adjacent sequences within a larger sequence:</p>
+<p>相邻序列互换是一个较大序列内两个相邻序列的交换：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_4.png?auto=format,compress&max-w=700"></p>
+<p>This is an adjacent sequence interchange of <em>X</em>,<em>Y</em>,<em>Z</em> with U*,<em>V</em>.</p>
+<p>这是 <em>X</em>、<em>Y</em>、<em>Z</em> 与 U<em>、</em>V* 的相邻序列互换。</p>
+<p>A <strong>rank function</strong> maps a sequence of jobs <em>j</em>1<em>j</em>2…<em>j</em>n to a number. Roughly, a rank function captures how desirable it is to do a given sequence of jobs early. <em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) means we would like to do <em>s</em> before <em>t</em>. A cost function is called <strong>adjacent sequence interchange</strong> (ASI) relative to a rank function <em>r</em> if the rank function accurately tells us when we want to perform interchanges:</p>
+<p><strong>排名函数</strong> 将作业序列 <em>j</em>1<em>j</em>2…<em>j</em>n 映射到一个数字。 粗略地说，排名函数反映了尽早完成给定工作序列的期望程度。 <em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) 意味着我们想在 <em>t</em> 之前执行 <em>s</em>。 如果排名函数准确地告诉我们何时要执行交换，则相对于排名函数<em>r</em>，成本函数被称为<strong>相邻序列交换</strong>（ASI）：</p>
+<p><em>f</em>(<em>a</em>,<em>s</em>,<em>t</em>,<em>b</em>)≤<em>f</em>(<em>a</em>,<em>t</em>,<em>s</em>,<em>b</em>) if <em>r</em>(<em>s</em>)≤<em>r</em>(<em>t</em>)</p>
+<p>And a cost function <em>f</em> is ASI if there exists a rank function it is ASI relative to. I’m sure you’ll be shocked to learn the <em>f</em> we derived above f*(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>)) is ASI.</p>
+<p>如果存在相对于 ASI 的排序函数，则成本函数 <em>f</em> 就是 ASI。 我相信您会惊讶地发现我们上面推导出的 <em>f</em> f*(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em> (<em>t</em>)) 是 ASI。</p>
+<p>Note that even though we may have a rank function which tells us we would like to do a given sequence of jobs early, the sequencing constraints might prohibit us from doing so.</p>
+<p>请注意，即使我们可能有一个排名函数告诉我们希望尽早执行给定的作业序列，但排序约束可能会阻止我们这样做。</p>
+<p><strong>The ASI theorem</strong> (Monma and Sidney call this “Theorem 2”, but we’re going to use it enough for a real name) mildly paraphrased:</p>
+<p>ASI 定理（Monma 和 Sidney 称之为“定理 2”，但我们将用它来表示真实的名字）温和地解释道：</p>
+<p>​	<em>Let *f</em> be ASI with rank function <em>r</em>, and let *s* and *t* be strings. Consider a job module {*s*,*t*} in a general precedence graph, where *s<em>→*t</em> and *r*(*t*)≤*r*(*s*). Then there is an optimal permutation with *s* immediately preceding *t*.*</p>
+<p><em>令*f</em> 为具有排名函数<em>r</em> 的ASI，并令*s* 和*t* 为字符串。 考虑一般优先级图中的作业模块 {*s*,*t*}，其中 *s<em>→*t</em> 且 *r*(*t*)≤*r*(* s*)。 然后有一个最佳排列，其中 *s* 紧接在 *t*.* 之前</p>
+<p>Let’s break down this theorem. First of all, note that it applies to a *<strong>general*</strong> precedence graph. This means we’re not restricting ourselves to the “parallel chains” kind of graph described above.</p>
+<p>让我们来分解一下这个定理。 首先，请注意，它适用于一般优先级图。 这意味着我们不会将自己限制在上述“平行链”类型的图表中。</p>
+<p><em>s</em>→<em>t</em> means <em>s</em> must come before t* (<em>s</em> and <em>t</em> are already strings in the current iteration of our problem, and they inherit the constraints of the jobs they are composed of). However, )<em>r</em>(<em>t</em>)≤<em>r</em>(<em>s</em>) means we would <em>like</em> to put <em>t</em> before <em>s</em>. What this theorem is saying is that in this scenario, we’re not forgoing optimality by ordering <em>s</em> immediately before <em>t</em>. This is very useful, because it allows us to take two strings, <em>s</em> and <em>t</em>, and replace them with the new string <em>s**t</em> which is their concatenation. Importantly, this is saying that there is <strong>an</strong> optimal permutation with <em>s</em> immediately preceding <em>t</em>, not that in any every optimal permutation this is the case. The proof of this theorem is pretty simple so I’ve included it.</p>
+<p><em>s</em>→<em>t</em> 意味着 <em>s</em> 必须在 t* 之前（<em>s</em> 和 <em>t</em> 在我们问题的当前迭代中已经是字符串，并且它们继承了它们所组成的作业的约束）。 然而，<em>r</em>(<em>t</em>)≤<em>r</em>(<em>s</em>) 意味着我们<em>喜欢</em>将<em>t</em>放在<em>s</em>之前。 该定理的意思是，在这种情况下，我们不会通过在 <em>t</em> 之前立即排序 <em>s</em> 来放弃最优性。 这非常有用，因为它允许我们获取两个字符串 <em>s</em> 和 <em>t</em>，并将它们替换为新字符串 <em>s**t</em>（它们的串联）。 重要的是，这意味着存在<strong>一个</strong>最优排列，其中<em>s</em>紧接在<em>t</em>之前，而不是在任何每个最优排列中都是这种情况。 这个定理的证明非常简单，所以我把它包括在内。</p>
+<p><strong>Proof of the ASI theorem</strong>:<br>Every optimal permutation looks like ⟨<em>u</em>,<em>s</em>,<em>v</em>,<em>t</em>,<em>w</em>⟩ since s<em>→</em>t*. If <em>v</em> is empty, we’re done. otherwise, if r*(<em>v</em>)≤<em>r</em>(<em>s</em>), then by ASI we can swap <em>s</em> and <em>v</em> without dropping the cost to get ⟨<em>u</em>,<em>v</em>,<em>s</em>,<em>t</em>,<em>w</em>⟩. If r*(<em>s</em>)&lt;<em>r</em>(<em>v</em>), then by transitivity <em>r</em>(<em>t</em>)&lt;<em>r</em>(<em>v</em>) and again by ASI we can swap <em>v</em> and <em>t</em> without dropping the cost to get ⟨<em>u</em>,<em>s</em>,<em>t</em>,<em>v</em>,<em>w</em>⟩. These swaps must be legal since {<em>s</em>,<em>t</em>} is a job module. </p>
+<p>每个最优排列看起来都像 ⟨<em>u</em>,<em>s</em>,<em>v</em>,<em>t</em>,<em>w</em>⟩，因为 s<em>→</em>t<em>。 如果 <em>v</em> 为空，我们就完成了。 否则，如果 r</em>(<em>v</em>)≤<em>r</em>(<em>s</em>)，那么通过 ASI 我们可以交换 <em>s</em> 和 <em>v</em> 而不会降低得到 ⟨<em>u</em>,<em>v</em>,<em>s 的成本 <em>，</em>t</em>，<em>w</em>⟩。 如果 r*(<em>s</em>)&lt;<em>r</em>(<em>v</em>)，则通过传递性 <em>r</em>(<em>t</em>)&lt;<em>r</em>(<em>v</em>) 并再次通过 ASI，我们可以交换 <em>v</em> 和 * t<em>，而不降低获得 ⟨</em>u*,<em>s</em>,<em>t</em>,<em>v</em>,<em>w</em>⟩ 的成本。 这些交换必须是合法的，因为 {<em>s</em>,<em>t</em>} 是一个作业模块。</p>
+<p>Finally, our friends Monma and Sidney describe the <strong>parallel chains algorithm</strong>. It goes like this:</p>
+<p>最后，我们的朋友 Monma 和 Sidney 描述了<strong>平行链算法</strong>。 事情是这样的：</p>
+<ol>
+<li>If, for every pair of strings �⃗<em>s</em> and �⃗<em>t</em>, �⃗→�⃗<em>s</em>→<em>t</em> implies �(�⃗)&lt;�(�⃗)<em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) (meaning that the constraints and the rank agree about the correct order for the two), go on to step 2. If the two relations disagree somewhere, then we can find a job module {�⃗,�⃗}{<em>s</em>,<em>t</em>} for which they disagree [1]. Then, by the ASI theorem, we can concatenate �⃗<em>s</em> and �⃗<em>t</em> into the sequence �⃗�⃗<em>s**t</em> (since we know there’s <em>some</em> optimal solution where they’re adjacent), which we then treat as a new string. Now repeat step 1. Our problem has exactly one less string in it now, so this process can’t go on forever.</li>
+<li>Sort the remaining strings by their value under �<em>r</em>. Since step 1 terminated, the resulting order is legal, and since �<em>f</em> is ASI, it’s optimal.</li>
+</ol>
+<p>The core idea of the algorithm is that we’d <em>like</em> to just blindly order all the jobs by their value under the rank function, but situations where the rank function and the precedence constraints disagree prohibit that. The ASI theorem gives us a tool to eliminate precisely these scenarios while keeping access to optimal solutions, so we repeatedly apply it until we are free to simply sort.</p>
+<p>该算法的核心思想是，我们希望按照排名函数下的值对所有作业进行盲目排序，但排名函数和优先级约束不一致的情况会禁止这样做。 ASI 定理为我们提供了一个工具，可以精确消除这些情况，同时保持获得最佳解决方案的能力，因此我们反复应用它，直到我们可以自由地进行简单排序。</p>
+<h2 id="Back-to-Databases"><a href="#Back-to-Databases" class="headerlink" title="Back to Databases"></a>Back to Databases</h2><p>Back to the topic of Join Ordering. For their paper “On the Optimal Nesting Order for Computing N-Relational Joins,” Toshihide Ibaraki and Tiko Kameda were interested in instances of the join ordering problem for which</p>
+<p>回到连接排序的主题。 Toshihide Ibaraki 和 Tiko Kameda 在他们的论文“On the Optimal Nesting Order forComputing N-Relational Joins”中对连接排序问题的实例感兴趣，其中</p>
+<ul>
+<li>solutions were restricted to those that 解决方案仅限于那些<ul>
+<li>were left-deep and 是左深和</li>
+<li>contained no cross products 不包含交叉产品</li>
+</ul>
+</li>
+<li>the only join algorithm used was the nested-loop join, and 使用的唯一连接算法是嵌套循环连接，并且</li>
+<li>the query graph was a tree. 查询图是一棵树。</li>
+</ul>
+<p>As we saw <a href="https://www.cockroachlabs.com/blog/join-ordering-pt1/">before</a>, a plan is <strong>left-deep</strong> if the right input to every join operator is a concrete relation, and not another join operation. This gives a query plan that looks something like this, with every right child being a “base relation” and not a join:</p>
+<p>正如我们之前所看到的，如果每个连接运算符的右侧输入是具体关系，而不是另一个连接操作，则计划是左深的。 这给出了一个看起来像这样的查询计划，其中每个右子节点都是“基本关系”而不是联接：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_5.png?auto=format,compress&max-w=700"></p>
+<p>and not like this, where a join’s right child can be another join: 而不是这样，一个连接的右子节点可以是另一个连接：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_6.png?auto=format,compress&max-w=700"></p>
+<p>Since the shape of the plan is fixed, we can talk about the plan itself simply as a sequence of the relations to be joined, from left to right in the left-deep tree. We can take a query plan like this:</p>
+<p>由于计划的形状是固定的，因此我们可以将计划本身简单地视为要连接的关系序列，在左深树中从左到右。 我们可以采用这样的查询计划：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_7.png?auto=format,compress&max-w=700"></p>
+<p>and represent it like this: 并像这样表示它：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_8.png?auto=format,compress&max-w=700"></p>
+<p>When we say that the query graph must be a “tree”, we mean in a graph theoretical sense—it’s a graph that is connected and has no cycles. If you primarily identify as a computer science person and not a mathematician, when you hear “tree” you might picture what graph theorists call a “rooted” tree. That is, a tree with a designated “special” root vertex. It’s like you grabbed the tree by that one designated vertex and let everything else hang down.</p>
+<p>当我们说查询图必须是一棵“树”时，我们指的是图论意义上的——它是一个连通且没有环的图。 如果您主要认为自己是计算机科学家而不是数学家，那么当您听到“树”时，您可能会想到图论学家所说的“有根”树。 也就是说，一棵树具有指定的“特殊”根顶点。 这就像你抓住了树的一个指定顶点，然后让其他所有东西都垂下来。</p>
+<p>Here’s a tree:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_9.png?auto=format,compress&max-w=700"></p>
+<p>Here it is rooted at �<em>A</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_10.png?auto=format,compress&max-w=700"></p>
+<p>Here it is rooted at �<em>D</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_11.png?auto=format,compress&max-w=700"></p>
+<p>This distinction is important for our purposes because it’s easy to get a rooted tree from an unrooted tree: you just pick your favourite vertex and call it the root.</p>
+<p>这种区别对于我们的目的很重要，因为很容易从无根树中获得有根树：您只需选择您最喜欢的顶点并将其称为根即可。</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_12.png?auto=format,compress&max-w=700"></p>
+<p>Query graphs and query plans are fundamentally different. The query graph describes the <em>problem</em> and a query plan the <em>solution</em>. Despite this, they’re related in very important ways. In a left-deep query plan, the relation in the bottom-left position is quite special: it’s the only one which is the left input to a join. If we are obeying the connectivity heuristic (no cross products), this gives us a way to think about how exactly it is we are restricted.</p>
+<p>查询图和查询计划有着根本的不同。 查询图描述了问题，查询计划描述了解决方案。 尽管如此，它们在非常重要的方面是相关的。 在左深查询计划中，左下位置的关系非常特殊：它是唯一一个连接的左输入。 如果我们遵循连通性启发式（无交叉乘积），这将给我们一种思考我们到底受到怎样的限制的方法。</p>
+<p>In the plan above, <em>A</em> and <em>B</em> must share a predicate, or else they would cross-product with each other. Then <em>C</em> must share a predicate with at least one of <em>A</em> or <em>B</em>. Then <em>D</em> must share a predicate with at least one of <em>A</em>, <em>B</em>, or <em>C</em>, and so on.</p>
+<p>在上面的计划中，<em>A</em> 和 <em>B</em> 必须共享一个谓词，否则它们将相互交叉积。 那么<em>C</em> 必须与<em>A</em> 或<em>B</em> 中的至少一个共享谓词。 那么<em>D</em> 必须与<em>A</em>、<em>B</em> 或<em>C</em> 等中的至少一个共享谓词。</p>
+<p>Let’s assume for a second that given a query graph, we know which relation will wind up in the bottom-left position of an optimal plan. If we take this special relation and make it the root in our query graph, something very useful happens.</p>
+<p>让我们假设给定一个查询图，我们知道哪个关系将出现在最佳计划的左下角位置。 如果我们采用这种特殊关系并将其作为查询图中的根，就会发生一些非常有用的事情。</p>
+<p>Given our rooted query graph, let’s figure out what a plan containing no cross products looks like. Here’s an example of such a rooted query graph:</p>
+<p>给定我们的根查询图，让我们弄清楚不包含叉积的计划是什么样子的。 这是此类有根查询图的示例：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_13.png?auto=format,compress&max-w=700"></p>
+<p>Since we must lead with <em>A</em>, which vertices can we then add to get a legal ordering? Well, the only three that don’t form a cross product with <em>A</em> are <em>B</em>, <em>C</em>, and <em>D</em>. Once we output, <em>C</em>, it becomes legal to output F*, and so on. As we go down the tree, we see a necessary and sufficient condition for not introducing cross products is that the parent of a given relation must have already been output. This is effectively the same as the precedence constraints of the job-scheduling problem!</p>
+<p>既然我们必须以 <em>A</em> 开头，那么我们可以添加哪些顶点来获得合法的排序？ 好吧，唯一不与 <em>A</em> 形成叉积的三个是 <em>B</em>、<em>C</em> 和 <em>D</em>。 一旦我们输出<em>C</em>，输出F*就变得合法，依此类推。 当我们沿着树往下走时，我们看到不引入叉积的充分必要条件是给定关系的父关系必须已经输出。 这实际上与作业调度问题的优先级约束相同！</p>
+<p>Of course, beforehand, we <em>don’t</em> know which relation will be the optimal one to place in the bottom left. This is going to turn out to be only a minor problem: we can just try each possible relation and choose the one that gives us the best result.</p>
+<p>当然，事先我们“不”知道哪一种关系最适合放置在左下角。 这将只是一个小问题：我们可以尝试每种可能的关系并选择给我们最好结果的关系。</p>
+<p>So, from here on, we’ll think of our query graph as a <strong>rooted</strong> tree, and the root will be the very first relation in our join sequence. Despite our original graph having undirected edges, this choice allows us to designate a canonical direction for our edges: we say they point <strong>away</strong> from the root.</p>
+<p>因此，从现在开始，我们将查询图视为一棵有根树，根将是连接序列中的第一个关系。 尽管我们的原始图具有无向边，但这种选择允许我们为边指定规范方向：我们说它们指向远离根的方向。</p>
+<h2 id="A-Tale-of-Two-Disciplines-两个学科的故事"><a href="#A-Tale-of-Two-Disciplines-两个学科的故事" class="headerlink" title="A Tale of Two Disciplines 两个学科的故事"></a>A Tale of Two Disciplines 两个学科的故事</h2><p>I can only imagine that what happened next went something like this:</p>
+<p>我只能想象接下来发生的事情是这样的：</p>
+<p><em>Kameda sips his coffee as he ponders the problem of join ordering. He and Ibaraki have been collaborating on this one for quite a while, but it’s a tough nut to crack. The data querying needs of industry grow ever greater, and he has to deliver to them a solution. He decides to take a stroll of the grounds of Simon Fraser University to clear his mind. As he locks his office, his attention is drawn by the shuffling of paper. A postdoc from the operations research department is hurrying down the hall, an armful of papers from the past few years tucked under her arm.</em></p>
+<p>龟田一边喝着咖啡，一边思考加入点菜的问题。 他和茨木在这个问题上已经合作了一段时间，但这是一个很难解决的问题。 行业的数据查询需求越来越大，他必须给他们提供一个解决方案。 他决定在西蒙弗雷泽大学的校园里漫步，以理清思绪。 当他锁上办公室时，他的注意力被翻动的纸张吸引了。 一名运筹学系的博士后正匆匆走过大厅，腋下夹着一摞过去几年的论文。</p>
+<p><em>Unnoticed, one neatly stapled bundle of papers drops to the floor from the postdoc’s arm. “Oh, excuse me! You dropped—” Kameda’s eyes are drawn to the title of the paper, Sequencing With Series-Parallel Precedence Constraints, as he bends down to pick it up.</em></p>
+<p>不知不觉中，一叠装订整齐的论文从博士后的手臂上掉到了地板上。 “哦，对不起！ 你掉下来了——”龟田弯下腰捡起它时，他的眼睛被论文的标题《具有系列并行优先约束的测序》所吸引。</p>
+<p><em>“Oh, thank you! I never would have noticed,” the postdoc says, as she turns around and reaches out a hand to take back the paper. But Kameda can no longer hear her. He’s entranced. He’s furiously flipping through the paper. This is it. This is the solution to his problem. The postdoc stares with wide eyes at his fervor. “I…I’ll return this to you!” He stammers, as he rushes back to his office to contact his longtime collaborator Ibaraki.</em></p>
+<p>“哦谢谢！ 我永远不会注意到，”博士后说，她转身伸出手拿回论文。 但龟田已经听不到她的声音了。 他很着迷。 他正在疯狂地翻阅报纸。 就是这个。 这就是他的问题的解决方案。 博士后睁大眼睛盯着他的热情。 “我……我会把这个还给你！” 他结结巴巴地冲回办公室联系他的长期合作者茨木。</p>
+<p>If this isn’t how it happened, I’m not sure how Ibaraki and Kameda ever made the connection they did, drawing from research about a problem in an entirely different field from theirs. As we’ll see, we can twist the join ordering problem we’re faced with to look very similar to a Monma-and-Sidney job scheduling problem.</p>
+<p>如果事情不是这样发生的，我不确定茨城和龟田是如何从与他们完全不同领域的问题的研究中建立起这种联系的。 正如我们将看到的，我们可以将面临的连接排序问题扭曲成与 Monma-and-Sidney 作业调度问题非常相似。</p>
+<p>Recall that the <em>selectivity</em> of a predicate (edge) is the amount that it filters the join of the two relations (edges) it connects (basically, how much smaller its result is than the raw cross product):</p>
+<p>回想一下，谓词（边）的选择性是它过滤它连接的两个关系（边）的连接的量（基本上，它的结果比原始叉积小多少）：</p>
+<p><em>s<strong>e</strong>l</em>(<em>p</em>)&#x3D;∣<em>A</em>×<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣</p>
+<p>Designating a root allows us another convenience: before now, when selectivity was a property of a predicate, we had to specify a <em>pair</em> of relations in order to say what their selectivity was. Now that we’ve directed our edges, we can define a selectivity for a given <em>relation</em> (vertex) as the selectivity of it with its parent, with the selectivity of the root being defined as 1. So in our graph above, we define the <em>selectivity of</em> <em>H</em> to be the selectivity of the edge between <em>F</em> and <em>H</em>. We refer to the selectivity of R* by <em>f**R</em>.</p>
+<p>指定根为我们提供了另一个便利：以前，当选择性是谓词的属性时，我们必须指定一对关系才能说明它们的选择性是什么。 现在我们已经确定了边的方向，我们可以将给定<em>关系</em>（顶点）的选择性定义为其与其父级的选择性，根的选择性定义为 1。因此，在上图中，我们 将* <em>H</em> 的<em>选择性定义为</em>F* 和<em>H</em> 之间边缘的选择性。 我们用 <em>f**R</em> 来表示 R* 的选择性。</p>
+<p>This definition is even more convenient than it first appears; we’re restricted by the precedence constraints already to include the parent of a relation before the relation itself in any legal sequence, thus, by the time a relation appears in the sequence, the predicate from which it derives its selectivity will apply. This allows us to define a very simple function which captures the expected number of rows in a sequence of joins. Let ∣<em>N**i</em>&#x3D;∣<em>R**i</em>∣, then for some sequence of relations to be joined <em>S</em>, let <em>T</em>(<em>S</em>) be the number of rows in the result of evaluating <em>S</em>. Then:</p>
+<p>这个定义比乍一看更加方便； 我们已经受到优先约束的限制，在任何合法序列中都必须在关系本身之前包含关系的父关系，因此，当关系出现在序列中时，将应用从中得出其选择性的谓词。 这允许我们定义一个非常简单的函数，它捕获连接序列中的预期行数。 令∣<em>N**i</em>&#x3D;∣<em>R**i</em>∣，然后对于要连接<em>S</em>的某些关系序列，令<em>T</em>(<em>S</em>)为评估结果中的行数 <em>S</em>。 然后：</p>
+<p>There’s one final piece to fall into place to get the final IKKBZ algorithm. The <strong>IK</strong> in IKKBZ indeed stands for Ibaraki and Kameda. At VLDB 1986, Ravi Krishnamurthy, Haran Boral, and Carlo Zaniolo presented their paper <em>Optimization of Nonrecursive Queries</em>. Check out this glorious 1986-era technical diagram from their paper:</p>
+<p>为了获得最终的 IKKBZ 算法，还需要完成最后一项工作。 IKKBZ中的IK确实代表茨城和龟田。 在 VLDB 1986 上，Ravi Krishnamurthy、Haran Boral 和 Carlo Zaniolo 发表了他们的论文“非递归查询的优化”。 看看他们论文中这张 1986 年时代的技术图表：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_17.png?auto=format,compress&max-w=700"></p>
+<p>Their trick is that if we pick <em>A</em> as our root and find the optimal solution from it, and then for our next choice of root we pick a vertex <em>B</em> that is adjacent to <em>A</em>, a lot of the work we’ll have to do to solve from <em>B</em> will be the same as the work done from <em>A</em>.</p>
+<p>他们的技巧是，如果我们选择 <em>A</em> 作为我们的根并从中找到最佳解决方案，然后对于我们下一个选择的根，我们选择一个与 <em>A</em> 相邻的顶点 <em>B</em>，我们需要做很多工作。 从 <em>B</em> 解决所需的工作将与从 <em>A</em> 完成的工作相同。</p>
+<p>Consider a tree rooted at <em>A</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_18.png?auto=format,compress&max-w=700"></p>
+<p>(Where <em>X</em> is all the nodes that live beneath <em>A</em> and <em>Y</em> is all the nodes that live beneath <em>B</em>) and say we have the optimal solution <em>S</em> for the <em>A</em> tree. We then we re-root to <em>B</em>:</p>
+<p>（其中 <em>X</em> 是位于 <em>A</em> 下的所有节点，<em>Y</em> 是位于 <em>B</em> 下的所有节点）并说我们有 <em>A</em> 树的最佳解决方案 <em>S</em>。 然后我们重新root到<em>B</em>：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_19.png?auto=format,compress&max-w=700"></p>
+<p>KB&amp;Z recognized that the <em>X</em> and <em>Y</em> subtrees in these two cases are the same, and thus when we eliminate all the wedges beneath <em>A</em> and <em>B</em>, the resulting chains will be in the same order they were in for the tree rooted at <em>A</em>, <em>and</em> this order is the same as the order implied by <em>S</em>. So we can turn the X* and <em>Y</em> subtrees into chains by just sorting them by the order they appear in <em>S</em>.</p>
+<p>KB&amp;Z 认识到这两种情况下的 <em>X</em> 和 <em>Y</em> 子树是相同的，因此当我们消除 <em>A</em> 和 <em>B</em> 下面的所有楔子时，生成的链将采用与它们原来的顺序相同的顺序 以 <em>A</em> 为根的树，<em>并且</em> 此顺序与 <em>S</em> 隐含的顺序相同。 因此，我们只需按照它们在 <em>S</em> 中出现的顺序对它们进行排序，就可以将 X* 和 <em>Y</em> 子树变成链。</p>
+<p>This means that we can construct the final chains beneath A* and B* without a <em>O</em>(<em>n</em>log<em>n</em>) walk, using only <em>O</em>(<em>n</em>) time to merge the two chains, so in aggregate, we do this for every choice of root, and arrive at a final runtime of <em>O</em>(<em>n</em>2).</p>
+<p>这意味着我们可以在 A* 和 B* 下面构建最终的链，而无需 <em>O</em>(<em>n</em>log<em>n</em>) 步，仅使用 <em>O</em>(<em>n</em>) 时间来合并两个链，因此 总的来说，我们对每个根选择都执行此操作，并达到 <em>O</em>(<em>n</em>2) 的最终运行时间。</p>
+<p>OK, let’s take a step back. Who cares? What’s the point of this algorithm when the case it handles is <em>so</em> specific? The set of preconditions for us to be able to use IKKBZ to get an optimal solution was a mile long. Many query graphs are <em>not</em> trees, and many queries require a bushy join tree for the optimal solution.</p>
+<p>好吧，让我们退一步。 谁在乎？ 当这个算法处理的案例如此具体时，它还有什么意义呢？ 我们能够使用 IKKBZ 获得最佳解决方案的先决条件有一英里长。 许多查询图不是树，并且许多查询需要茂密的连接树才能获得最佳解决方案。</p>
+<p>What if we didn’t rely on IKKBZ for an <em>optimal</em> solution? Some more general heuristic algorithms for finding good join orders require an initial solution as a “jumping-off point.” When using one of these algorithms, IKKBZ can be used to find a decent initial solution. While this algorithm only has guarantees when the query graph is a tree, we can turn any connected graph into a tree by selectively deleting edges from it (for instance, taking the <a href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">min-cost spanning tree</a> is a reasonable heuristic here).</p>
+<p>如果我们不依赖 IKKBZ 来获得最佳解决方案怎么办？ 一些用于寻找良好连接顺序的更通用的启发式算法需要一个初始解决方案作为“起点”。 当使用其中一种算法时，IKKBZ 可用于找到合适的初始解决方案。 虽然该算法仅在查询图是树时有保证，但我们可以通过有选择地删除其中的边来将任何连通图转换为树（例如，采用最小成本生成树在这里是一个合理的启发式）。</p>
+<p>The IKKBZ algorithm is one of the oldest join ordering algorithms in the literature, and it remains one of the few polynomial-time algorithms that has strong guarantees. It manages to accomplish this by being extremely restricted in the set of problems it can handle. Despite these restrictions, it can still be useful as a stepping stone in a larger algorithm. <a href="https://db.in.tum.de/~radke/papers/hugejoins.pdf">Adaptive Optimization of Very Large Join Queries</a> has an example of an algorithm that makes use of an IKKBZ ordering as a jumping off point, with good empirical results. CockroachDB doesn’t use IKKBZ in its query planning today, but it’s something we’re interested in looking into in the future.</p>
+<p>IKKBZ 算法是文献中最古老的连接排序算法之一，并且它仍然是少数具有强有力保证的多项式时间算法之一。 它通过严格限制它可以处理的问题来实现这一目标。 尽管有这些限制，它仍然可以作为更大算法的垫脚石。 超大型连接查询的自适应优化有一个算法示例，该算法使用 IKKBZ 排序作为起点，具有良好的经验结果。 目前，CockroachDB 在其查询规划中并未使用 IKKBZ，但我们将来有兴趣研究它。</p>
+<p>Sketch of a proof of [1]:<br>Since the two are related by the precedence constraints, they’re in the same chain. If they’re not adjacent in that chain, there’s some �<em>x</em> in between them, so �⃗→�⃗→�⃗<em>s</em>→<em>x</em>→<em>t</em>. If �(�⃗)&lt;�(�⃗)<em>r</em>(<em>x</em>)&lt;<em>r</em>(<em>t</em>), then {�⃗,�⃗}{<em>x</em>,<em>t</em>} is a “closer” bad pair. If �(�⃗)≥�(�⃗)<em>r</em>(<em>x</em>)≥<em>r</em>(<em>t</em>) then {�⃗,�⃗}{<em>x</em>,<em>s</em>} is a “closer” bad pair. Then by induction there’s an adjacent pair.</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>优化器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++ 并发编程（一）</title>
+    <url>/2025/02/18/3-c++/c++%20%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B1/</url>
+    <content><![CDATA[<p>今天开始总结一下c++并发编程的内容。首先我们看一下 如何启动一个线程以及如何像线程传递参数等。</p>
+<span id="more"></span>
+
+<p>直接看代码：</p>
+<h3 id="启动线程"><a href="#启动线程" class="headerlink" title="启动线程"></a>启动线程</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;hello cpp concurrency !&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">my_thread</span><span class="params">(hello)</span></span>;</span><br><span class="line">    my_thread.<span class="built_in">join</span>(); <span class="comment">// 等待，防止 主线程退出，而子线程还在运行。注意如果有异常也要处理。最好使用RAII处理。</span></span><br><span class="line">    <span class="comment">// my_thread.detach(); 通常为守护线程。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里要注意 <code>join()</code> 的用法，是为了防止 main函数所在线程退出，等待运行 hello的线程结束。与之对应的函数为 <code>detach</code> ，分离线程，不等待。</p>
+<h3 id="像线程传递参数"><a href="#像线程传递参数" class="headerlink" title="像线程传递参数"></a>像线程传递参数</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">hello</span><span class="params">(std::string&amp; str)</span> </span>&#123;</span><br><span class="line">    str = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="function">std::string <span class="title">s</span><span class="params">(<span class="string">&quot;abc&quot;</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">my_thread</span><span class="params">(hello, std::ref(s))</span></span>; <span class="comment">// std::ref </span></span><br><span class="line">    my_thread.<span class="built_in">join</span>();</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成员函数</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">X</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">do_lengthy_work</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line">X my_x;</span><br><span class="line"><span class="function">std::thread <span class="title">t</span><span class="params">(&amp;X::do_lengthy_work,&amp;my_x)</span></span>; <span class="comment">// </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="转移线程所有权"><a href="#转移线程所有权" class="headerlink" title="转移线程所有权"></a>转移线程所有权</h3><h3 id="运行时决定线程数量"><a href="#运行时决定线程数量" class="headerlink" title="运行时决定线程数量"></a>运行时决定线程数量</h3><h3 id="识别线程"><a href="#识别线程" class="headerlink" title="识别线程"></a>识别线程</h3>]]></content>
+      <categories>
+        <category>并发编程</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>c++ 并发编程（二）</title>
+    <url>/2025/02/19/3-c++/c++%20%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B2/</url>
+    <content><![CDATA[<p>今天继续看一下并发编程的内容，线程间共享数据。</p>
+<span id="more"></span>
+
+<p>直接看代码：</p>
+<h3 id="线程间共享数据"><a href="#线程间共享数据" class="headerlink" title="线程间共享数据"></a>线程间共享数据</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;hello cpp concurrency !&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">my_thread</span><span class="params">(hello)</span></span>;</span><br><span class="line">    my_thread.<span class="built_in">join</span>(); <span class="comment">// 等待，防止 主线程退出，而子线程还在运行。注意如果有异常也要处理。最好使用RAII处理。</span></span><br><span class="line">    <span class="comment">// my_thread.detach(); 通常为守护线程。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="互斥量"><a href="#互斥量" class="headerlink" title="互斥量"></a>互斥量</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">hello</span><span class="params">(std::string&amp; str)</span> </span>&#123;</span><br><span class="line">    str = <span class="string">&quot;123&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="function">std::string <span class="title">s</span><span class="params">(<span class="string">&quot;abc&quot;</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">my_thread</span><span class="params">(hello, std::ref(s))</span></span>; <span class="comment">// std::ref </span></span><br><span class="line">    my_thread.<span class="built_in">join</span>();</span><br><span class="line">    std::cout &lt;&lt; s &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成员函数</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">X</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">do_lengthy_work</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line">X my_x;</span><br><span class="line"><span class="function">std::thread <span class="title">t</span><span class="params">(&amp;X::do_lengthy_work,&amp;my_x)</span></span>; <span class="comment">// </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <categories>
+        <category>并发编程</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
       </tags>
   </entry>
 </search>

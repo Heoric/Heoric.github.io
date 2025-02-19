@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="An introduction to join orderingThe development of the relational model heralded a big step forward for the world of databases. A few years later, SQL introduced a rich vocabulary for data manipulatio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库SQL总结">
+<meta property="og:url" content="http://heoric.github.io/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="An introduction to join orderingThe development of the relational model heralded a big step forward for the world of databases. A few years later, SQL introduced a rich vocabulary for data manipulatio">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_coppngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_chainpngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_starpngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cliquepngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cyclepngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_coppngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_deep_leftpngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_bushypngcenter-1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_1.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_2.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_3.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_4.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_5.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_6.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_7.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_8.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_9.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_10.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_11.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_12.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_13.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_17.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_18.png?auto=format,compress&max-w=700">
+<meta property="og:image" content="https://www.cockroachlabs.com/img/joinordering2_19.png?auto=format,compress&max-w=700">
+<meta property="article:published_time" content="2024-02-28T06:44:57.000Z">
+<meta property="article:modified_time" content="2024-03-01T03:52:48.619Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="优化器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_coppngcenter-1.png?auto=format,compress&max-w=700">
+
+
+<link rel="canonical" href="http://heoric.github.io/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/","path":"2024/02/28/2-数据库/1-cockroachdb/cockroach-blogs/13-join ordering/","title":"数据库SQL总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据库SQL总结 | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#An-introduction-to-join-ordering"><span class="nav-number">1.</span> <span class="nav-text">An introduction to join ordering</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Refresher-on-SQL-and-Joins"><span class="nav-number">1.1.</span> <span class="nav-text">A Refresher on SQL and Joins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-Vocabulary-%E4%B8%80%E4%BA%9B%E8%AF%8D%E6%B1%87"><span class="nav-number">1.2.</span> <span class="nav-text">Some Vocabulary 一些词汇</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimizing-Joins"><span class="nav-number">1.3.</span> <span class="nav-text">Optimizing Joins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visualizing-the-Problem-%E5%8F%AF%E8%A7%86%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">Visualizing the Problem 可视化问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Query-Plans"><span class="nav-number">1.5.</span> <span class="nav-text">Query Plans</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Is-this-actually-%E2%80%9Chard%E2%80%9D"><span class="nav-number">1.6.</span> <span class="nav-text">Is this actually “hard”?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Join-ordering-part-II-The-%E2%80%98SQL%E2%80%99"><span class="nav-number">2.</span> <span class="nav-text">Join ordering, part II: The ‘SQL’</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Maximize-Revenue-Minimize-Cost-%E6%94%B6%E5%85%A5%E6%9C%80%E5%A4%A7%E5%8C%96%EF%BC%8C%E6%88%90%E6%9C%AC%E6%9C%80%E5%B0%8F%E5%8C%96"><span class="nav-number">2.1.</span> <span class="nav-text">Maximize Revenue, Minimize Cost 收入最大化，成本最小化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Back-to-Databases"><span class="nav-number">2.2.</span> <span class="nav-text">Back to Databases</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Tale-of-Two-Disciplines-%E4%B8%A4%E4%B8%AA%E5%AD%A6%E7%A7%91%E7%9A%84%E6%95%85%E4%BA%8B"><span class="nav-number">2.3.</span> <span class="nav-text">A Tale of Two Disciplines 两个学科的故事</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据库SQL总结 | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库SQL总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-02-28 14:44:57" itemprop="dateCreated datePublished" datetime="2024-02-28T14:44:57+08:00">2024-02-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-03-01 11:52:48" itemprop="dateModified" datetime="2024-03-01T11:52:48+08:00">2024-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="An-introduction-to-join-ordering"><a href="#An-introduction-to-join-ordering" class="headerlink" title="An introduction to join ordering"></a>An introduction to join ordering</h1><p>The development of the relational model heralded a big step forward for the world of databases. A few years later, SQL introduced a rich vocabulary for data manipulation: filters, projections, and—most importantly—the mighty join. Joins meant that analysts could construct new reports without having to interact with those eggheads in engineering, but more importantly, the existence of complex join queries meant that theoreticians had an interesting new NP-hard problem to fawn over for the next five decades.</p>
+<p>关系模型的发展预示着数据库世界向前迈出了一大步。 几年后，SQL 引入了丰富的数据操作词汇：过滤器、投影，以及最重要的强大的连接。 连接意味着分析师可以构建新的报告，而无需与工程中的那些书呆子进行交互，但更重要的是，复杂连接查询的存在意味着理论家在接下来的 50 年里将面临一个有趣的新 NP 难题。</p>
+<p>Ever since, the join has been the fundamental operation by which complex queries are constructed out of simpler “relations”. The declarative nature of SQL means that users do not generally specify how their query is to be executed—it’s the job of a separate component of the database called the <strong>optimizer</strong> to figure that out. Since joins are so prevalent in such queries, the optimizer must take special care to handle them intelligently. As we’ll see, this isn’t a trivial task.</p>
+<p>从那时起，连接就成为了从更简单的“关系”构建复杂查询的基本操作。 SQL 的声明性本质意味着用户通常不会指定如何执行查询，而是数据库的一个单独组件（称为优化器）的工作来解决这个问题。 由于连接在此类查询中非常普遍，因此优化器必须特别小心以智能地处理它们。 正如我们将看到的，这不是一项简单的任务。</p>
+<p>In this post, we’ll look at why join ordering is so important and develop a sense of how to think of the problem space. And then, in upcoming posts, we’ll begin discussing ways to implement a fast, reliable algorithm to produce good join orderings.</p>
+<p>在这篇文章中，我们将了解为什么连接顺序如此重要，并培养如何思考问题空间的意识。 然后，在接下来的文章中，我们将开始讨论如何实现快速、可靠的算法来产生良好的连接顺序。</p>
+<span id="more"></span>
+
+<h2 id="A-Refresher-on-SQL-and-Joins"><a href="#A-Refresher-on-SQL-and-Joins" class="headerlink" title="A Refresher on SQL and Joins"></a>A Refresher on SQL and Joins</h2><p>Let’s do a quick refresher in case you don’t work with SQL databases on a regular basis.</p>
+<p>如果您不定期使用 SQL 数据库，让我们快速回顾一下。</p>
+<p>A relation or table is basically a spreadsheet. Say we have the following relations describing a simple retailer:</p>
+<p>关系或表基本上是一个电子表格。 假设我们有以下描述一个简单零售商的关系：</p>
+<ul>
+<li><code>customers</code></li>
+<li><code>products</code></li>
+<li><code>orders</code></li>
+</ul>
+<p>The customers, or <em>C</em> relation looks something like this:</p>
+<table>
+<thead>
+<tr>
+<th>customer_id</th>
+<th>customer_name</th>
+<th>customer_location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Joseph</td>
+<td>Norwalk, CA, USA</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Adam</td>
+<td>Gothenburg, Sweden</td>
+</tr>
+<tr>
+<td>3</td>
+<td>William</td>
+<td>Stockholm, Sweden</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Kevin</td>
+<td>Raleigh, NC, USA</td>
+</tr>
+</tbody></table>
+<p>the <code>products</code>, or <em>P</em> relation looks like this:</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+</tr>
+</tbody></table>
+<p>The orders, or <em>O</em> relation looks like this:</p>
+<table>
+<thead>
+<tr>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>The cross product of the two relations, written <em>P</em>×<em>O</em>, is a new relation which contains every pair of rows from the two input relations. Here’s what <em>P</em>×<em>O</em> looks like:</p>
+<p>两个关系的叉积写为 <em>P</em>×<em>O</em>，是一个新关系，其中包含两个输入关系中的每对行。<em>P</em>×<em>O</em> 看起来像这样：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>However, for most applications, this doesn’t have much meaning, which is where joins come into play.</p>
+<p>然而，对于大多数应用程序来说，这没有多大意义，这就是连接发挥作用的地方。</p>
+<p>A join is when we have a filter (or predicate) applied to the cross product of two relations. If we filter the above table to the rows where <code>product_id = order_product_id</code>, we say we’re “joining <em>P</em> and <em>O</em> on <code>product_id = order_product_id</code>“. The result looks like this:</p>
+<p>连接是指我们将过滤器（或谓词）应用于两个关系的叉积。 如果我们将上表过滤到 <code>product_id = order_product_id</code> 的行，我们就说我们正在“在 <code>product_id = order_product_id</code> 上连接 <em>P</em> 和 <em>O</em>”。 结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>product_location</th>
+<th>order_id</th>
+<th>order_product_id</th>
+<th>order_customer_id</th>
+<th>order_active</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>Norwalk, CA, USA</td>
+<td>1</td>
+<td>123</td>
+<td>3</td>
+<td>false</td>
+</tr>
+<tr>
+<td>789</td>
+<td>Stockholm, Sweden</td>
+<td>2</td>
+<td>789</td>
+<td>1</td>
+<td>true</td>
+</tr>
+<tr>
+<td>135</td>
+<td>Toronto, ON, Canada</td>
+<td>3</td>
+<td>135</td>
+<td>2</td>
+<td>true</td>
+</tr>
+</tbody></table>
+<p>Here we can see all of the orders that contained a given product.</p>
+<p>在这里我们可以看到包含给定产品的所有订单。</p>
+<p>We can then remove some of the columns from the output (this is called <strong>projection</strong>):</p>
+<p>然后我们可以从输出中删除一些列（这称为投影）：</p>
+<table>
+<thead>
+<tr>
+<th>product_id</th>
+<th>order_customer_id</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>123</td>
+<td>3</td>
+</tr>
+<tr>
+<td>789</td>
+<td>1</td>
+</tr>
+<tr>
+<td>135</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p>This ends up with a relation describing the products various users ordered. Through pretty basic operations, we built up some non-trivial meaning. This is why joins are such a major part of most query languages (primarily SQL): they’re very conceptually simple (a predicate applied to the cross product) but can express fairly complex operations.</p>
+<p>最终得到一个描述不同用户订购的产品的关系。 通过相当基本的操作，我们建立了一些不平凡的意义。 这就是为什么连接是大多数查询语言（主要是 SQL）的主要部分：它们在概念上非常简单（应用于叉积的谓词），但可以表达相当复杂的操作。</p>
+<p>You might have observed that even though the size of the cross product was quite large (∣<em>P</em>∣×∣<em>O</em>∣), the final output was pretty small. Databases will exploit this fact to perform joins much more efficiently than by producing the entire cross product and then filtering it. This is part of why it’s often useful to think of a join as a single unit, rather than two composed operations.</p>
+<p>您可能已经观察到，尽管叉积的大小非常大 (∣<em>P</em>∣×∣<em>O</em>∣)，但最终输出却非常小。 数据库将利用这一事实来比生成整个叉积然后过滤它更有效地执行连接。 这就是为什么将连接视为单个单元而不是两个组合操作通常很有用的部分原因。</p>
+<h2 id="Some-Vocabulary-一些词汇"><a href="#Some-Vocabulary-一些词汇" class="headerlink" title="Some Vocabulary 一些词汇"></a>Some Vocabulary 一些词汇</h2><p>To make things easier to write, we’re going to introduce a little bit of notation.</p>
+<p>为了使事情更容易编写，我们将引入一些符号。</p>
+<p>We already saw that the cross product of <em>A</em> and <em>B</em> is written <em>A</em>×<em>B</em>. Filtering a relation <em>R</em> on a predicate <em>p</em> is written <em>σ**p</em>(<em>R</em>). That is, ��(�)<em>σ**p</em>(<em>R</em>) is the relation with every row of �<em>R</em> for which �<em>p</em> is true, for example, the rows where <code>product_id = order_product_id</code>. Thus a join of �<em>A</em> and �<em>B</em> on �<em>p</em> could be written ��(�×�)<em>σ**p</em>(<em>A</em>×<em>B</em>). Since we often like to think of joins as single cohesive units, we can also write this as �⋈��<em>A</em>⋈<em>p**B</em>.</p>
+<p>The columns in a relation don’t need to have any particular order (we only care about their names), so we can take the cross product in any order. <em>A</em>×<em>B</em>&#x3D;<em>B</em>×<em>A</em>, and further, A<em>⋈</em>p<strong>B*&#x3D;<em>B</em>⋈*p</strong>A*. You might know this as the <strong>commutative</strong> property. Joins are commutative.</p>
+<p>关系中的列不需要有任何特定的顺序（我们只关心它们的名称），因此我们可以按任何顺序进行叉积。 <em>A</em>×<em>B</em>&#x3D;<em>B</em>×<em>A</em>，进而，A<em>⋈</em>p<strong>B*&#x3D;<em>B</em>⋈*p</strong>A*。 您可能知道这是<strong>可交换</strong>属性。 连接是可交换的。</p>
+<p>We can “pull up” a filter through a cross product: <em>σ**p</em>(<em>A</em>)×<em>B</em>&#x3D;<em>σ**p</em>(<em>A</em>×<em>B</em>). It doesn’t matter if we do the filtering before or after the product is taken. Because of this, it sometimes makes sense to think of a sequence of joins as a sequence of cross products which we filter at the very end:</p>
+<p>我们可以通过叉积“拉起”一个过滤器：<em>σ**p</em>(<em>A</em>)×<em>B</em>&#x3D;<em>σ**p</em>(<em>A</em>×<em>B</em>)。 我们在产品服用之前或之后进行过滤并不重要。 因此，有时将连接序列视为我们在最后进行过滤的叉积序列是有意义的：</p>
+<p>(<em>A</em>⋈<em>p**B</em>)⋈<em>q**C</em>&#x3D;<em>σ**q</em>(<em>σ**p</em>(<em>A</em>×<em>B</em>)×<em>C</em>)&#x3D;<em>σ**p</em>∧<em>q</em>(<em>A</em>×<em>B</em>×<em>C</em>)</p>
+<p>Something that becomes clear when written in this form is that we can join <em>A</em> with <em>B</em> and then join the result of that with <em>C</em>, or we can join <em>B</em> with <em>C</em> and then join the result of that with <em>A</em>. The order in which we apply those joins doesn’t matter, as long as all the necessary filtering happens at some point. You might recognize this as the associative property. Joins are <strong>associative</strong> (with the asterisk that we need to pull up predicates where appropriate).</p>
+<p>当以这种形式编写时，我们可以清楚地看到，我们可以将 <em>A</em> 与 <em>B</em> 连接，然后将其结果与 <em>C</em> 连接，或者我们可以将 <em>B</em> 与 <em>C</em> 连接，然后将其结果连接 与<em>A</em>。 只要所有必要的过滤在某个时刻发生，我们应用这些连接的顺序并不重要。 您可能会将其视为关联属性。 连接是<strong>关联的</strong>（带有星号，我们需要在适当的情况下提取谓词）。</p>
+<h2 id="Optimizing-Joins"><a href="#Optimizing-Joins" class="headerlink" title="Optimizing Joins"></a>Optimizing Joins</h2><p>So we can perform our joins in any order we please. This raises a question: is there some order that’s more preferable than another? Yes. It turns out that the order in which we perform our joins can result in dramatically different amounts of work required.</p>
+<p>因此我们可以按照我们喜欢的任何顺序执行连接。 这就提出了一个问题：是否有某种顺序比另一种更可取？ 是的。 事实证明，我们执行连接的顺序可能会导致所需的工作量显着不同。</p>
+<p>Consider a fairly natural query on the above relations, where we want to get a list of all customers’ names along with the location of each product they’ve ordered. In SQL we could write such a query like this:</p>
+<p>考虑对上述关系的一个相当自然的查询，我们希望获得所有客户姓名的列表以及他们订购的每个产品的位置。 在 SQL 中，我们可以编写这样的查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> customer_name, product_location <span class="keyword">FROM</span></span><br><span class="line">  orders</span><br><span class="line">  <span class="keyword">JOIN</span> customers <span class="keyword">ON</span> customer_id <span class="operator">=</span> order_customer_id</span><br><span class="line">  <span class="keyword">JOIN</span> products <span class="keyword">ON</span> product_id <span class="operator">=</span> order_product_id</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>We have two predicates:</p>
+<ul>
+<li><code>customer_id = order_customer_id</code></li>
+<li><code>product_id = order_product_id</code></li>
+</ul>
+<p>Say we first join <code>products</code> and <code>customers</code>. Since neither of the two predicates above relate products with customers, we have no choice but to form the entire cross products between them. This cross product might be very large (the number of customers times the number of products) and we have to compute the entire thing.</p>
+<p>假设我们首先将产品和客户结合起来。 由于上述两个谓词都没有将产品与客户联系起来，因此我们别无选择，只能在它们之间形成整个叉积。 这个叉积可能非常大（客户数量乘以产品数量），我们必须计算整个结果。</p>
+<p>What if we instead first compute the join between <code>orders</code> and <code>customers</code>? The sub-join of orders joined with customers only has an entry for every order placed by a customer - probably much smaller than every pair of customer and product. Since we have a predicate between these two, we can compute the much smaller result of joining them and filtering directly (there are many algorithms to do this efficiently, the three most common being the hash join, merge join, and nested-loop&#x2F;lookup join).</p>
+<p>如果我们首先计算订单和客户之间的连接会怎样？ 与客户连接的订单子连接仅包含客户所下的每个订单的条目 - 可能比每对客户和产品小得多。 由于我们在这两者之间有一个谓词，因此我们可以计算连接它们并直接过滤的小得多的结果（有许多算法可以有效地做到这一点，最常见的三种是散列连接、合并连接和嵌套循环&#x2F;查找 加入）。</p>
+<h2 id="Visualizing-the-Problem-可视化问题"><a href="#Visualizing-the-Problem-可视化问题" class="headerlink" title="Visualizing the Problem 可视化问题"></a>Visualizing the Problem 可视化问题</h2><p>To better understand the structure of a join query, we can look at its query graph. The query graph of a query has a vertex for each relation being joined and an edge between any two relations for which there is a predicate.</p>
+<p>为了更好地理解连接查询的结构，我们可以查看它的查询图。 查询的查询图对于每个被连接的关系都有一个顶点，以及任何两个有谓词的关系之间的边。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_coppngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>Since a predicate filters the result of the cross product, predicates can be given a numeric value that describes how much they filter said result. This value is called their selectivity. The selectivity of a predicate <em>p</em> on <em>A</em> and <em>B</em> is defined as:</p>
+<p>由于谓词过滤叉积的结果，因此可以给谓词一个数值来描述它们过滤所述结果的程度。 这个值称为它们的选择性。 谓词 <em>p</em> 对 <em>A</em> 和 <em>B</em> 的选择性定义为：</p>
+<p><em>s<strong>e</strong>l</em>(<em>p</em>)&#x3D;∣<em>A</em>×<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣&#x3D;∣<em>A</em>∣∣<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣</p>
+<p>In practice, we tend to think about this the other way around; we assume that we can estimate the selectivity of a predicate and use that to estimate the size of a join:</p>
+<p>在实践中，我们倾向于以相反的方式思考这个问题。 我们假设我们可以估计谓词的选择性并使用它来估计连接的大小：</p>
+<p>∣<em>A</em>⋈<em>p**B</em>∣&#x3D;<em>s<strong>e</strong>l</em>(<em>p</em>)∣<em>A</em>∣∣<em>B</em>∣</p>
+<p>So a predicate which filters out half of the rows has selectivity 0.5 and a predicate which only allows one row out of every hundred has selectivity 0.01. Since predicates which are more selective reduce the cardinality of their output more aggressively, a decent general principle is that we want to perform joins over predicates which are very selective first. It’s often assumed for convenience that all the selectivities are independent, that is,</p>
+<p>因此，过滤掉一半行的谓词的选择性为 0.5，而仅允许每一百行中的一行的谓词的选择性为 0.01。 由于更具选择性的谓词会更积极地减少其输出的基数，因此一个不错的一般原则是我们希望首先对选择性很强的谓词执行连接。 为了方便起见，通常假设所有选择性都是独立的，即</p>
+<p>∣<em>A</em>⋈<em>p**B</em>⋈<em>q**C</em>∣&#x3D;<em>s<strong>e</strong>l</em>(<em>p</em>)<em>s<strong>e</strong>l</em>(<em>q</em>)∣<em>A</em>×<em>B</em>×<em>C</em>∣</p>
+<p>Which, while indeed convenient, is rarely an accurate assumption in practice. Check out <a target="_blank" rel="noopener" href="http://www.vldb.org/pvldb/vol9/p204-leis.pdf">“How Good Are Query Optimizers, Really?”</a> by Leis et al. for a detailed discussion of the problems with this assumption.</p>
+<p>虽然这确实很方便，但在实践中很少是一个准确的假设。 查看“查询优化器到底有多好？” 莱斯等人。 详细讨论该假设的问题。</p>
+<p>It turns out that the shape of a query graph plays a large part in how difficult it is to optimize a query. There are a handful of canonical archetypes of query graph “shapes”, all with different optimization characteristics.</p>
+<p>事实证明，查询图的形状在很大程度上决定了优化查询的难度。 有一些查询图“形状”的规范原型，它们都具有不同的优化特征。</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_chainpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​																		<em>A “chain” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_starpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​															<em>A “star” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cliquepngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​														<em>A “clique” query graph</em></p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_graph_cyclepngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>​													<em>A “cycle” query graph</em></p>
+<p>Note that these shapes aren’t necessarily representative of many real queries, but they represent extremes which exhibit interesting behaviour and which permit interesting analysis.</p>
+<p>请注意，这些形状不一定代表许多实际查询，但它们代表了表现出有趣行为并允许进行有趣分析的极端情况。</p>
+<h2 id="Query-Plans"><a href="#Query-Plans" class="headerlink" title="Query Plans"></a>Query Plans</h2><p>To visualize a particular join ordering, we can look at its query plan diagram. Since most join execution algorithms only perform joins on one pair of relations at a time, these are generally binary trees. The query plan we ended up with for the above query has a diagram that looks something like this:</p>
+<p>为了可视化特定的连接顺序，我们可以查看它的查询计划图。 由于大多数连接执行算法一次仅对一对关系执行连接，因此这些通常是二叉树。 我们最终为上述查询得出的查询计划有一个如下所示的图表：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_coppngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>There are also two main canonical query plan shapes, the less general “left-deep plan”:</p>
+<p>还有两种主要的规范查询计划形状，即不太通用的“左深度计划”：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_deep_leftpngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>Where every relation is joined in sequence.</p>
+<p>每个关系都按顺序连接。</p>
+<p>The more general form is the “bushy plan”:</p>
+<p>更通用的形式是“bushy plan”：</p>
+<p><img src="https://crl2020.imgix.net/wp-content/uploads/2019/04/query_plan_bushypngcenter-1.png?auto=format,compress&max-w=700"></p>
+<p>In a left-deep plan, one of the two relations being joined must always be a concrete table, rather than the output of a join. In a bushy plan, such <strong>composite inners</strong> are permitted.</p>
+<p>在左深计划中，连接的两个关系之一必须始终是具体表，而不是连接的输出。 在茂密的规划中，允许使用这种复合材料内部材料。</p>
+<h2 id="Is-this-actually-“hard”"><a href="#Is-this-actually-“hard”" class="headerlink" title="Is this actually “hard”?"></a>Is this actually “hard”?</h2><p>In the examples we’ve seen, there were only a handful of options, but as the number of tables being joined grows, the number of potential query plans grows extremely fast—and in fact, finding the optimal order in which to join a set of tables is NP-hard. This means that when faced with large join ordering problems, databases are generally forced to resort to a collection of heuristics to attempt to find a good execution plan (unless they want to spend more time optimizing than executing!).</p>
+<p>在我们看到的示例中，只有少数选项，但随着要连接的表数量的增长，潜在查询计划的数量增长得非常快，事实上，找到连接集合的最佳顺序 表的数量是 NP 困难的。 这意味着，当面临大型连接顺序问题时，数据库通常被迫求助于一系列启发式方法来尝试找到良好的执行计划（除非它们想花更多的时间进行优化而不是执行！）。</p>
+<p>I think it’s important to first answer the question of why we need to do this at all. Even if some join orderings are orders of magnitude better than others, why can’t we just find a good order once and then use that in the future? Why does a piece of software like a database that’s concerned with going fast need to solve an NP-hard problem every time it receives a query? It’s a fair question, and there’s probably interesting research to be done in sharing optimization work across queries.</p>
+<p>我认为首先回答我们为什么需要这样做的问题很重要。 即使某些连接顺序比其他连接顺序好几个数量级，为什么我们不能一次找到一个好的顺序，然后在将来使用它呢？ 为什么像数据库这样注重速度的软件每次收到查询时都需要解决 NP 难题？ 这是一个公平的问题，在跨查询共享优化工作方面可能需要进行一些有趣的研究。</p>
+<p>The main answer, though, is that you’re going to want different join strategies for a query involving Justin Bieber’s twitter followers versus mine. The scale of various relations being joined will vary dramatically depending on the query parameters and the fact is that we just don’t know the problem we’re solving until we receive the query from the user, at which point the query optimizer will need to consult its statistics to make informed guesses about what join strategies will be good. Since these statistics will be very different for a query over Bieber’s followers, the decisions the optimizer ends up making will be different and we probably won’t be able to reuse a result from before.</p>
+<p>不过，主要的答案是，对于涉及贾斯汀·比伯 (Justin Bieber) 的 Twitter 关注者和我的关注者的查询，您需要不同的连接策略。 连接的各种关系的规模将根据查询参数的不同而显着变化，事实是，我们只是不知道我们正在解决的问题，直到我们收到用户的查询，此时查询优化器将需要 查阅其统计数据，以做出明智的猜测，了解什么是好的连接策略。 由于对于比伯的关注者的查询，这些统计数据将非常不同，因此优化器最终做出的决策将有所不同，我们可能无法重用之前的结果。</p>
+<p>Once you accept that you have to solve the problem, how do you do it? A common characteristic of NP-hard problems is that they’re strikingly non-local. Any type of local reasoning or optimization you attempt to apply to them will generally break down and doom you to look at the entire problem holistically. In the case of join ordering, what this means is that in most cases it’s difficult or impossible to make conclusive statements about how any given pair of relations should be joined - the answer can differ drastically depending on all the tables you don’t happen to be thinking about at this moment.</p>
+<p>一旦你承认必须解决问题，你会怎么做？ NP 难问题的一个共同特征是它们明显是非局部的。 您尝试应用于它们的任何类型的局部推理或优化通常都会失败，并注定您必须从整体上看待整个问题。 在连接顺序的情况下，这意味着在大多数情况下，很难或不可能对任何给定的关系对应该如何连接做出结论性的陈述 - 答案可能会有很大不同，具体取决于您没有碰巧的所有表 此刻正在思考。</p>
+<p>In our example with customers, orders, and products, it might look like our first plan was bad only because we first performed a join for which we had no predicate (such intermediate joins are just referred to as <strong>cross products</strong>), but in fact, there are joins for which the ordering that gives the smallest overall cost involves a cross product (exercise for the reader: find one).</p>
+<p>在我们的客户、订单和产品示例中，我们的第一个计划可能看起来很糟糕，只是因为我们首先执行了没有谓词的连接（此类中间连接仅称为交叉产品），但事实上， 对于某些连接，给出最小总成本的排序涉及叉积（读者练习：找到一个）。</p>
+<p>Despite the fact that optimal plans can contain cross products, it’s very common for query optimizers to assume their inclusion won’t improve the quality of query plans that much, since disallowing them makes the space of query plans much smaller and can make finding decent plans much quicker. This assumption is sometimes called the connectivity heuristic (because it only considers joining relations which are connected in the query graph).</p>
+<p>尽管最佳计划可以包含交叉产品，但查询优化器很常见地认为包含它们不会大大提高查询计划的质量，因为不允许它们会使查询计划的空间变得更小，并且可以找到合适的计划 快得多。 这种假设有时称为连接启发式（因为它只考虑查询图中连接的连接关系）。</p>
+<p>This post has mostly been about the vocabulary with which to speak and think about the problem of ordering joins, and hasn’t really touched on any concrete algorithms with which to find good query plans.</p>
+<p>这篇文章主要是关于谈论和思考连接排序问题的词汇，并没有真正涉及任何用于找到良好查询计划的具体算法。</p>
+<p>Join ordering is, generally, quite resistant to simplification. In the general case—and in fact, almost every case in practice—the problem of finding the optimal order in which to perform a join query is NP-hard. However, if we sufficiently restrict the set of queries we look at, and restrict ourselves to certain resulting query plans, there are some useful situations in which we <em>can</em> find an optimal solution. Those details, though, will come in a follow-up post.</p>
+<p>一般来说，连接顺序非常难以简化。 在一般情况下（事实上，几乎在实践中的每种情况下），找到执行连接查询的最佳顺序的问题是 NP 困难的。 但是，如果我们充分限制所查看的查询集，并将自己限制为某些结果查询计划，则在某些有用的情况下我们可以找到最佳解决方案。 不过，这些细节将在后续帖子中提供。</p>
+<p>If you like this post you can go even deeper on Join Ordering with <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/join-ordering-ii-the-ikkbz-algorithm/">Join Ordering Part II: The SQL</a></p>
+<p>如果您喜欢这篇文章，您可以通过连接排序第二部分：SQL 更深入地了解连接排序</p>
+<h1 id="Join-ordering-part-II-The-‘SQL’"><a href="#Join-ordering-part-II-The-‘SQL’" class="headerlink" title="Join ordering, part II: The ‘SQL’"></a>Join ordering, part II: The ‘SQL’</h1><p>Even in the 80’s, before Facebook knew everything there was to know about us, we as an industry had vast reams of data we needed to be able to answer questions about. To deal with this, data analysts were starting to flex their JOIN muscles in increasingly creative ways. But back in that day and age, we had neither machine learning nor rooms full of underpaid Excel-proficient interns to save us from problems we didn’t understand; we were on our own.</p>
+<p>即使在 80 年代，在 Facebook 了解有关我们的一切之前，我们作为一个行业就拥有大量数据，需要能够回答相关问题。 为了解决这个问题，数据分析师开始以越来越有创意的方式展示他们的 JOIN 力量。 但在那个时代，我们既没有机器学习，也没有满屋子的工资低、精通 Excel 的实习生来帮助我们解决我们不理解的问题； 我们只能靠自己了。</p>
+<p>We saw in the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/join-ordering-pt1/">previous post</a> how to think about a join ordering problem: as an undirected graph with a vertex for each relation being joined, and an edge for any predicate relating two relations. We also saw the <strong>connectivity heuristic</strong>, which assumed that we wouldn’t miss many good orderings by restricting ourselves to solutions which didn’t perform cross products.</p>
+<p>我们在上一篇文章中看到了如何考虑连接排序问题：作为一个无向图，每个被连接的关系有一个顶点，以及与两个关系相关的任何谓词的边。 我们还看到了连接启发式，它假设通过将自己限制在不执行交叉产品的解决方案中，我们不会错过许多好的订单。</p>
+<p>It was discussed that in a general setting, finding the optimal solution to a join ordering problem is NP-hard for almost any meaningful cost model. Given the complexity of the general problem, an interesting question is, how much do we have to restrict ourselves to a specific subclass of problems and solutions to get instances which are <strong>not</strong> NP-hard?</p>
+<p>讨论了在一般情况下，对于几乎任何有意义的成本模型来说，找到连接排序问题的最佳解决方案都是 NP 困难的。 考虑到一般问题的复杂性，一个有趣的问题是，我们必须在多大程度上将自己限制在问题和解决方案的特定子类上才能获得非 NP 困难的实例？</p>
+<p>The topic of our story is the IKKBZ algorithm, and the heroes are Toshihide Ibaraki and Tiko Kameda. But first, we need to take a detour through a different field. We will eventually find ourselves back in JOIN-land, so don’t fear, this is still a post about databases.</p>
+<p>我们故事的主题是IKKBZ算法，主角是茨木俊秀和龟田提子。 但首先，我们需要绕道进入另一个领域。 我们最终会发现自己回到了 JOIN 领域，所以不要害怕，这仍然是一篇关于数据库的文章。</p>
+<h2 id="Maximize-Revenue-Minimize-Cost-收入最大化，成本最小化"><a href="#Maximize-Revenue-Minimize-Cost-收入最大化，成本最小化" class="headerlink" title="Maximize Revenue, Minimize Cost 收入最大化，成本最小化"></a>Maximize Revenue, Minimize Cost 收入最大化，成本最小化</h2><p><strong>Operations research</strong> is a branch of mathematics concerned with the optimization of business decisions and management, and it has led to such developments as asking employees “what would you say you do here?”.</p>
+<p>运筹学是数学的一个分支，涉及业务决策和管理的优化，它导致了诸如询问员工“你觉得你在这里做什么？”等发展。</p>
+<p>One sub-discipline of operations research is concerned with the somewhat abstract problem of scheduling the order in which jobs in a factory should be performed. For example, if we have some set of tasks that needs to be performed to produce a product, what order will minimize the business’s costs?</p>
+<p>运筹学的一个子学科涉及一个有点抽象的问题，即安排工厂中的工作执行顺序。 例如，如果我们需要执行一组任务来生产产品，那么什么顺序可以最大限度地降低企业成本？</p>
+<p>The 1979 paper <em>Sequencing with Series-Parallel Precedence Constraints</em> by Clyde Monma and Jeffrey Sidney is interested in a particular type of this problem centered around testing a product for deficiencies. They have a sequence of tests to be performed on the product, some of which must be performed before others. The paper gives the example of recording the payments from a customer before sending out their next bill, in order to prevent double billing - the first task must be performed before the second.</p>
+<p>Clyde Monma 和 Jeffrey Sidney 于 1979 年发表的论文《Sequencing with Series-Parallel Precedence Constraints》对这种以测试产品缺陷为中心的特定类型问题感兴趣。 他们要对产品执行一系列测试，其中一些测试必须在其他测试之前执行。 本文给出了在发送下一张账单之前记录客户付款的示例，以防止重复计费 - 第一个任务必须在第二个任务之前执行。</p>
+<p>The kind of problem Monma and Sidney cover is one where these tests (henceforth “jobs”) and the order they must be performed in can be laid out in a series of parallel “chains”:</p>
+<p>Monma 和 Sidney 所解决的问题是，这些测试（此后称为“作业”）以及它们必须执行的顺序可以布置在一系列并行“链”中：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_1.png?auto=format,compress&max-w=700"></p>
+<p>Where a legal order of the jobs is one in which a job’s parent is carried out before it is, so <em>X</em>,<em>A</em>,<em>B</em>,<em>U</em>,<em>C</em>,<em>V</em>,<em>D</em>,<em>Y</em>,<em>Z</em> is a legal execution here, but <em>A</em>,<em>C</em>,… is not, since <em>B</em> must occur before <em>C</em>. Such restrictions are called <strong>sequencing constraints</strong>.</p>
+<p>如果作业的合法顺序是作业的父作业先于它执行的顺序，则 <em>X</em>,<em>A</em>,<em>B</em>,<em>U</em>,<em>C</em>,<em>V</em>,<em>D</em>, <em>Y</em>,<em>Z</em> 在这里是合法的执行，但 <em>A</em>,<em>C</em>,… 不是，因为 <em>B</em> 必须出现在 <em>C</em> 之前。 此类限制称为<strong>排序约束</strong>。</p>
+<p>This is a specific case of the more general concept of a <strong>precedence graph</strong>. A precedence graph can just be any directed acyclic graph, so in the general (non-Monma&#x2F;Sidney) case, such a graph could look like this:</p>
+<p>这是更一般的优先级图概念的一个具体情况。 优先图可以是任何有向无环图，因此在一般（非 Monma&#x2F;Sidney）情况下，这样的图可能如下所示：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_2.png?auto=format,compress&max-w=700"></p>
+<p>In the paper’s setting, each “job” is a test of a component to see if it’s defective or not. If the test fails, the whole process is aborted. If it doesn’t, the process continues. Each test has some fixed probability of failing. Intuitively, the tests we do first should have high probability of detecting a failure, and a low cost: if a test is cheap and has a 99% chance of determining that a component is defective, it would be bad if we did it at the very end of a long, expensive, time-consuming process.</p>
+<p>在论文的设置中，每项“工作”都是对一个组件的测试，看看它是否有缺陷。 如果测试失败，则整个过程将中止。 如果没有，该过程将继续。 每个测试都有一些固定的失败概率。 直观上，我们首先进行的测试应该具有很高的检测到故障的概率，并且成本较低：如果测试成本低廉并且有 99% 的机会确定某个组件有缺陷，如果我们在一个漫长、昂贵、耗时的过程的最后才这样做，那就糟糕了。</p>
+<p>Next, a <strong>job module</strong> in a precedence graph is a set of jobs which all have the same relationship to every job not in the module. That is, a set of jobs <em>J</em> is a job module if every job not in <em>J</em> either</p>
+<p>接下来，优先级图中的<strong>作业模块</strong>是一组作业，它们与模块中之外的每个作业都具有相同的关系。 也就是说，如果每个作业都不在 <em>J</em> 中，则一组作业 <em>J</em> 是一个作业模块</p>
+<ol>
+<li>must come before every job in <em>J</em>, 必须出现在 <em>J</em> 中的每个作业之前，</li>
+<li>must come after every job in J*, or 必须出现在 J* 中的每项工作之后，或者</li>
+<li>is unrestricted with respect to every job in J* J*中的每项工作均不受限制</li>
+</ol>
+<p>according to the problem’s precedence constraints. 根据问题的优先级约束。</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_3.png?auto=format,compress&max-w=700"></p>
+<p>For instance, in this example, {<em>B</em>,<em>C</em>}, {<em>X</em>,<em>Y</em>,<em>Z</em>}, and {<em>V</em>} are job modules, but {<em>X</em>,<em>Z</em>} is not a module because <em>Y</em> must come before <em>Z</em>, but is after <em>X</em>. Similarly, {<em>A</em>,<em>U</em>} is not a module because <em>V</em> must come after <em>U</em> but is unrestricted relative to <em>A</em>.</p>
+<p>例如，在此示例中，{<em>B</em>,<em>C</em>}、{<em>X</em>,<em>Y</em>,<em>Z</em>} 和 {<em>V</em>} 是作业模块，但 {<em>X</em>,<em>Z</em> } 不是模块，因为 <em>Y</em> 必须位于 <em>Z</em> 之前，但位于 <em>X</em> 之后。 同样，{<em>A</em>,<em>U</em>} 不是模块，因为 <em>V</em> 必须位于 <em>U</em> 之后，但相对于 <em>A</em> 不受限制。</p>
+<p>When we use <em>j</em> to represent an object, we’re talking about one single job, and when we use <em>s</em> and <em>t</em>, we’re talking about strings of jobs, as in, <em>s</em>&#x3D;<em>j</em>1<em>j</em>2…<em>j**n</em>, which cannot be further split apart, and are performed in sequence. In general, these are somewhat interchangeable. In this setting, jobs are just strings of length one.</p>
+<p>当我们使用 <em>j</em> 表示一个对象时，我们谈论的是一个作业，而当我们使用 <em>s</em> 和 <em>t</em> 时，我们谈论的是作业字符串，如 <em>s</em>&#x3D;<em>j <em>1</em>j</em>2…<em>j**n</em>，不能再拆分，依次执行。 一般来说，这些在某种程度上是可以互换的。 在这种情况下，作业只是长度为 1 的字符串。</p>
+<p>If two strings are in a module together, we can concatenate them in some order to get a new string. Since the constituent jobs and strings are in a module (and thus have all the same constraints), there’s only one natural choice of constraints for this new string to have. It’s generally easier to reason about a problem with fewer jobs in it, so a desirable thing to be able to do is to concatenate two jobs to get a new, simpler problem that is equivalent to the original one. One of the key challenges we’ll face is how to do this.</p>
+<p>如果两个字符串一起在一个模块中，我们可以按某种顺序连接它们以获得一个新字符串。 由于组成作业和字符串位于一个模块中（因此具有所有相同的约束），因此这个新字符串只有一种自然的约束选择。 通常，推理作业较少的问题会更容易，因此可以做的一件事是将两个作业连接起来以获得一个与原始问题等效的新的、更简单的问题。 我们将面临的主要挑战之一是如何做到这一点。</p>
+<p>We use <em>f</em>(<em>s</em>1,<em>s</em>2,…) to refer to the cost of performing the string <em>s</em>1, followed by the string <em>s</em>2, and so on (think of this function as “flattening” of the sequences of jobs). <em>q</em>(<em>s</em>) is the probability of all of the tests in <em>s</em> succeeding. We assume all the probabilities are independent, and so the probability of all of the jobs in a string succeeding is the product of the probability of success of each individual job. If the sequencing constraints constrain a string <em>s</em> to come before a string <em>t</em>, we write <em>s</em>→<em>t</em> (read “<em>s</em> comes before <em>t</em>”). We’re going to use strings to progressively simplify our problem by concatenating jobs into strings.</p>
+<p>我们使用 <em>f</em>(<em>s</em>1,<em>s</em>2,…) 来指代执行字符串 <em>s</em>1、后跟字符串 <em>s</em>2 的成本，依此类推（将此函数视为 工作序列的“扁平化”）。 <em>q</em>(<em>s</em>) 是 <em>s</em> 中所有测试成功的概率。 我们假设所有概率都是独立的，因此字符串中所有作业成功的概率是每个作业成功概率的乘积。 如果排序约束将字符串 <em>s</em> 限制在字符串 <em>t</em> 之前，则我们编写 <em>s</em>→<em>t</em> （读作“<em>s</em> 在 <em>t</em> 之前”）。 我们将使用字符串通过将作业连接到字符串中来逐步简化我们的问题。</p>
+<p>The expected cost of performing one sequence of jobs followed by another sequence of jobs is the cost of performing the first sequence plus the cost of performing the second sequence, but we only have to actually perform the second sequence if the first sequence didn’t fail. Thus, in expectation, the cost is <em>f</em>(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>).</p>
+<p>执行一个作业序列，然后执行另一个作业序列的预期成本是执行第一个序列的成本加上执行第二个序列的成本，但如果第一个序列没有失败，我们只需实际执行第二个序列 。 因此，预计成本为 <em>f</em>(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>)。</p>
+<p>Since this is recursive, we need a base case, and of course, the cost of performing a single job is simply the cost of the job itself: <em>f</em>(<em>j</em>)&#x3D;<em>c**j</em>. An important property of this definition is that <em>f</em> is well-defined: <em>f</em>(<em>S</em>1,<em>S</em>2)&#x3D;<em>f</em>(<em>S</em>1′,<em>S</em>2′) whenever ′<em>S</em>1<em>S</em>2&#x3D;<em>S</em>1′<em>S</em>2′ (verifying this is left as an exercise).</p>
+<p>由于这是递归的，我们需要一个基本情况，当然，执行单个作业的成本就是作业本身的成本：<em>f</em>(<em>j</em>)&#x3D;<em>c**j</em>。 该定义的一个重要属性是 <em>f</em> 是明确定义的：<em>f</em>(<em>S</em>1,<em>S</em>2)&#x3D;<em>f</em>(<em>S</em>1′,<em>S</em>2′) 每当 ′* S<em>1</em>S<em>2&#x3D;<em>S</em>1′</em>S*2′（验证这一点留作练习）。</p>
+<p>An <strong>adjacent sequence interchange</strong> is a swap of two adjacent sequences within a larger sequence:</p>
+<p>相邻序列互换是一个较大序列内两个相邻序列的交换：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_4.png?auto=format,compress&max-w=700"></p>
+<p>This is an adjacent sequence interchange of <em>X</em>,<em>Y</em>,<em>Z</em> with U*,<em>V</em>.</p>
+<p>这是 <em>X</em>、<em>Y</em>、<em>Z</em> 与 U<em>、</em>V* 的相邻序列互换。</p>
+<p>A <strong>rank function</strong> maps a sequence of jobs <em>j</em>1<em>j</em>2…<em>j</em>n to a number. Roughly, a rank function captures how desirable it is to do a given sequence of jobs early. <em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) means we would like to do <em>s</em> before <em>t</em>. A cost function is called <strong>adjacent sequence interchange</strong> (ASI) relative to a rank function <em>r</em> if the rank function accurately tells us when we want to perform interchanges:</p>
+<p><strong>排名函数</strong> 将作业序列 <em>j</em>1<em>j</em>2…<em>j</em>n 映射到一个数字。 粗略地说，排名函数反映了尽早完成给定工作序列的期望程度。 <em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) 意味着我们想在 <em>t</em> 之前执行 <em>s</em>。 如果排名函数准确地告诉我们何时要执行交换，则相对于排名函数<em>r</em>，成本函数被称为<strong>相邻序列交换</strong>（ASI）：</p>
+<p><em>f</em>(<em>a</em>,<em>s</em>,<em>t</em>,<em>b</em>)≤<em>f</em>(<em>a</em>,<em>t</em>,<em>s</em>,<em>b</em>) if <em>r</em>(<em>s</em>)≤<em>r</em>(<em>t</em>)</p>
+<p>And a cost function <em>f</em> is ASI if there exists a rank function it is ASI relative to. I’m sure you’ll be shocked to learn the <em>f</em> we derived above f*(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em>(<em>t</em>)) is ASI.</p>
+<p>如果存在相对于 ASI 的排序函数，则成本函数 <em>f</em> 就是 ASI。 我相信您会惊讶地发现我们上面推导出的 <em>f</em> f*(<em>s</em>,<em>t</em>)&#x3D;<em>f</em>(<em>s</em>)+<em>q</em>(<em>s</em>)<em>f</em> (<em>t</em>)) 是 ASI。</p>
+<p>Note that even though we may have a rank function which tells us we would like to do a given sequence of jobs early, the sequencing constraints might prohibit us from doing so.</p>
+<p>请注意，即使我们可能有一个排名函数告诉我们希望尽早执行给定的作业序列，但排序约束可能会阻止我们这样做。</p>
+<p><strong>The ASI theorem</strong> (Monma and Sidney call this “Theorem 2”, but we’re going to use it enough for a real name) mildly paraphrased:</p>
+<p>ASI 定理（Monma 和 Sidney 称之为“定理 2”，但我们将用它来表示真实的名字）温和地解释道：</p>
+<p>​	<em>Let *f</em> be ASI with rank function <em>r</em>, and let *s* and *t* be strings. Consider a job module {*s*,*t*} in a general precedence graph, where *s<em>→*t</em> and *r*(*t*)≤*r*(*s*). Then there is an optimal permutation with *s* immediately preceding *t*.*</p>
+<p><em>令*f</em> 为具有排名函数<em>r</em> 的ASI，并令*s* 和*t* 为字符串。 考虑一般优先级图中的作业模块 {*s*,*t*}，其中 *s<em>→*t</em> 且 *r*(*t*)≤*r*(* s*)。 然后有一个最佳排列，其中 *s* 紧接在 *t*.* 之前</p>
+<p>Let’s break down this theorem. First of all, note that it applies to a *<strong>general*</strong> precedence graph. This means we’re not restricting ourselves to the “parallel chains” kind of graph described above.</p>
+<p>让我们来分解一下这个定理。 首先，请注意，它适用于一般优先级图。 这意味着我们不会将自己限制在上述“平行链”类型的图表中。</p>
+<p><em>s</em>→<em>t</em> means <em>s</em> must come before t* (<em>s</em> and <em>t</em> are already strings in the current iteration of our problem, and they inherit the constraints of the jobs they are composed of). However, )<em>r</em>(<em>t</em>)≤<em>r</em>(<em>s</em>) means we would <em>like</em> to put <em>t</em> before <em>s</em>. What this theorem is saying is that in this scenario, we’re not forgoing optimality by ordering <em>s</em> immediately before <em>t</em>. This is very useful, because it allows us to take two strings, <em>s</em> and <em>t</em>, and replace them with the new string <em>s**t</em> which is their concatenation. Importantly, this is saying that there is <strong>an</strong> optimal permutation with <em>s</em> immediately preceding <em>t</em>, not that in any every optimal permutation this is the case. The proof of this theorem is pretty simple so I’ve included it.</p>
+<p><em>s</em>→<em>t</em> 意味着 <em>s</em> 必须在 t* 之前（<em>s</em> 和 <em>t</em> 在我们问题的当前迭代中已经是字符串，并且它们继承了它们所组成的作业的约束）。 然而，<em>r</em>(<em>t</em>)≤<em>r</em>(<em>s</em>) 意味着我们<em>喜欢</em>将<em>t</em>放在<em>s</em>之前。 该定理的意思是，在这种情况下，我们不会通过在 <em>t</em> 之前立即排序 <em>s</em> 来放弃最优性。 这非常有用，因为它允许我们获取两个字符串 <em>s</em> 和 <em>t</em>，并将它们替换为新字符串 <em>s**t</em>（它们的串联）。 重要的是，这意味着存在<strong>一个</strong>最优排列，其中<em>s</em>紧接在<em>t</em>之前，而不是在任何每个最优排列中都是这种情况。 这个定理的证明非常简单，所以我把它包括在内。</p>
+<p><strong>Proof of the ASI theorem</strong>:<br>Every optimal permutation looks like ⟨<em>u</em>,<em>s</em>,<em>v</em>,<em>t</em>,<em>w</em>⟩ since s<em>→</em>t*. If <em>v</em> is empty, we’re done. otherwise, if r*(<em>v</em>)≤<em>r</em>(<em>s</em>), then by ASI we can swap <em>s</em> and <em>v</em> without dropping the cost to get ⟨<em>u</em>,<em>v</em>,<em>s</em>,<em>t</em>,<em>w</em>⟩. If r*(<em>s</em>)&lt;<em>r</em>(<em>v</em>), then by transitivity <em>r</em>(<em>t</em>)&lt;<em>r</em>(<em>v</em>) and again by ASI we can swap <em>v</em> and <em>t</em> without dropping the cost to get ⟨<em>u</em>,<em>s</em>,<em>t</em>,<em>v</em>,<em>w</em>⟩. These swaps must be legal since {<em>s</em>,<em>t</em>} is a job module. </p>
+<p>每个最优排列看起来都像 ⟨<em>u</em>,<em>s</em>,<em>v</em>,<em>t</em>,<em>w</em>⟩，因为 s<em>→</em>t<em>。 如果 <em>v</em> 为空，我们就完成了。 否则，如果 r</em>(<em>v</em>)≤<em>r</em>(<em>s</em>)，那么通过 ASI 我们可以交换 <em>s</em> 和 <em>v</em> 而不会降低得到 ⟨<em>u</em>,<em>v</em>,<em>s 的成本 <em>，</em>t</em>，<em>w</em>⟩。 如果 r*(<em>s</em>)&lt;<em>r</em>(<em>v</em>)，则通过传递性 <em>r</em>(<em>t</em>)&lt;<em>r</em>(<em>v</em>) 并再次通过 ASI，我们可以交换 <em>v</em> 和 * t<em>，而不降低获得 ⟨</em>u*,<em>s</em>,<em>t</em>,<em>v</em>,<em>w</em>⟩ 的成本。 这些交换必须是合法的，因为 {<em>s</em>,<em>t</em>} 是一个作业模块。</p>
+<p>Finally, our friends Monma and Sidney describe the <strong>parallel chains algorithm</strong>. It goes like this:</p>
+<p>最后，我们的朋友 Monma 和 Sidney 描述了<strong>平行链算法</strong>。 事情是这样的：</p>
+<ol>
+<li>If, for every pair of strings �⃗<em>s</em> and �⃗<em>t</em>, �⃗→�⃗<em>s</em>→<em>t</em> implies �(�⃗)&lt;�(�⃗)<em>r</em>(<em>s</em>)&lt;<em>r</em>(<em>t</em>) (meaning that the constraints and the rank agree about the correct order for the two), go on to step 2. If the two relations disagree somewhere, then we can find a job module {�⃗,�⃗}{<em>s</em>,<em>t</em>} for which they disagree [1]. Then, by the ASI theorem, we can concatenate �⃗<em>s</em> and �⃗<em>t</em> into the sequence �⃗�⃗<em>s**t</em> (since we know there’s <em>some</em> optimal solution where they’re adjacent), which we then treat as a new string. Now repeat step 1. Our problem has exactly one less string in it now, so this process can’t go on forever.</li>
+<li>Sort the remaining strings by their value under �<em>r</em>. Since step 1 terminated, the resulting order is legal, and since �<em>f</em> is ASI, it’s optimal.</li>
+</ol>
+<p>The core idea of the algorithm is that we’d <em>like</em> to just blindly order all the jobs by their value under the rank function, but situations where the rank function and the precedence constraints disagree prohibit that. The ASI theorem gives us a tool to eliminate precisely these scenarios while keeping access to optimal solutions, so we repeatedly apply it until we are free to simply sort.</p>
+<p>该算法的核心思想是，我们希望按照排名函数下的值对所有作业进行盲目排序，但排名函数和优先级约束不一致的情况会禁止这样做。 ASI 定理为我们提供了一个工具，可以精确消除这些情况，同时保持获得最佳解决方案的能力，因此我们反复应用它，直到我们可以自由地进行简单排序。</p>
+<h2 id="Back-to-Databases"><a href="#Back-to-Databases" class="headerlink" title="Back to Databases"></a>Back to Databases</h2><p>Back to the topic of Join Ordering. For their paper “On the Optimal Nesting Order for Computing N-Relational Joins,” Toshihide Ibaraki and Tiko Kameda were interested in instances of the join ordering problem for which</p>
+<p>回到连接排序的主题。 Toshihide Ibaraki 和 Tiko Kameda 在他们的论文“On the Optimal Nesting Order forComputing N-Relational Joins”中对连接排序问题的实例感兴趣，其中</p>
+<ul>
+<li>solutions were restricted to those that 解决方案仅限于那些<ul>
+<li>were left-deep and 是左深和</li>
+<li>contained no cross products 不包含交叉产品</li>
+</ul>
+</li>
+<li>the only join algorithm used was the nested-loop join, and 使用的唯一连接算法是嵌套循环连接，并且</li>
+<li>the query graph was a tree. 查询图是一棵树。</li>
+</ul>
+<p>As we saw <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/join-ordering-pt1/">before</a>, a plan is <strong>left-deep</strong> if the right input to every join operator is a concrete relation, and not another join operation. This gives a query plan that looks something like this, with every right child being a “base relation” and not a join:</p>
+<p>正如我们之前所看到的，如果每个连接运算符的右侧输入是具体关系，而不是另一个连接操作，则计划是左深的。 这给出了一个看起来像这样的查询计划，其中每个右子节点都是“基本关系”而不是联接：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_5.png?auto=format,compress&max-w=700"></p>
+<p>and not like this, where a join’s right child can be another join: 而不是这样，一个连接的右子节点可以是另一个连接：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_6.png?auto=format,compress&max-w=700"></p>
+<p>Since the shape of the plan is fixed, we can talk about the plan itself simply as a sequence of the relations to be joined, from left to right in the left-deep tree. We can take a query plan like this:</p>
+<p>由于计划的形状是固定的，因此我们可以将计划本身简单地视为要连接的关系序列，在左深树中从左到右。 我们可以采用这样的查询计划：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_7.png?auto=format,compress&max-w=700"></p>
+<p>and represent it like this: 并像这样表示它：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_8.png?auto=format,compress&max-w=700"></p>
+<p>When we say that the query graph must be a “tree”, we mean in a graph theoretical sense—it’s a graph that is connected and has no cycles. If you primarily identify as a computer science person and not a mathematician, when you hear “tree” you might picture what graph theorists call a “rooted” tree. That is, a tree with a designated “special” root vertex. It’s like you grabbed the tree by that one designated vertex and let everything else hang down.</p>
+<p>当我们说查询图必须是一棵“树”时，我们指的是图论意义上的——它是一个连通且没有环的图。 如果您主要认为自己是计算机科学家而不是数学家，那么当您听到“树”时，您可能会想到图论学家所说的“有根”树。 也就是说，一棵树具有指定的“特殊”根顶点。 这就像你抓住了树的一个指定顶点，然后让其他所有东西都垂下来。</p>
+<p>Here’s a tree:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_9.png?auto=format,compress&max-w=700"></p>
+<p>Here it is rooted at �<em>A</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_10.png?auto=format,compress&max-w=700"></p>
+<p>Here it is rooted at �<em>D</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_11.png?auto=format,compress&max-w=700"></p>
+<p>This distinction is important for our purposes because it’s easy to get a rooted tree from an unrooted tree: you just pick your favourite vertex and call it the root.</p>
+<p>这种区别对于我们的目的很重要，因为很容易从无根树中获得有根树：您只需选择您最喜欢的顶点并将其称为根即可。</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_12.png?auto=format,compress&max-w=700"></p>
+<p>Query graphs and query plans are fundamentally different. The query graph describes the <em>problem</em> and a query plan the <em>solution</em>. Despite this, they’re related in very important ways. In a left-deep query plan, the relation in the bottom-left position is quite special: it’s the only one which is the left input to a join. If we are obeying the connectivity heuristic (no cross products), this gives us a way to think about how exactly it is we are restricted.</p>
+<p>查询图和查询计划有着根本的不同。 查询图描述了问题，查询计划描述了解决方案。 尽管如此，它们在非常重要的方面是相关的。 在左深查询计划中，左下位置的关系非常特殊：它是唯一一个连接的左输入。 如果我们遵循连通性启发式（无交叉乘积），这将给我们一种思考我们到底受到怎样的限制的方法。</p>
+<p>In the plan above, <em>A</em> and <em>B</em> must share a predicate, or else they would cross-product with each other. Then <em>C</em> must share a predicate with at least one of <em>A</em> or <em>B</em>. Then <em>D</em> must share a predicate with at least one of <em>A</em>, <em>B</em>, or <em>C</em>, and so on.</p>
+<p>在上面的计划中，<em>A</em> 和 <em>B</em> 必须共享一个谓词，否则它们将相互交叉积。 那么<em>C</em> 必须与<em>A</em> 或<em>B</em> 中的至少一个共享谓词。 那么<em>D</em> 必须与<em>A</em>、<em>B</em> 或<em>C</em> 等中的至少一个共享谓词。</p>
+<p>Let’s assume for a second that given a query graph, we know which relation will wind up in the bottom-left position of an optimal plan. If we take this special relation and make it the root in our query graph, something very useful happens.</p>
+<p>让我们假设给定一个查询图，我们知道哪个关系将出现在最佳计划的左下角位置。 如果我们采用这种特殊关系并将其作为查询图中的根，就会发生一些非常有用的事情。</p>
+<p>Given our rooted query graph, let’s figure out what a plan containing no cross products looks like. Here’s an example of such a rooted query graph:</p>
+<p>给定我们的根查询图，让我们弄清楚不包含叉积的计划是什么样子的。 这是此类有根查询图的示例：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_13.png?auto=format,compress&max-w=700"></p>
+<p>Since we must lead with <em>A</em>, which vertices can we then add to get a legal ordering? Well, the only three that don’t form a cross product with <em>A</em> are <em>B</em>, <em>C</em>, and <em>D</em>. Once we output, <em>C</em>, it becomes legal to output F*, and so on. As we go down the tree, we see a necessary and sufficient condition for not introducing cross products is that the parent of a given relation must have already been output. This is effectively the same as the precedence constraints of the job-scheduling problem!</p>
+<p>既然我们必须以 <em>A</em> 开头，那么我们可以添加哪些顶点来获得合法的排序？ 好吧，唯一不与 <em>A</em> 形成叉积的三个是 <em>B</em>、<em>C</em> 和 <em>D</em>。 一旦我们输出<em>C</em>，输出F*就变得合法，依此类推。 当我们沿着树往下走时，我们看到不引入叉积的充分必要条件是给定关系的父关系必须已经输出。 这实际上与作业调度问题的优先级约束相同！</p>
+<p>Of course, beforehand, we <em>don’t</em> know which relation will be the optimal one to place in the bottom left. This is going to turn out to be only a minor problem: we can just try each possible relation and choose the one that gives us the best result.</p>
+<p>当然，事先我们“不”知道哪一种关系最适合放置在左下角。 这将只是一个小问题：我们可以尝试每种可能的关系并选择给我们最好结果的关系。</p>
+<p>So, from here on, we’ll think of our query graph as a <strong>rooted</strong> tree, and the root will be the very first relation in our join sequence. Despite our original graph having undirected edges, this choice allows us to designate a canonical direction for our edges: we say they point <strong>away</strong> from the root.</p>
+<p>因此，从现在开始，我们将查询图视为一棵有根树，根将是连接序列中的第一个关系。 尽管我们的原始图具有无向边，但这种选择允许我们为边指定规范方向：我们说它们指向远离根的方向。</p>
+<h2 id="A-Tale-of-Two-Disciplines-两个学科的故事"><a href="#A-Tale-of-Two-Disciplines-两个学科的故事" class="headerlink" title="A Tale of Two Disciplines 两个学科的故事"></a>A Tale of Two Disciplines 两个学科的故事</h2><p>I can only imagine that what happened next went something like this:</p>
+<p>我只能想象接下来发生的事情是这样的：</p>
+<p><em>Kameda sips his coffee as he ponders the problem of join ordering. He and Ibaraki have been collaborating on this one for quite a while, but it’s a tough nut to crack. The data querying needs of industry grow ever greater, and he has to deliver to them a solution. He decides to take a stroll of the grounds of Simon Fraser University to clear his mind. As he locks his office, his attention is drawn by the shuffling of paper. A postdoc from the operations research department is hurrying down the hall, an armful of papers from the past few years tucked under her arm.</em></p>
+<p>龟田一边喝着咖啡，一边思考加入点菜的问题。 他和茨木在这个问题上已经合作了一段时间，但这是一个很难解决的问题。 行业的数据查询需求越来越大，他必须给他们提供一个解决方案。 他决定在西蒙弗雷泽大学的校园里漫步，以理清思绪。 当他锁上办公室时，他的注意力被翻动的纸张吸引了。 一名运筹学系的博士后正匆匆走过大厅，腋下夹着一摞过去几年的论文。</p>
+<p><em>Unnoticed, one neatly stapled bundle of papers drops to the floor from the postdoc’s arm. “Oh, excuse me! You dropped—” Kameda’s eyes are drawn to the title of the paper, Sequencing With Series-Parallel Precedence Constraints, as he bends down to pick it up.</em></p>
+<p>不知不觉中，一叠装订整齐的论文从博士后的手臂上掉到了地板上。 “哦，对不起！ 你掉下来了——”龟田弯下腰捡起它时，他的眼睛被论文的标题《具有系列并行优先约束的测序》所吸引。</p>
+<p><em>“Oh, thank you! I never would have noticed,” the postdoc says, as she turns around and reaches out a hand to take back the paper. But Kameda can no longer hear her. He’s entranced. He’s furiously flipping through the paper. This is it. This is the solution to his problem. The postdoc stares with wide eyes at his fervor. “I…I’ll return this to you!” He stammers, as he rushes back to his office to contact his longtime collaborator Ibaraki.</em></p>
+<p>“哦谢谢！ 我永远不会注意到，”博士后说，她转身伸出手拿回论文。 但龟田已经听不到她的声音了。 他很着迷。 他正在疯狂地翻阅报纸。 就是这个。 这就是他的问题的解决方案。 博士后睁大眼睛盯着他的热情。 “我……我会把这个还给你！” 他结结巴巴地冲回办公室联系他的长期合作者茨木。</p>
+<p>If this isn’t how it happened, I’m not sure how Ibaraki and Kameda ever made the connection they did, drawing from research about a problem in an entirely different field from theirs. As we’ll see, we can twist the join ordering problem we’re faced with to look very similar to a Monma-and-Sidney job scheduling problem.</p>
+<p>如果事情不是这样发生的，我不确定茨城和龟田是如何从与他们完全不同领域的问题的研究中建立起这种联系的。 正如我们将看到的，我们可以将面临的连接排序问题扭曲成与 Monma-and-Sidney 作业调度问题非常相似。</p>
+<p>Recall that the <em>selectivity</em> of a predicate (edge) is the amount that it filters the join of the two relations (edges) it connects (basically, how much smaller its result is than the raw cross product):</p>
+<p>回想一下，谓词（边）的选择性是它过滤它连接的两个关系（边）的连接的量（基本上，它的结果比原始叉积小多少）：</p>
+<p><em>s<strong>e</strong>l</em>(<em>p</em>)&#x3D;∣<em>A</em>×<em>B</em>∣∣<em>A</em>⋈<em>p**B</em>∣</p>
+<p>Designating a root allows us another convenience: before now, when selectivity was a property of a predicate, we had to specify a <em>pair</em> of relations in order to say what their selectivity was. Now that we’ve directed our edges, we can define a selectivity for a given <em>relation</em> (vertex) as the selectivity of it with its parent, with the selectivity of the root being defined as 1. So in our graph above, we define the <em>selectivity of</em> <em>H</em> to be the selectivity of the edge between <em>F</em> and <em>H</em>. We refer to the selectivity of R* by <em>f**R</em>.</p>
+<p>指定根为我们提供了另一个便利：以前，当选择性是谓词的属性时，我们必须指定一对关系才能说明它们的选择性是什么。 现在我们已经确定了边的方向，我们可以将给定<em>关系</em>（顶点）的选择性定义为其与其父级的选择性，根的选择性定义为 1。因此，在上图中，我们 将* <em>H</em> 的<em>选择性定义为</em>F* 和<em>H</em> 之间边缘的选择性。 我们用 <em>f**R</em> 来表示 R* 的选择性。</p>
+<p>This definition is even more convenient than it first appears; we’re restricted by the precedence constraints already to include the parent of a relation before the relation itself in any legal sequence, thus, by the time a relation appears in the sequence, the predicate from which it derives its selectivity will apply. This allows us to define a very simple function which captures the expected number of rows in a sequence of joins. Let ∣<em>N**i</em>&#x3D;∣<em>R**i</em>∣, then for some sequence of relations to be joined <em>S</em>, let <em>T</em>(<em>S</em>) be the number of rows in the result of evaluating <em>S</em>. Then:</p>
+<p>这个定义比乍一看更加方便； 我们已经受到优先约束的限制，在任何合法序列中都必须在关系本身之前包含关系的父关系，因此，当关系出现在序列中时，将应用从中得出其选择性的谓词。 这允许我们定义一个非常简单的函数，它捕获连接序列中的预期行数。 令∣<em>N**i</em>&#x3D;∣<em>R**i</em>∣，然后对于要连接<em>S</em>的某些关系序列，令<em>T</em>(<em>S</em>)为评估结果中的行数 <em>S</em>。 然后：</p>
+<p>There’s one final piece to fall into place to get the final IKKBZ algorithm. The <strong>IK</strong> in IKKBZ indeed stands for Ibaraki and Kameda. At VLDB 1986, Ravi Krishnamurthy, Haran Boral, and Carlo Zaniolo presented their paper <em>Optimization of Nonrecursive Queries</em>. Check out this glorious 1986-era technical diagram from their paper:</p>
+<p>为了获得最终的 IKKBZ 算法，还需要完成最后一项工作。 IKKBZ中的IK确实代表茨城和龟田。 在 VLDB 1986 上，Ravi Krishnamurthy、Haran Boral 和 Carlo Zaniolo 发表了他们的论文“非递归查询的优化”。 看看他们论文中这张 1986 年时代的技术图表：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_17.png?auto=format,compress&max-w=700"></p>
+<p>Their trick is that if we pick <em>A</em> as our root and find the optimal solution from it, and then for our next choice of root we pick a vertex <em>B</em> that is adjacent to <em>A</em>, a lot of the work we’ll have to do to solve from <em>B</em> will be the same as the work done from <em>A</em>.</p>
+<p>他们的技巧是，如果我们选择 <em>A</em> 作为我们的根并从中找到最佳解决方案，然后对于我们下一个选择的根，我们选择一个与 <em>A</em> 相邻的顶点 <em>B</em>，我们需要做很多工作。 从 <em>B</em> 解决所需的工作将与从 <em>A</em> 完成的工作相同。</p>
+<p>Consider a tree rooted at <em>A</em>:</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_18.png?auto=format,compress&max-w=700"></p>
+<p>(Where <em>X</em> is all the nodes that live beneath <em>A</em> and <em>Y</em> is all the nodes that live beneath <em>B</em>) and say we have the optimal solution <em>S</em> for the <em>A</em> tree. We then we re-root to <em>B</em>:</p>
+<p>（其中 <em>X</em> 是位于 <em>A</em> 下的所有节点，<em>Y</em> 是位于 <em>B</em> 下的所有节点）并说我们有 <em>A</em> 树的最佳解决方案 <em>S</em>。 然后我们重新root到<em>B</em>：</p>
+<p><img src="https://www.cockroachlabs.com/img/joinordering2_19.png?auto=format,compress&max-w=700"></p>
+<p>KB&amp;Z recognized that the <em>X</em> and <em>Y</em> subtrees in these two cases are the same, and thus when we eliminate all the wedges beneath <em>A</em> and <em>B</em>, the resulting chains will be in the same order they were in for the tree rooted at <em>A</em>, <em>and</em> this order is the same as the order implied by <em>S</em>. So we can turn the X* and <em>Y</em> subtrees into chains by just sorting them by the order they appear in <em>S</em>.</p>
+<p>KB&amp;Z 认识到这两种情况下的 <em>X</em> 和 <em>Y</em> 子树是相同的，因此当我们消除 <em>A</em> 和 <em>B</em> 下面的所有楔子时，生成的链将采用与它们原来的顺序相同的顺序 以 <em>A</em> 为根的树，<em>并且</em> 此顺序与 <em>S</em> 隐含的顺序相同。 因此，我们只需按照它们在 <em>S</em> 中出现的顺序对它们进行排序，就可以将 X* 和 <em>Y</em> 子树变成链。</p>
+<p>This means that we can construct the final chains beneath A* and B* without a <em>O</em>(<em>n</em>log<em>n</em>) walk, using only <em>O</em>(<em>n</em>) time to merge the two chains, so in aggregate, we do this for every choice of root, and arrive at a final runtime of <em>O</em>(<em>n</em>2).</p>
+<p>这意味着我们可以在 A* 和 B* 下面构建最终的链，而无需 <em>O</em>(<em>n</em>log<em>n</em>) 步，仅使用 <em>O</em>(<em>n</em>) 时间来合并两个链，因此 总的来说，我们对每个根选择都执行此操作，并达到 <em>O</em>(<em>n</em>2) 的最终运行时间。</p>
+<p>OK, let’s take a step back. Who cares? What’s the point of this algorithm when the case it handles is <em>so</em> specific? The set of preconditions for us to be able to use IKKBZ to get an optimal solution was a mile long. Many query graphs are <em>not</em> trees, and many queries require a bushy join tree for the optimal solution.</p>
+<p>好吧，让我们退一步。 谁在乎？ 当这个算法处理的案例如此具体时，它还有什么意义呢？ 我们能够使用 IKKBZ 获得最佳解决方案的先决条件有一英里长。 许多查询图不是树，并且许多查询需要茂密的连接树才能获得最佳解决方案。</p>
+<p>What if we didn’t rely on IKKBZ for an <em>optimal</em> solution? Some more general heuristic algorithms for finding good join orders require an initial solution as a “jumping-off point.” When using one of these algorithms, IKKBZ can be used to find a decent initial solution. While this algorithm only has guarantees when the query graph is a tree, we can turn any connected graph into a tree by selectively deleting edges from it (for instance, taking the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">min-cost spanning tree</a> is a reasonable heuristic here).</p>
+<p>如果我们不依赖 IKKBZ 来获得最佳解决方案怎么办？ 一些用于寻找良好连接顺序的更通用的启发式算法需要一个初始解决方案作为“起点”。 当使用其中一种算法时，IKKBZ 可用于找到合适的初始解决方案。 虽然该算法仅在查询图是树时有保证，但我们可以通过有选择地删除其中的边来将任何连通图转换为树（例如，采用最小成本生成树在这里是一个合理的启发式）。</p>
+<p>The IKKBZ algorithm is one of the oldest join ordering algorithms in the literature, and it remains one of the few polynomial-time algorithms that has strong guarantees. It manages to accomplish this by being extremely restricted in the set of problems it can handle. Despite these restrictions, it can still be useful as a stepping stone in a larger algorithm. <a target="_blank" rel="noopener" href="https://db.in.tum.de/~radke/papers/hugejoins.pdf">Adaptive Optimization of Very Large Join Queries</a> has an example of an algorithm that makes use of an IKKBZ ordering as a jumping off point, with good empirical results. CockroachDB doesn’t use IKKBZ in its query planning today, but it’s something we’re interested in looking into in the future.</p>
+<p>IKKBZ 算法是文献中最古老的连接排序算法之一，并且它仍然是少数具有强有力保证的多项式时间算法之一。 它通过严格限制它可以处理的问题来实现这一目标。 尽管有这些限制，它仍然可以作为更大算法的垫脚石。 超大型连接查询的自适应优化有一个算法示例，该算法使用 IKKBZ 排序作为起点，具有良好的经验结果。 目前，CockroachDB 在其查询规划中并未使用 IKKBZ，但我们将来有兴趣研究它。</p>
+<p>Sketch of a proof of [1]:<br>Since the two are related by the precedence constraints, they’re in the same chain. If they’re not adjacent in that chain, there’s some �<em>x</em> in between them, so �⃗→�⃗→�⃗<em>s</em>→<em>x</em>→<em>t</em>. If �(�⃗)&lt;�(�⃗)<em>r</em>(<em>x</em>)&lt;<em>r</em>(<em>t</em>), then {�⃗,�⃗}{<em>x</em>,<em>t</em>} is a “closer” bad pair. If �(�⃗)≥�(�⃗)<em>r</em>(<em>x</em>)≥<em>r</em>(<em>t</em>) then {�⃗,�⃗}{<em>x</em>,<em>s</em>} is a “closer” bad pair. Then by induction there’s an adjacent pair.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/" title="数据库SQL总结">http://heoric.github.io/2024/02/28/2-数据库/1-cockroachdb/cockroach-blogs/13-join ordering/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BC%98%E5%8C%96%E5%99%A8/" rel="tag"># 优化器</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/" rel="prev" title="Automatic table statistics in CockroachDB">
+                  <i class="fa fa-angle-left"></i> Automatic table statistics in CockroachDB
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/02/18/3-c++/c++%20%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B1/" rel="next" title="c++ 并发编程（一）">
+                  c++ 并发编程（一） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"8f4d17e1f4dd4127bd012cbd86f4f083"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+

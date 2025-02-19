@@ -26,7 +26,7 @@
 <meta property="og:description" content="15445 是 一门 数据库管理系统的设计与实现 的课程。 课程大纲：  Relational Databases Storage Execution Concurrency Control Recovery Distributed Databases Potpourri">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-08T06:44:57.000Z">
-<meta property="article:modified_time" content="2023-11-14T03:16:45.028Z">
+<meta property="article:modified_time" content="2024-02-21T07:35:04.464Z">
 <meta property="article:author" content="Leoric">
 <meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
@@ -126,18 +126,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -205,7 +205,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-14 11:16:45" itemprop="dateModified" datetime="2023-11-14T11:16:45+08:00">2023-11-14</time>
+      <time title="修改时间：2024-02-21 15:35:04" itemprop="dateModified" datetime="2024-02-21T15:35:04+08:00">2024-02-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -247,7 +247,7 @@
 <span id="more"></span>
 
 <h2 id="关系模型关系代数"><a href="#关系模型关系代数" class="headerlink" title="关系模型关系代数"></a>关系模型关系代数</h2><h2 id="存储1"><a href="#存储1" class="headerlink" title="存储1"></a>存储1</h2><p>面向磁盘的数据库，所有数据都存储在磁盘中。</p>
-<p>mmap 不要用在数据库存储种。</p>
+<p>mmap 不要用在数据库存储中。</p>
 <p>如何将数据存储在磁盘上 ？</p>
 <p>需要暴露那些 API ？</p>
 <hr>
@@ -269,7 +269,7 @@
 
 
 
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page(oracle)</span><br><span class="line">indirection 层 运行将 page <span class="built_in">id</span> 映射到文件中的某一个位置。</span><br><span class="line">page directory 记录page 在哪里</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最低底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br><span class="line">对磁盘进行 write 和 flush 只能保证 4kb 是原子的。</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">database PAGES</span><br><span class="line"></span><br><span class="line">一个 page 是一个固定大小的数据块</span><br><span class="line">page 可以包含 tuples，meta-data，indexes，<span class="built_in">log</span> records。任何东西。</span><br><span class="line"></span><br><span class="line">有的数据库要求 page 元数据和数据保存在一起，这样即使丢了一个page 也不会影响其他page(oracle)</span><br><span class="line">indirection 层 运行将 page <span class="built_in">id</span> 映射到文件中的某一个位置。</span><br><span class="line">page directory 记录page 在哪里</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hardware page（4k） 执行原子写入存储设备的最底层的东西. 对磁盘进行 write和flush操作，</span><br><span class="line">										存储设备只能保证每次写入4kb时是原子的</span><br><span class="line">OS page （4k）</span><br><span class="line">database page （512b - 16 K）</span><br><span class="line"></span><br><span class="line">对磁盘进行 write 和 flush 只能保证 4kb 是原子的。</span><br></pre></td></tr></table></figure>
 
 
 
@@ -448,7 +448,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

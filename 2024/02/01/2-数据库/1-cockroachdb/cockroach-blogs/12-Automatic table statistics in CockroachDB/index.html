@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/leoric.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"heoric.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Automatic table statistics in CockroachDBLast year, we rebuilt our cost-based optimizer from scratch for CockroachDB’s 2.1 release. We’ve been continuing to improve the optimizer since then, and we’ve">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Automatic table statistics in CockroachDB">
+<meta property="og:url" content="http://heoric.github.io/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/index.html">
+<meta property="og:site_name" content="Leoirc&#39;s Blogs">
+<meta property="og:description" content="Automatic table statistics in CockroachDBLast year, we rebuilt our cost-based optimizer from scratch for CockroachDB’s 2.1 release. We’ve been continuing to improve the optimizer since then, and we’ve">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryAstats.png">
+<meta property="og:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanB.png">
+<meta property="og:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/Screen-Shot-2019-06-24-at-2.55.00-PM.png">
+<meta property="og:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanAstats.png">
+<meta property="og:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/image15.png">
+<meta property="article:published_time" content="2024-02-01T06:44:57.000Z">
+<meta property="article:modified_time" content="2024-02-01T09:53:54.248Z">
+<meta property="article:author" content="Leoric">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryAstats.png">
+
+
+<link rel="canonical" href="http://heoric.github.io/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://heoric.github.io/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/","path":"2024/02/01/2-数据库/1-cockroachdb/cockroach-blogs/12-Automatic table statistics in CockroachDB/","title":"Automatic table statistics in CockroachDB"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Automatic table statistics in CockroachDB | Leoirc's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Leoirc's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Automatic-table-statistics-in-CockroachDB"><span class="nav-number">1.</span> <span class="nav-text">Automatic table statistics in CockroachDB</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Tale-of-Two-Queries"><span class="nav-number">1.1.</span> <span class="nav-text">A Tale of Two Queries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-do-you-estimate-the-cost-of-a-query"><span class="nav-number">1.2.</span> <span class="nav-text">How do you estimate the cost of a query?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-CockroachDB-Collects-Table-Statistics"><span class="nav-number">1.3.</span> <span class="nav-text">How CockroachDB Collects Table Statistics</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Row-Count"><span class="nav-number">1.3.1.</span> <span class="nav-text">Row Count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Distinct-Count"><span class="nav-number">1.3.2.</span> <span class="nav-text">Distinct Count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Null-Count"><span class="nav-number">1.3.3.</span> <span class="nav-text">Null Count</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Changes-to-Table-Statistics-in-CockroachDB-19-1"><span class="nav-number">1.4.</span> <span class="nav-text">Changes to Table Statistics in CockroachDB 19.1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Solution-Automatic-Statistics-Collection"><span class="nav-number">1.5.</span> <span class="nav-text">The Solution: Automatic Statistics Collection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deciding-to-Trigger-a-Refresh"><span class="nav-number">1.5.1.</span> <span class="nav-text">Deciding to Trigger a Refresh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Running-the-Refresh"><span class="nav-number">1.5.2.</span> <span class="nav-text">Running the Refresh</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Practical-Stuff"><span class="nav-number">1.6.</span> <span class="nav-text">The Practical Stuff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">1.7.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leoric"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Leoric</p>
+  <div class="site-description" itemprop="description">十年生死两茫茫，写代码，到天亮。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Heoric" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Heoric" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://heoric.github.io/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Leoric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leoirc's Blogs">
+      <meta itemprop="description" content="十年生死两茫茫，写代码，到天亮。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Automatic table statistics in CockroachDB | Leoirc's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Automatic table statistics in CockroachDB
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-02-01 14:44:57 / 修改时间：17:53:54" itemprop="dateCreated datePublished" datetime="2024-02-01T14:44:57+08:00">2024-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E3%80%81cockroach/" itemprop="url" rel="index"><span itemprop="name">数据库、cockroach</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Automatic-table-statistics-in-CockroachDB"><a href="#Automatic-table-statistics-in-CockroachDB" class="headerlink" title="Automatic table statistics in CockroachDB"></a>Automatic table statistics in CockroachDB</h1><p>Last year, we rebuilt our <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/">cost-based optimizer from scratch</a> for CockroachDB’s 2.1 release. We’ve been continuing to improve the optimizer since then, and we’ve added a number of new features for the <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/cockroachdb-19dot1-release/">CockroachDB 19.1 release</a>. One of the new features is automatic collection of table statistics. Automatic statistics enables the optimizer to make better decisions when choosing query plans.</p>
+<p>去年，我们为 CockroachDB 2.1 版本从头开始重建了基于成本的优化器。 从那时起，我们一直在不断改进优化器，并为 CockroachDB 19.1 版本添加了许多新功能。 新功能之一是自动收集表统计信息。 自动统计信息使优化器能够在选择查询计划时做出更好的决策。</p>
+<p>This post explains why statistics are important for the optimizer and describes some of the challenges we overcame when implementing automatic collection.</p>
+<p>这篇文章解释了为什么统计信息对于优化器很重要，并描述了我们在实现自动收集时克服的一些挑战。</p>
+<span id="more"></span>
+
+<h2 id="A-Tale-of-Two-Queries"><a href="#A-Tale-of-Two-Queries" class="headerlink" title="A Tale of Two Queries"></a>A Tale of Two Queries</h2><p>Consider the following two SQL queries, used by an imaginary kitchen supplies company to count the number of toaster ovens purchased by customers in New York City, grouped by the date of purchase:</p>
+<p>考虑以下两个 SQL 查询，一家虚构的厨房用品公司使用它来统计纽约市客户购买的烤面包机数量，并按购买日期分组：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- query A</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">count</span>(<span class="operator">*</span>), o.purchased</span><br><span class="line">    <span class="keyword">FROM</span> products <span class="keyword">AS</span> p,</span><br><span class="line">         orders <span class="keyword">AS</span> o,</span><br><span class="line">         customers <span class="keyword">AS</span> c</span><br><span class="line">    <span class="keyword">WHERE</span> c.id <span class="operator">=</span> o.cust_id</span><br><span class="line">         <span class="keyword">AND</span> p.id <span class="operator">=</span> o.prod_id</span><br><span class="line">         <span class="keyword">AND</span> c.city <span class="operator">=</span> <span class="string">&#x27;New York&#x27;</span></span><br><span class="line">         <span class="keyword">AND</span> p.type <span class="operator">=</span> <span class="string">&#x27;toaster oven&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> o.purchased;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- query B</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">count</span>(<span class="operator">*</span>), o.purchased</span><br><span class="line">    <span class="keyword">FROM</span> customers <span class="keyword">AS</span> c,</span><br><span class="line">         orders <span class="keyword">AS</span> o,</span><br><span class="line">         products <span class="keyword">AS</span> p</span><br><span class="line">    <span class="keyword">WHERE</span> c.id <span class="operator">=</span> o.cust_id</span><br><span class="line">         <span class="keyword">AND</span> p.id <span class="operator">=</span> o.prod_id</span><br><span class="line">         <span class="keyword">AND</span> c.city <span class="operator">=</span> <span class="string">&#x27;New York&#x27;</span></span><br><span class="line">         <span class="keyword">AND</span> p.type <span class="operator">=</span> <span class="string">&#x27;toaster oven&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> o.purchased;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>With minimal optimization, these queries correspond to the following logical query plans:</p>
+<p>通过最少的优化，这些查询对应于以下逻辑查询计划：</p>
+<p>query A：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryAstats.png"></p>
+<p>query B：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanB.png"></p>
+<p>These queries compute the same result, but one query is vastly more expensive than the other. Can you tell which one? (scroll down to see the answer…)</p>
+<p>这些查询计算相同的结果，但一个查询比另一个查询要昂贵得多。 你能说出是哪一个吗？ （向下滚动查看答案…）</p>
+<p>Spoiler alert: it’s not possible to determine which query is faster without more information. So suppose I give you the following statistics:</p>
+<p>剧透警告：如果没有更多信息，就不可能确定哪个查询更快。 假设我给你以下统计数据：</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/Screen-Shot-2019-06-24-at-2.55.00-PM.png"></p>
+<p>Now can you tell?</p>
+<p>现在你能说出来吗？</p>
+<p>Before I give the answer, let’s discuss what makes a query expensive in the first place, and why you should care. The “cost” of a query roughly translates to the total amount of computing resources required to execute the query plan, including CPU, I&#x2F;O and network. Lower-cost plans tend to execute faster (i.e., they have lower latency), and also enable the system to maintain a higher throughput, since more resources are available for executing other queries simultaneously. That means less money spent on extra hardware, and less time waiting for results!</p>
+<p>在给出答案之前，让我们首先讨论一下是什么让查询变得昂贵，以及为什么您应该关心。 查询的“成本”大致翻译为执行查询计划所需的计算资源总量，包括 CPU、I&#x2F;O 和网络。 成本较低的计划往往执行速度更快（即，延迟较低），并且还使系统能够保持较高的吞吐量，因为有更多的资源可用于同时执行其他查询。 这意味着花在额外硬件上的钱更少，等待结果的时间也更少！</p>
+<h2 id="How-do-you-estimate-the-cost-of-a-query"><a href="#How-do-you-estimate-the-cost-of-a-query" class="headerlink" title="How do you estimate the cost of a query?"></a>How do you estimate the cost of a query?</h2><p>We can estimate the cost of a particular query plan by estimating the cost of each operation in the plan and adding them together. For example, consider Query Plan A. You can think of data as flowing through the plan from bottom to top. First we scan table <code>customers</code> and apply a filter, then we scan table <code>orders</code> and join the two together, etc. Each stage in the plan costs a certain amount depending on the type of operation and the amount of data that must be processed. Operations involving I&#x2F;O are generally more expensive than operations involving only CPU, so reading 10,000 rows from disk (e.g., as part of a scan) is much more expensive than applying a filter to those rows. The actual cost formula varies for each operator and is beyond the scope of this blog entry, but the important thing to know is that <em>the cost of each operation is directly proportional to the number of rows processed</em>.</p>
+<p>我们可以通过估计计划中每个操作的成本并将它们加在一起来估计特定查询计划的成本。 例如，考虑查询计划 A。您可以将数据视为从下到上流过该计划。 首先，我们扫描客户表并应用过滤器，然后扫描订单表并将两者连接在一起，等等。计划中的每个阶段都会花费一定的费用，具体取决于操作类型和必须处理的数据量。 涉及 I&#x2F;O 的操作通常比仅涉及 CPU 的操作更昂贵，因此从磁盘读取 10,000 行（例如，作为扫描的一部分）比对这些行应用过滤器要昂贵得多。 每个操作符的实际成本公式各不相同，超出了本博客条目的范围，但需要了解的重要一点是每个操作的成本与处理的行数成正比。</p>
+<p>So how do we estimate the number of rows processed by each operator? With statistics, of course!</p>
+<p>那么我们如何估计每个算子处理的行数呢？ 当然是统计数据！</p>
+<p>Similar to how data propagates from the bottom to the top of a query plan, we can also propagate statistics from the bottom to the top to estimate the number of rows at each step.</p>
+<p>与数据从查询计划的底部传播到顶部的方式类似，我们也可以从底部到顶部传播统计信息来估计每个步骤的行数。</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/QueryPlanAstats.png"></p>
+<p>Let’s look at the example of query plan A. Given the stats from Table 1, we know that <code>customers</code> has 100,000 rows. Since in this simple example we don’t have any indexes on <code>customers</code>, the scan must process all of the rows. Similarly, the filter operator must process all rows produced by the scan to test the filter predicate <code>city=&#39;New York&#39;</code> on each row. But this is where it gets interesting. To estimate the number of rows that match the filter predicate and pass on to the join operator, we need to calculate the <em>selectivity</em> of the filter, or the percentage of rows that are likely to match. For this calculation, we make the simplifying assumption that all values are uniformly distributed in each column. For example, we assume that a column with 30 rows and 3 distinct values will have 10 of each value.</p>
+<p>让我们看一下查询计划 A 的示例。根据表 1 中的统计信息，我们知道客户有 100,000 行。 由于在这个简单的示例中我们没有任何客户索引，因此扫描必须处理所有行。 同样，过滤运算符必须处理扫描生成的所有行，以测试每行上的过滤谓词 city&#x3D;’New York’。 但这就是有趣的地方。 为了估计与过滤谓词匹配并传递给连接运算符的行数，我们需要计算过滤器的选择性，或者可能匹配的行的百分比。 对于此计算，我们做出简化假设，即所有值均匀分布在每列中。 例如，我们假设一列包含 30 行和 3 个不同的值，每个值有 10 个。</p>
+<p>In our running example, we can see from Table 1 that column <code>city</code> has only two distinct values (it turns out our imaginary kitchen supply company only has two locations). After we apply the predicate <code>city=&#39;New York&#39;</code>, there is at most one distinct value, the value <code>&#39;New York&#39;</code>. Utilizing the assumption of uniformity, we can estimate the selectivity of the predicate as 1⁄2. With 100,000 input rows, we estimate that after the predicate is applied there will be 100,000 * 1⁄2 &#x3D; 50,000 rows.</p>
+<p>在我们的运行示例中，我们可以从表 1 中看到，列 city 只有两个不同的值（事实证明，我们假想的厨房供应公司只有两个地点）。 在我们应用谓词 city&#x3D;’New York’ 后，最多有一个不同的值，即值“New York”。 利用均匀性假设，我们可以估计谓词的选择性为 1⁄2。 对于 100,000 个输入行，我们估计应用谓词后将有 100,000 * 1⁄2 &#x3D; 50,000 行。</p>
+<p>Note that this result of 50,000 rows is just an <em>estimate</em>, since the assumption of uniformity is not always correct. It’s possible that the data is skewed and nearly all of all rows match <code>city=&#39;New York&#39;</code>. It’s also possible that almost none of the rows match <code>city=&#39;New York&#39;</code>. In the next release we will incorporate histograms into our estimates to handle such cases. But in practice, the uniformity assumption works reasonably well for query optimization.</p>
+<p>请注意，50,000 行的结果只是一个估计值，因为均匀性的假设并不总是正确的。 数据可能存在偏差，几乎所有行都匹配 city&#x3D;’New York’。 也有可能几乎没有行与 city&#x3D;’New York’ 匹配。 在下一个版本中，我们将把直方图纳入我们的估计中以处理此类情况。 但实际上，一致性假设对于查询优化来说相当有效。</p>
+<p>The cost-based optimizer does not need to know the exact cost of a query plan; it just needs a good enough estimate that it can compare two plans and select the relatively cheaper plan.</p>
+<p>基于成本的优化器不需要知道查询计划的确切成本； 它只需要一个足够好的估计，就可以比较两个计划并选择相对便宜的计划。</p>
+<p>Given that we estimate 50,000 rows from the filter, how do we propagate the statistics up the tree? We can’t directly apply the 0.5 filter selectivity to the distinct count, since that would be statistically incorrect. Suppose that there is another column in <code>customers</code> that tracks the customer’s <code>gender</code>. Assuming that <code>gender</code> is <em>independent</em> of <code>city</code> (which is true, last time I checked…), it is likely that <code>gender</code> will still have (at least) two distinct values after half of the rows are removed that don’t match <code>city=&#39;New York&#39;</code>. If we were to blindly apply the selectivity to distinct counts (similar to how we applied it to the row count), we would estimate that <code>gender</code> had only one distinct value, which is clearly incorrect given the assumption of independence. Instead, we use the following formula:</p>
+<p>鉴于我们估计过滤器中有 50,000 行，我们如何将统计信息传播到树上？ 我们不能直接将 0.5 过滤器选择性应用于非重复计数，因为这在统计上是不正确的。 假设客户中有另一列跟踪客户的性别。 假设性别与城市无关（这是真的，我上次检查过……），在删除与 city&#x3D;’New 不匹配的一半行后，性别可能仍然有（至少）两个不同的值 约克’。 如果我们盲目地将选择性应用于不同的计数（类似于我们将其应用于行计数的方式），我们会估计性别只有一个不同的值，考虑到独立性的假设，这显然是不正确的。 相反，我们使用以下公式：</p>
+<p><em>d</em>′&#x3D;<em>d</em>−<em>d</em>∗(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em></p>
+<p>Where n is the number of input rows, �<em>d</em> is the distinct count before the selectivity is applied, and �’<em>d</em>’ is the distinct count after. It can be derived as follows: If each distinct value appears �&#x2F;�<em>n</em>&#x2F;<em>d</em> times, and the probability of a row being filtered out is (1−�����������)(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>), the probability that all �&#x2F;�<em>n</em>&#x2F;<em>d</em> rows are filtered out is (1−�����������)�&#x2F;�(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em>. So the expected number of values that are filtered out is �∗(1−�����������)�&#x2F;�<em>d</em>∗(1−<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em>)<em>n</em>&#x2F;<em>d</em>. This formula has the nice property that it returns �∗�����������<em>d</em>∗<em>s<strong>e</strong>l<strong>e</strong>c<strong>t</strong>i<strong>v</strong>i<strong>t</strong>y</em> when �&#x3D;�<em>d</em>&#x3D;<em>n</em> but it’s closer to �<em>d</em> when �&lt;&lt;�<em>d</em>&lt;&lt;<em>n</em>.</p>
+<p>Similar to the uniformity assumption, the independence assumption is not always correct, but it makes calculations significantly simpler. We’ll likely relax the independence assumption in future releases of the optimizer.</p>
+<p>与均匀性假设类似，独立性假设并不总是正确的，但它使计算变得更加简单。 我们可能会在优化器的未来版本中放宽独立性假设。</p>
+<p>Moving further up the query plan, we must next calculate the number of rows produced by the join. This is a notoriously difficult problem, and remains an open area of research<a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:1">1</a>. For equi-joins such as the ones in queries A and B, we make the simplifying assumption that we have a primary key-foreign key join, so the output cardinality will be equal to the larger of the two inputs multiplied by the selectivity of any filters that have been applied. Distinct counts are not affected significantly by joins.</p>
+<p>继续执行查询计划，接下来我们必须计算连接产生的行数。 这是一个众所周知的难题，并且仍然是一个开放的研究领域。 对于等连接，例如查询 A 和 B 中的连接，我们做出简化的假设，即我们有一个主键-外键连接，因此输出基数将等于两个输入中较大的一个乘以任意输入的选择性 已应用的过滤器。 不同计数不会受到连接的显着影响。</p>
+<p>As the last step in both query plans, we apply a <code>GROUP BY</code> operation which calculates the number of matching orders grouped by <code>purchased</code> date. Luckily, calculating the number of output rows of a <code>GROUP BY</code> operator is easy: it’s equal to the number of distinct values of the grouping column(s).</p>
+<p>作为两个查询计划的最后一步，我们应用 GROUP BY 操作来计算按购买日期分组的匹配订单数。 幸运的是，计算 GROUP BY 运算符的输出行数很容易：它等于分组列的不同值的数量。</p>
+<p>Although this example only covers a subset of all SQL operators, it gives a good flavor for how we use statistics to estimate the cost of different query plans. Hopefully now you can see that query A is significantly more expensive than query B. The CockroachDB optimizer will always transform query A so that it uses the same query plan as B. And for good reason: when we execute the two plans, we see that query A takes 1.9 seconds while query B takes 16 ms: over a 100X difference!</p>
+<p>尽管此示例仅涵盖所有 SQL 运算符的子集，但它很好地说明了我们如何使用统计信息来估计不同查询计划的成本。 希望现在您可以看到查询 A 比查询 B 昂贵得多。CockroachDB 优化器将始终转换查询 A，以便它使用与 B 相同的查询计划。并且有充分的理由：当我们执行这两个计划时，我们会看到 查询 A 需要 1.9 秒，而查询 B 需要 16 毫秒：相差超过 100 倍！</p>
+<h2 id="How-CockroachDB-Collects-Table-Statistics"><a href="#How-CockroachDB-Collects-Table-Statistics" class="headerlink" title="How CockroachDB Collects Table Statistics"></a>How CockroachDB Collects Table Statistics</h2><p>So how do we get statistics such as the ones shown in Table 1 that are used by the optimizer to calculate the cost of candidate query plans? In CockroachDB, we collect statistics using the command <code>CREATE STATISTICS</code>. <code>CREATE STATISTICS</code> performs a distributed, full table scan of the specified table, and calculates statistics in parallel on each node before a final merge (see Figure 1). After collection, statistics are stored in the system table <code>system.table_statistics</code>, and are cached on each node for fast access by the optimizer.</p>
+<p>那么我们如何获得如表 1 所示的统计信息，优化器使用这些统计信息来计算候选查询计划的成本呢？ 在 CockroachDB 中，我们使用命令 CREATE STATISTICS 收集统计信息。 CREATE STATISTICS 对指定表执行分布式全表扫描，并在最终合并之前在每个节点上并行计算统计信息（参见图 1）。 收集后，统计信息存储在系统表system.table_statistics中，并缓存在每个节点上，以便优化器快速访问。</p>
+<p><img src="https://www.cockroachlabs.com/wp-content/uploads/2019/05/image15.png"></p>
+<p>Figure 1: The <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/what-is-distributed-sql/">distributed SQL</a> plan of a CREATE STATISTICS statement on 5 nodes</p>
+<p>The statistics we currently support are:</p>
+<p>我们目前支持的统计数据有：</p>
+<h3 id="Row-Count"><a href="#Row-Count" class="headerlink" title="Row Count"></a>Row Count</h3><p>This is an exact row count as of the time of the table scan. Although this is the simplest statistic, it’s also the most important. As you learned in the previous section, row count is the primary input to our cost model for determining the cost of each candidate query plan.</p>
+<p>这是截至表扫描时的精确行计数。 虽然这是最简单的统计数据，但也是最重要的。 正如您在上一节中了解到的，行计数是成本模型的主要输入，用于确定每个候选查询计划的成本。</p>
+<h3 id="Distinct-Count"><a href="#Distinct-Count" class="headerlink" title="Distinct Count"></a>Distinct Count</h3><p>For each index column and a subset of other columns in each table, we estimate the number of distinct values. As described above, distinct counts are useful for estimating the selectivity of filter predicates and estimating the number of rows output by <code>GROUP BY</code> and other relational SQL operators. We don’t calculate exact distinct counts, because for columns with many distinct values, the calculation could require nearly as much memory and disk space as the entire table itself! Instead, we use a variant of the well-known HyperLogLog algorithm called HLL-TailCut+<a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:2">2</a> and the excellent golang implementation by Axiom, Inc<a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/automatic-sql-statistics/#fn:3">3</a>. HyperLogLog estimates distinct counts with high accuracy and very low memory overhead. It can also be calculated in parallel across several nodes and efficiently merged to produce a distinct count estimate for the full table.</p>
+<p>对于每个表中的每个索引列和其他列的子集，我们估计不同值的数量。 如上所述，非重复计数对于估计过滤谓词的选择性以及估计 GROUP BY 和其他关系 SQL 运算符输出的行数非常有用。 我们不计算精确的不同计数，因为对于具有许多不同值的列，计算可能需要几乎与整个表本身一样多的内存和磁盘空间！ 相反，我们使用著名的 HyperLogLog 算法的变体（称为 HLL-TailCut+2）以及 Axiom, Inc3 出色的 golang 实现。 HyperLogLog 以高精度和极低的内存开销来估计不同计数。 它还可以跨多个节点并行计算并有效合并以生成整个表的不同计数估计。</p>
+<h3 id="Null-Count"><a href="#Null-Count" class="headerlink" title="Null Count"></a>Null Count</h3><p>We calculate null counts explicitly, as <code>NULL</code> is a value that can appear quite often in some workloads. We can get better cardinality estimates for certain queries by tracking this count separately.</p>
+<p>我们显式计算 null 计数，因为 NULL 是在某些工作负载中经常出现的值。 通过单独跟踪此计数，我们可以为某些查询获得更好的基数估计。</p>
+<p>In the future, we plan to support more statistics, including multi-column distinct counts and histograms.</p>
+<p>未来，我们计划支持更多统计数据，包括多列非重复计数和直方图。</p>
+<h2 id="Changes-to-Table-Statistics-in-CockroachDB-19-1"><a href="#Changes-to-Table-Statistics-in-CockroachDB-19-1" class="headerlink" title="Changes to Table Statistics in CockroachDB 19.1"></a>Changes to Table Statistics in CockroachDB 19.1</h2><p>The <code>CREATE STATISTICS</code> command existed in the 2.1 release, but we found that most customers were not taking advantage of it, and the few that knew about it were not using it effectively. There were a few reasons for this:</p>
+<p>CREATE STATISTICS 命令存在于 2.1 版本中，但我们发现大多数客户都没有利用它，而且少数了解它的客户也没有有效地使用它。 造成这种情况的原因有以下几个：</p>
+<ul>
+<li><p><strong>We did not advertise the feature, so many customers were not aware of it.</strong> We did this purposefully, since as described below, <code>CREATE STATISTICS</code> is difficult to use correctly.</p>
+<p>我们没有宣传该功能，因此很多客户不知道。 我们故意这样做，因为如下所述，CREATE STATISTICS 很难正确使用。</p>
+</li>
+<li><p><strong>Even if they discovered the command on their own, they might have run it once and forgotten to run it again.</strong> This is a problem because statistics can quickly become stale for tables that are modified frequently. Running <code>CREATE STATISTICS</code> once can be worse than never running it at all, since we have some reasonable defaults in the optimizer if there are no stats. But we’ll always use whatever stats are available, so suppose you create a table, add one row, and then run <code>CREATE STATISTICS</code>. And then you add 1 million rows but forget to refresh the stats. The optimizer will choose a plan optimized for the case of one row, even though that may be an awful plan for the case of one million rows.</p>
+<p>即使他们自己发现了该命令，他们也可能运行过一次并忘记再次运行它。 这是一个问题，因为对于频繁修改的表，统计信息很快就会变得过时。 运行一次 CREATE STATISTICS 可能比根本不运行它更糟糕，因为如果没有统计信息，我们在优化器中有一些合理的默认值。 但我们将始终使用任何可用的统计信息，因此假设您创建一个表，添加一行，然后运行 CREATE STATISTICS。 然后您添加 100 万行，但忘记刷新统计数据。 优化器将选择针对一行的情况进行优化的计划，即使对于一百万行的情况这可能是一个糟糕的计划。</p>
+</li>
+<li><p><strong>A savvy user might have realized that they needed to refresh stats periodically, but then it was not clear how often to perform a refresh.</strong> The optimal frequency may be different for every table, since some tables are updated frequently and others are updated less frequently. Furthermore, some tables are large, and even a lot of updates don’t change the stats much, while some tables are small and a few updates can drastically change the stats.</p>
+<p>精明的用户可能已经意识到他们需要定期刷新统计数据，但不清楚多久执行一次刷新。 每个表的最佳频率可能不同，因为有些表更新频繁，而另一些表更新频率较低。 此外，有些表很大，即使很多更新也不会改变统计数据太多，而有些表很小，一些更新就可以极大地改变统计数据。</p>
+</li>
+</ul>
+<p>Even if a user managed to overcome all of these hurdles, we were not satisfied with the status quo. Our mission at Cockroach Labs is to “make data easy”, and forcing users to perform their own periodic stats refreshes did not fit with this mission.</p>
+<p>即使用户设法克服所有这些障碍，我们也不满足于现状。 我们 Cockroach Labs 的使命是“让数据变得简单”，强迫用户定期刷新统计数据并不符合这一使命。</p>
+<h2 id="The-Solution-Automatic-Statistics-Collection"><a href="#The-Solution-Automatic-Statistics-Collection" class="headerlink" title="The Solution: Automatic Statistics Collection"></a>The Solution: Automatic Statistics Collection</h2><p>The solution, of course, is for CockroachDB to perform statistics collection automatically. Our idea at the beginning of the release was to detect when some significant portion of the data in a table had changed, and then automatically trigger statistics collection by having the system call <code>CREATE STATISTICS</code>. This introduced two key challenges:</p>
+<p>解决方案当然是让CockroachDB自动进行统计收集。 我们在发布之初的想法是检测表中数据的某些重要部分何时发生更改，然后通过系统调用 CREATE STATISTICS 自动触发统计信息收集。 这带来了两个关键挑战：</p>
+<ol>
+<li><p>We want to detect when a significant amount of data has changed, but there should be negligible impact on the performance of <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> transactions.</p>
+<p>我们希望检测大量数据何时发生变化，但对 INSERT、UPDATE 和 DELETE 事务的性能影响应该可以忽略不计。</p>
+</li>
+<li><p>Once we’ve decided to trigger a statistics refresh, the collection of statistics should have negligible impact on the performance of concurrent transactions.</p>
+<p>一旦我们决定触发统计数据刷新，统计数据的收集对并发事务的性能的影响应该可以忽略不计。</p>
+</li>
+</ol>
+<p>Let’s examine each of these challenges:</p>
+<p>让我们逐一分析一下这些挑战：</p>
+<h3 id="Deciding-to-Trigger-a-Refresh"><a href="#Deciding-to-Trigger-a-Refresh" class="headerlink" title="Deciding to Trigger a Refresh"></a>Deciding to Trigger a Refresh</h3><p>In order to decide when to trigger a refresh, we want to know when a “significant” portion of a table has changed. To make this concrete, let’s say that we want to update stats after approximately 20% of the rows in a table have been inserted, updated or deleted. The advantage of using a percentage instead of an absolute row count is that it allows the frequency of refreshes to scale inversely with the size of the table.</p>
+<p>为了决定何时触发刷新，我们想知道表的“重要”部分何时发生更改。 为了具体说明这一点，假设我们希望在表中大约 20% 的行被插入、更新或删除后更新统计信息。 使用百分比而不是绝对行计数的优点是，它允许刷新频率与表的大小成反比。</p>
+<p>So the challenge is to determine when 20% of rows have changed. Perhaps you’re thinking, “this doesn’t seem very hard…”. At first glance, it does seem straightforward; we know how many rows are affected by each mutation operation on each node. But the problem is that we can have many mutation operations happening simultaneously to the same table on different nodes, and we’d like to avoid having a central counter somewhere that could be a source of contention. The only way a geo-distributed system like CockroachDB scales is if nodes are largely independent.</p>
+<p>因此，挑战在于确定 20% 的行何时发生更改。 也许你在想，“这看起来并不难……”。 乍一看，这似乎很简单； 我们知道每个节点上的每个突变操作会影响多少行。 但问题是，我们可以在不同节点上的同一张表上同时发生许多突变操作，并且我们希望避免在可能成为争用源的地方设置中央计数器。 像 CockroachDB 这样的地理分布式系统扩展的唯一方法是节点在很大程度上是独立的。</p>
+<p>Luckily, the decision to refresh a table after some percentage of rows have changed does not need to be exact. There is a tradeoff between more frequent refreshes (which add overhead to the cluster), and less frequent refreshes (which could result in suboptimal query plans). We have found that refreshing with 20% of rows “stale” provides a good balance, but 10% or 30% would also be perfectly fine in most cases.</p>
+<p>幸运的是，在一定百分比的行发生更改后刷新表的决定不需要精确。 更频繁的刷新（这会增加集群的开销）和不太频繁的刷新（这可能会导致查询计划不理想）之间需要进行权衡。 我们发现刷新 20% 的“陈旧”行可以提供良好的平衡，但在大多数情况下 10% 或 30% 也完全没问题。</p>
+<p>Given this flexibility, we decided to solve the problem by using the following statistical approach: after every mutation operation (e.g., <code>INSERT</code>, <code>UPDATE</code> or <code>DELETE</code>), there is a small chance of statistics getting refreshed. In particular, the probability of a refresh is:</p>
+<p>鉴于这种灵活性，我们决定使用以下统计方法来解决问题：在每次突变操作（例如插入、更新或删除）之后，统计数据刷新的机会很小。 特别地，刷新的概率为：</p>
+<p><em>P</em>(<em>r<strong>e</strong>f<strong>r</strong>e<strong>s</strong>h</em>)&#x3D;<em>n<strong>u</strong>m<strong>b</strong>e**r</em> <em>o**f</em> <em>r<strong>o</strong>w**s</em> <em>i**n</em> <em>t<strong>a</strong>b<strong>l</strong>e</em>∗0.20<em>n<strong>u</strong>m<strong>b</strong>e**r</em> <em>o**f</em> <em>r<strong>o</strong>w**s</em> <em>u<strong>p</strong>d<strong>a</strong>t<strong>e</strong>d</em>, <em>i<strong>n</strong>s<strong>e</strong>r<strong>t</strong>e**d</em>, <em>d<strong>e</strong>l<strong>e</strong>t<strong>e</strong>d</em></p>
+<p>To implement this statistical approach, we essentially use the following simple algorithm (although there are some complexities discussed in the next section): after each mutation, generate a random number between 0 and 1, and if it falls below this probability value, kick off a <code>CREATE STATISTICS</code> run. What this means is that over time, stats for each table are refreshed after approximately 20% of rows have changed. We also have some guard rails in place in case there are statistical outliers. In particular, we always refresh stats for a table if it has no stats yet or if it has been a long time since the last refresh.</p>
+<p>为了实现这种统计方法，我们本质上使用以下简单的算法（尽管下一节中讨论了一些复杂性）：在每次突变之后，生成一个 0 到 1 之间的随机数，如果它低于这个概率值，则开始 运行创建统计信息。 这意味着随着时间的推移，每个表的统计信息会在大约 20% 的行发生更改后刷新。 我们还设置了一些防护栏，以防出现统计异常值。 特别是，如果表还没有统计信息或者距离上次刷新已经很长时间了，我们总是刷新表的统计信息。</p>
+<h3 id="Running-the-Refresh"><a href="#Running-the-Refresh" class="headerlink" title="Running the Refresh"></a>Running the Refresh</h3><p>The second challenge was ensuring that running a statistics refresh did not significantly impact running workloads. It’s one thing if there is high overhead when a user knowingly runs <code>CREATE STATISTICS</code> on the command line, but it’s another thing if we trigger it without their knowledge and all of a sudden the command is using half the resources in the cluster. Since a statistics refresh can happen at any time, it must have minimal overhead.</p>
+<p>第二个挑战是确保运行统计数据刷新不会显着影响正在运行的工作负载。 如果用户故意在命令行上运行 CREATE STATISTICS 时会产生很高的开销，这是一回事，但如果我们在他们不知情的情况下触发它并且命令突然使用了集群中一半的资源，那就是另一回事了。 由于统计数据刷新可以随时发生，因此它的开销必须最小。</p>
+<p>This requirement forced us to rethink the solution described in the last section for triggering a refresh after 20% of rows changed. In particular, the simple algorithm of possibly triggering a refresh after each mutation was problematic. There can be many updates per second, but each <code>CREATE STATISTICS</code> run can take minutes. As a result, we could have multiple threads scanning the same table to collect statistics at the same time. This is a big problem, since a single full table scan can impact performance. Many table scans at once can actually bring down the cluster.</p>
+<p>这一要求迫使我们重新考虑上一节中描述的在 20% 行更改后触发刷新的解决方案。 特别是，每次突变后可能触发刷新的简单算法是有问题的。 每秒可能有多次更新，但每次 CREATE STATISTICS 运行可能需要几分钟的时间。 因此，我们可以让多个线程扫描同一个表来同时收集统计信息。 这是一个大问题，因为单个全表扫描会影响性能。 同时进行许多表扫描实际上可能会导致集群崩溃。</p>
+<p>The solution we came up with was to have one background “refresher” thread running on each node. Mutation operations such as <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code> send messages to that thread with the table and number of rows affected, and the refresher aggregates the counts of rows updated for each table on that node. Periodically, the refresher thread starts up a separate thread that uses the latest counts to possibly kick off a statistics refresh for each table.</p>
+<p>我们提出的解决方案是在每个节点上运行一个后台“刷新”线程。 INSERT、UPDATE 和 DELETE 等突变操作会向该线程发送包含受影响的表和行数的消息，并且刷新器会聚合该节点上每个表更新的行数。 刷新线程会定期启动一个单独的线程，该线程使用最新的计数来可能启动每个表的统计刷新。</p>
+<p>The background refresher thread ensures that at most one statistics refresh is triggered at once per node, but it does not provide any coordination between nodes. To ensure that at most one automatic statistics refresh is running globally on the cluster, we took advantage of the existing “jobs” infrastructure used to run commands like <code>IMPORT</code>, <code>BACKUP</code> and <code>RESTORE</code>. In the last release, <code>CREATE STATISTICS</code> was a normal SQL statement, but we changed it during this release cycle to run as a job. Now, every time <code>CREATE STATISTICS</code> is called, it creates an entry in the <code>system.jobs</code> table. If a node wants to perform a refresh, it first checks the <code>system.jobs</code> table to be sure that there are no other statistics jobs currently running. In this way, we ensure that only one statistics refresh is active at once. The jobs infrastructure ensures that we always make progress, since if a node dies, another node will adopt the job.</p>
+<p>后台刷新线程确保每个节点最多一次触发一次统计刷新，但它不提供节点之间的任何协调。 为了确保集群上全局运行最多一次自动统计刷新，我们利用了现有的“作业”基础设施，用于运行 IMPORT、BACKUP 和 RESTORE 等命令。 在上一个版本中，CREATE STATISTICS 是一个普通的 SQL 语句，但我们在此版本周期中将其更改为作为作业运行。 现在，每次调用 CREATE STATISTICS 时，都会在 system.jobs 表中创建一个条目。 如果节点想要执行刷新，它首先检查system.jobs表以确保当前没有其他统计作业正在运行。 通过这种方式，我们可以确保一次只有一个统计刷新处于活动状态。 作业基础设施确保我们始终取得进展，因为如果一个节点死亡，另一个节点将接管该作业。</p>
+<p>Even with all of this infrastructure in place, we found that the overhead of a single <code>CREATE STATISTICS</code> job was too high for some workloads. Workloads with heavy utilization of resources saw throughput drops and latency spikes each time a statistics refresh started. This observation led us to the final requirement: we needed to limit the overhead of each individual <code>CREATE STATISTICS</code> job. The solution we used was to throttle the execution of statistics collection. Specifically, we insert some idle time (i.e., sleep) after every 10,000 rows are processed. The amount of idle time is adaptive, and depends on the current CPU utilization of the cluster. If utilization is high, we sleep more, and if utilization is low, we turn off throttling altogether.</p>
+<p>即使所有这些基础设施都已到位，我们发现单个 CREATE STATISTICS 作业的开销对于某些工作负载来说仍然太高。 每次统计数据刷新开始时，资源利用率很高的工作负载都会出现吞吐量下降和延迟激增的情况。 这一观察使我们得出了最终的要求：我们需要限制每个单独的 CREATE STATISTICS 作业的开销。 我们使用的解决方案是限制统计信息收集的执行。 具体来说，我们在每处理 10,000 行后插入一些空闲时间（即睡眠）。 空闲时间量是自适应的，并且取决于集群当前的 CPU 利用率。 如果利用率高，我们会睡得更多，如果利用率低，我们会完全关闭节流。</p>
+<h2 id="The-Practical-Stuff"><a href="#The-Practical-Stuff" class="headerlink" title="The Practical Stuff"></a>The Practical Stuff</h2><p>By this point you may be wondering, “How do I actually use this feature?” Consistent with our mission to “make data easy”, you don’t need to do anything other than <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/install-cockroachdb">upgrade to CockroachDB 19.1</a>. Automatic statistics are enabled by default in 19.1, so unless you explicitly disable the feature, the system will trigger statistics refreshes as needed.</p>
+<p>此时您可能想知道“我如何实际使用此功能？” 与我们“让数据变得简单”的使命相一致，除了升级到 CockroachDB 19.1 之外，您无需执行任何操作。 自动统计在 19.1 中默认启用，因此除非您明确禁用该功能，否则系统将根据需要触发统计刷新。</p>
+<p>Although we’ve made every effort to minimize the impact of automatic statistics collection on performance of the system, there will always be overhead due to the cost of performing a full table scan for each refresh. For most workloads, the amortized impact on performance is less than 1%, but we’ve seen some cases with larger performance degradation. If your workload is negatively affected, our <a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/docs/stable/cost-based-optimizer#controlling-automatic-statistics">documentation on the automatic statistics in CockroachDB</a> describes how you can adjust the frequency of refreshes or disable automatic collection altogether. It’s still possible to run <code>CREATE STATISTICS</code> manually if you want full control over when stats are refreshed.</p>
+<p>尽管我们已尽一切努力尽量减少自动统计信息收集对系统性能的影响，但由于每次刷新执行全表扫描的成本，总会产生开销。 对于大多数工作负载，对性能的摊销影响小于 1%，但我们已经看到了一些性能下降较大的情况。 如果您的工作负载受到负面影响，我们有关 CockroachDB 中自动统计信息的文档描述了如何调整刷新频率或完全禁用自动收集。 如果您想完全控制统计数据的刷新时间，仍然可以手动运行 CREATE STATISTICS。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>We hope this post has convinced you that statistics are essential for the optimizer to produce good query plans for a wide variety of queries, and we hope it has allowed you to peek inside the optimizer to learn a bit about how it works. CockroachDB 19.1 provides tools to collect statistics both manually and automatically, with the goal of keeping statistics fresh for the optimizer to use with minimal performance impact.</p>
+<p>我们希望这篇文章能让您相信，统计信息对于优化器为各种查询生成良好的查询计划至关重要，并且我们希望它能让您深入了解优化器，了解它的工作原理。 CockroachDB 19.1 提供了手动和自动收集统计信息的工具，目的是使统计信息保持最新状态，供优化器使用，同时对性能影响最小。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leoric
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://heoric.github.io/2024/02/01/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/12-Automatic%20table%20statistics%20in%20CockroachDB/" title="Automatic table statistics in CockroachDB">http://heoric.github.io/2024/02/01/2-数据库/1-cockroachdb/cockroach-blogs/12-Automatic table statistics in CockroachDB/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/26/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/11-How%20we%20built%20a%20cost-based%20SQL%20optimizer/" rel="prev" title="How we built a cost-based SQL optimizer">
+                  <i class="fa fa-angle-left"></i> How we built a cost-based SQL optimizer
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/02/28/2-%E6%95%B0%E6%8D%AE%E5%BA%93/1-cockroachdb/cockroach-blogs/13-join%20ordering/" rel="next" title="数据库SQL总结">
+                  数据库SQL总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Leoric</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/Heoric" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"Heoric","repo":"Leoric_comments","client_id":"6b2886f8d76442a0b3a2","client_secret":"2ef0222b05e84b348738c1f9610f3f2cd387f98c","admin_user":"Heoric","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6da32f174c6cf2759d3fa9f85561f2c7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
